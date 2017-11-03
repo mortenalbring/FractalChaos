@@ -82,7 +82,7 @@ sphere{<0,0,0>,0.006
 
 
 #declare startNum = 0;
-#declare endNum = (240000);   
+#declare endNum = (2400000);   
 
 
 #declare Anchor = sphere{<0,0,0>,0.05
@@ -138,6 +138,7 @@ rgb<1,0,0.498039216>
 #declare colorr = 0.5;
 #declare colorg = 0.5;
 #declare colorb = 0.5;
+
 
 
 
@@ -221,6 +222,9 @@ rgb<1,0,0.498039216>
 
     #declare nrx = nrx + 1;
 #end
+
+
+
 
 //object {Trace translate<xpoint,ypoint,zpoint>  }                                       
 
