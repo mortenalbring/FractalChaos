@@ -139,10 +139,19 @@ rgb<1,0,0.498039216>
 #declare colorg = 0.5;
 #declare colorb = 0.5;
 
+#fopen MyFile "GeneratePoints\GeneratePoints\GeneratePoints\bin\Debug\test.txt" read
 
 
+#while (defined(MyFile))
+     #read (MyFile,Vector)
+      sphere { Vector,    0.006
+      texture {
+      pigment{ rgb <1,0,0>}
+      }      }
+  #end
 
 
+/*
 #declare nrx = 0;
 #while(nrx < endNum)       
               #declare diceRoll = rand(Rnd_1);  
@@ -224,7 +233,7 @@ rgb<1,0,0.498039216>
 #end
 
 
-
+*/
 
 //object {Trace translate<xpoint,ypoint,zpoint>  }                                       
 
