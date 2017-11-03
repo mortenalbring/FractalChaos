@@ -1,7 +1,9 @@
 #include "math.inc"
 
+#declare tclock=0.1;
+
 camera {	
-	location <5*sin(2*pi*clock), 2, -5*cos(2*pi*clock)>		           
+	location <5*sin(2*pi*tclock), 2, -5*cos(2*pi*tclock)>		           
 	look_at <0,0,0>       	
 	rotate <0,0,0>
 }                
@@ -59,3 +61,71 @@ sky_sphere {
     }
 } 
 
+           
+#declare Rnd_1 = seed (1153);           
+
+#declare Ball =
+sphere{<0,0,0>,0.006
+       texture{
+        
+        finish {phong 1}
+       } 
+}   
+
+#declare Trace = sphere{<0,0,0>,0.15
+       texture{
+                                   
+        pigment{color rgb<0.5,0.5,0.5> }
+        finish {phong 1 reflection 0.2}
+       } 
+}   
+
+
+#declare startNum = 0;
+#declare endNum = (2400000);   
+
+
+#declare Anchor = sphere{<0,0,0>,0.05
+       texture{
+        pigment{color rgb<1,0.65,0.65>}
+        finish {phong 1 reflection 0.1}
+       } 
+}      
+           
+#declare anchorPoints = 12;
+
+#declare anchorsX = array[anchorPoints]{0,0,0,0,1,1,-1,-1,1.6,-1.6,1.6,-1.6};
+#declare anchorsY = array[anchorPoints]{1,-1,1,1,1.6,-1.6,1.6,-1.6,0,0,0,0};
+#declare anchorsZ = array[anchorPoints]{1.6,1.6,-1.6,-1.6,0,0,0,0,1,1,-1,-1};
+           
+#declare anchorColors = array[anchorPoints]{
+rgb<1,0,0>,
+rgb<1,0.501960784,0>,
+rgb<1,1,0>,
+rgb<0.501960784,1,0>,
+rgb<0,1,0>,
+rgb<0,1,0.501960784>,
+rgb<0,1,1>,
+rgb<0,0.501960784,1>,
+rgb<0,0,1>,
+rgb<0.498039216,0,1>,
+rgb<1,0,1>,
+rgb<1,0,0.498039216>
+}
+
+
+
+#declare anchorIndex = 0;
+#while(anchorIndex < anchorPoints)
+    object {Anchor translate<anchorsX[anchorIndex],anchorsY[anchorIndex],anchorsZ[anchorIndex]> pigment{color anchorColors[anchorIndex] transmit 0.5} }
+    
+    light_source {
+  0*x                  
+  color anchorColors[anchorIndex]  
+ translate<anchorsX[anchorIndex],anchorsY[anchorIndex],anchorsZ[anchorIndex]>
+}
+  
+    #declare anchorIndex = anchorIndex + 1;
+#end
+  
+     
