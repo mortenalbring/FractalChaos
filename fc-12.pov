@@ -84,7 +84,7 @@ sky_sphere {
 
 #while (defined(MyFile))
      #read (MyFile,Vector1,Vector2)
-      sphere { Vector1,    0.010
+      sphere { Vector1,    0.008
       texture {
       pigment{ rgb Vector2}
       }      }

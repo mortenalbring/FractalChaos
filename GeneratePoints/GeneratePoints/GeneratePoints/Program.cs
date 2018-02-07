@@ -29,9 +29,11 @@ namespace GeneratePoints
 
             var cube = GenerateCube();
 
-            
+            var octo = GenerateOctahedron();
 
-            var shape = cube;
+
+
+            var shape = octo;
             var anchorPoints = shape.Count;
             var outputAnchors = shapeName + "-anchors.txt";
 
@@ -53,7 +55,7 @@ namespace GeneratePoints
             File.Delete(outputAnchors);            
             File.AppendAllText(outputAnchors, outputAnchorStr);            
 
-            var maxPoints = 100000;
+            var maxPoints = 30000;
             var rnd = new Random();
             var output = "";
 
@@ -111,6 +113,7 @@ namespace GeneratePoints
             return output;           
         }
 
+
         private static List<AnchorPoint> MakeAnchorPoints(List<List<double>> anchors)
         {
             var output = new List<AnchorPoint>();
@@ -134,12 +137,31 @@ namespace GeneratePoints
             var anchors = new List<List<double>>();
             var anchor1 = new List<double> { -1, -1, -1 };
             var anchor2 = new List<double> { 1, -1, -1 };
-
             var anchor3 = new List<double> { -1,  1, -1 };
             var anchor4 = new List<double> {  1,  1, -1 };
-
             var anchor5 = new List<double> { -1 , 1, 1 };
             var anchor6 = new List<double> { 1 , 1, 1 };
+
+            anchors.Add(anchor1);
+            anchors.Add(anchor2);
+            anchors.Add(anchor3);
+            anchors.Add(anchor4);
+            anchors.Add(anchor5);
+            anchors.Add(anchor6);
+
+            var output = MakeAnchorPoints(anchors);
+            return output;
+        }
+
+        private static List<AnchorPoint> GenerateOctahedron()
+        {
+            var anchors = new List<List<double>>();
+            var anchor1 = new List<double> { -1, 0, 0 };
+            var anchor2 = new List<double> {  1, 0, 0 };
+            var anchor3 = new List<double> { 0, -1, 0 };
+            var anchor4 = new List<double> { 0, 1, 0 };
+            var anchor5 = new List<double> { 0, 0, -1 };
+            var anchor6 = new List<double> { 0, 0, 1 };
 
             anchors.Add(anchor1);
             anchors.Add(anchor2);
