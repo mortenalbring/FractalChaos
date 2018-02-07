@@ -1,3 +1,6 @@
 *.png
 *.bak
 *.pov-state
+GeneratePoints/GeneratePoints/GeneratePoints/obj/Debug/
+GeneratePoints/GeneratePoints/.vs/
+GeneratePoints/GeneratePoints/GeneratePoints/bin/
