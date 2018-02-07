@@ -3,7 +3,7 @@
 #declare tclock=0.1;
 
 camera {	
-	location <2*sin(2*pi*tclock), 2, -4*cos(2*pi*tclock)>		           
+	location <2*sin(2*pi*clock), 2, -4*cos(2*pi*clock)>		           
 	look_at <0,0,0>       	
 	rotate <0,0,0>
 }                
@@ -23,7 +23,7 @@ light_source {
 }
       
 
-    
+        /*
 
 fog{ fog_type   2
      distance   100
@@ -34,7 +34,8 @@ fog{ fog_type   2
    } 
 
 
-
+     
+     
 plane { y, -11
 		pigment { checker rgb <0.1, 0.1, 0.1> rgb <1.0, 1.0, 1.0> scale 5 }
 		finish { reflection 0.2 ambient 0.4 }
@@ -60,14 +61,14 @@ sky_sphere {
         scale <.8, .1, .8>
     }
 } 
-
+       */
            
 
                                    
 
 
 
-#fopen anchorsFile "GeneratePoints\GeneratePoints\GeneratePoints\bin\Debug\anchors.txt" read
+#fopen anchorsFile "GeneratePoints\GeneratePoints\GeneratePoints\bin\Debug\cube-anchors.txt" read
 
 #while (defined(anchorsFile))
      #read (anchorsFile,Vector1,Vector2)
@@ -78,7 +79,7 @@ sky_sphere {
   #end
 
 
-#fopen MyFile "GeneratePoints\GeneratePoints\GeneratePoints\bin\Debug\test2.txt" read
+#fopen MyFile "GeneratePoints\GeneratePoints\GeneratePoints\bin\Debug\cube-datapoints.txt" read
 
 
 #while (defined(MyFile))

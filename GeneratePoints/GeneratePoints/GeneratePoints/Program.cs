@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace GeneratePoints
 {
@@ -21,45 +22,38 @@ namespace GeneratePoints
     class Program
     {
         static void Main(string[] args)
-        {                 
+        {
+            var shapeName = "cube";
+
             var tetrahedron = GenerateTetrahedron();
-            var anchorsX = tetrahedron[0];
-            var anchorsY = tetrahedron[1];
-            var anchorsZ = tetrahedron[2];
 
-            var anchorPoints = tetrahedron.Count;
+            var cube = GenerateCube();
 
-            var outputAnchors = "anchors.txt";
+            
 
-            var anchorColours = "anchorColours.txt";
+            var shape = cube;
+            var anchorPoints = shape.Count;
+            var outputAnchors = shapeName + "-anchors.txt";
 
-            var outputAnchorStr = "";
-            var anchorColourStr = "";
-            var rndColor = new Random();
 
+            var outputAnchorStr = "";            
+          
             for (int i = 0; i < anchorPoints; i++)
             {                
-                var x = tetrahedron[i].x;
-                var y = tetrahedron[i].y;
-                var z = tetrahedron[i].z;
+                var x = shape[i].x;
+                var y = shape[i].y;
+                var z = shape[i].z;
                 var outputstr = "<" + x + ", " + y + "," + z + ">";
                 outputAnchorStr = outputAnchorStr + outputstr + ",";
-
-                var r = (double)rndColor.Next(0, 100) / 100;
-                var g = (double)rndColor.Next(0, 100) / 100;
-                var b = (double)rndColor.Next(0, 100) / 100;
-
-                outputAnchorStr = outputAnchorStr + "<" + r + ", " + g + "," + b + ">,";
+                
+                outputAnchorStr = outputAnchorStr + "<" + shape[i].r + ", " + shape[i].g + "," + shape[i].b + ">,";
 
             }
 
-            File.Delete(outputAnchors);
-            File.Delete(anchorColours);
-            File.AppendAllText(outputAnchors, outputAnchorStr);
-            File.AppendAllText(anchorColours, anchorColourStr);
+            File.Delete(outputAnchors);            
+            File.AppendAllText(outputAnchors, outputAnchorStr);            
 
-
-            var maxPoints = 10000;
+            var maxPoints = 100000;
             var rnd = new Random();
             var output = "";
 
@@ -71,19 +65,19 @@ namespace GeneratePoints
             var gPoint = 0.0;
             var bPoint = 0.0;
 
-            var outputfilename = "test2.txt";
+            var outputfilename = shapeName + "-datapoints.txt";
             File.Delete(outputfilename);
             for (int i = 0; i < maxPoints; i++)
             {
                 var val = rnd.Next(0, anchorPoints);
 
-                xPoint = (xPoint + tetrahedron[val].x) / 2;
-                yPoint = (yPoint + tetrahedron[val].y) / 2;
-                zPoint = (zPoint + tetrahedron[val].z) / 2;
+                xPoint = (xPoint + shape[val].x) / 2;
+                yPoint = (yPoint + shape[val].y) / 2;
+                zPoint = (zPoint + shape[val].z) / 2;
 
-                rPoint = (rPoint + tetrahedron[val].r) / 2;
-                gPoint = (gPoint + tetrahedron[val].g) / 2;
-                bPoint = (bPoint + tetrahedron[val].b) / 2;
+                rPoint = (rPoint + shape[val].r) / 2;
+                gPoint = (gPoint + shape[val].g) / 2;
+                bPoint = (bPoint + shape[val].b) / 2;
 
 
 
@@ -113,6 +107,12 @@ namespace GeneratePoints
             anchors.Add(anchor4);
             var rndColor = new Random();
 
+            var output = MakeAnchorPoints(anchors);
+            return output;           
+        }
+
+        private static List<AnchorPoint> MakeAnchorPoints(List<List<double>> anchors)
+        {
             var output = new List<AnchorPoint>();
             foreach (var anchor in anchors)
             {
@@ -120,37 +120,38 @@ namespace GeneratePoints
                 anch.x = anchor[0];
                 anch.y = anchor[1];
                 anch.z = anchor[2];
-                anch.r = (double)rndColor.Next(0, 100) / 100;
-                anch.g = (double)rndColor.Next(0, 100) / 100;
-                anch.b = (double)rndColor.Next(0, 100) / 100;
+
+                anch.r = 1 - (double) anch.x /2;
+                anch.g = 1 - (double)anch.y / 2;
+                anch.b = 1 - (double)anch.z / 2;
                 output.Add(anch);
             }
             return output;
-
-            var xPoints = new List<double>();
-            foreach (var anchor in anchors)
-            {
-                xPoints.Add(anchor[0]);
-            }
-            var yPoints = new List<double>();
-            foreach (var anchor in anchors)
-            {
-                yPoints.Add(anchor[1]);
-            }
-            var zPoints = new List<double>();
-            foreach (var anchor in anchors)
-            {
-                zPoints.Add(anchor[2]);
-            }
-
-            var results = new List<List<double>>();
-            results.Add(xPoints);
-            results.Add(yPoints);
-            results.Add(zPoints);
-
-           // return results;
-
-
         }
+
+        private static List<AnchorPoint> GenerateCube()
+        {
+            var anchors = new List<List<double>>();
+            var anchor1 = new List<double> { -1, -1, -1 };
+            var anchor2 = new List<double> { 1, -1, -1 };
+
+            var anchor3 = new List<double> { -1,  1, -1 };
+            var anchor4 = new List<double> {  1,  1, -1 };
+
+            var anchor5 = new List<double> { -1 , 1, 1 };
+            var anchor6 = new List<double> { 1 , 1, 1 };
+
+            anchors.Add(anchor1);
+            anchors.Add(anchor2);
+            anchors.Add(anchor3);
+            anchors.Add(anchor4);
+            anchors.Add(anchor5);
+            anchors.Add(anchor6);
+
+            var output = MakeAnchorPoints(anchors);
+            return output;
+        }
+
+
     }
 }
