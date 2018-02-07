@@ -70,10 +70,10 @@ sky_sphere {
 #fopen anchorsFile "GeneratePoints\GeneratePoints\GeneratePoints\bin\Debug\anchors.txt" read
 
 #while (defined(anchorsFile))
-     #read (anchorsFile,Vector)
-      sphere { Vector,    0.06
+     #read (anchorsFile,Vector1,Vector2)
+      sphere { Vector1,    0.06
       texture {
-      pigment{ rgb <1,1,0>}
+      pigment{ rgb Vector2}
       }      }
   #end
 
@@ -82,10 +82,10 @@ sky_sphere {
 
 
 #while (defined(MyFile))
-     #read (MyFile,Vector)
-      sphere { Vector,    0.010
+     #read (MyFile,Vector1,Vector2)
+      sphere { Vector1,    0.010
       texture {
-      pigment{ rgb <1,0,0>}
+      pigment{ rgb Vector2}
       }      }
   #end
 

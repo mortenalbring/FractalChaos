@@ -8,44 +8,55 @@ using System.Threading.Tasks;
 
 namespace GeneratePoints
 {
+    public class AnchorPoint
+    {
+        public double x;
+        public double y;
+        public double z;
+
+        public double r;
+        public double g;
+        public double b;
+    }
     class Program
     {
         static void Main(string[] args)
-        {
-
-
-            //To get the location the assembly normally resides on disk or the install directory
-            string path = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
-
-            //once you have the path you get the directory with:
-            var directory = System.IO.Path.GetDirectoryName(path);
-
-            var anchorPoints = 11;
-            var anchorsX = new List<double> {0, 0, 0, 0, 1, 1, -1, -1, 1.6, -1.6, 1.6, -1.6 };
-            var anchorsY = new List<double> {1, -1, 1, 1, 1.6, -1.6, 1.6, -1.6, 0, 0, 0, 0};
-            var anchorsZ = new List<double> {1.6, 1.6, -1.6, -1.6, 0, 0, 0, 0, 1, 1, -1, -1};
-
+        {                 
             var tetrahedron = GenerateTetrahedron();
-            anchorsX = tetrahedron[0];
-            anchorsY = tetrahedron[1];
-            anchorsZ = tetrahedron[2];
+            var anchorsX = tetrahedron[0];
+            var anchorsY = tetrahedron[1];
+            var anchorsZ = tetrahedron[2];
 
-            anchorPoints = anchorsX.Count;
+            var anchorPoints = tetrahedron.Count;
 
             var outputAnchors = "anchors.txt";
 
+            var anchorColours = "anchorColours.txt";
+
             var outputAnchorStr = "";
+            var anchorColourStr = "";
+            var rndColor = new Random();
+
             for (int i = 0; i < anchorPoints; i++)
-            {
-                var x = anchorsX[i];
-                var y = anchorsY[i];
-                var z = anchorsZ[i];
+            {                
+                var x = tetrahedron[i].x;
+                var y = tetrahedron[i].y;
+                var z = tetrahedron[i].z;
                 var outputstr = "<" + x + ", " + y + "," + z + ">";
                 outputAnchorStr = outputAnchorStr + outputstr + ",";
-            }
-            File.Delete(outputAnchors);
-            File.AppendAllText(outputAnchors,outputAnchorStr);
 
+                var r = (double)rndColor.Next(0, 100) / 100;
+                var g = (double)rndColor.Next(0, 100) / 100;
+                var b = (double)rndColor.Next(0, 100) / 100;
+
+                outputAnchorStr = outputAnchorStr + "<" + r + ", " + g + "," + b + ">,";
+
+            }
+
+            File.Delete(outputAnchors);
+            File.Delete(anchorColours);
+            File.AppendAllText(outputAnchors, outputAnchorStr);
+            File.AppendAllText(anchorColours, anchorColourStr);
 
 
             var maxPoints = 10000;
@@ -56,34 +67,43 @@ namespace GeneratePoints
             var yPoint = 0.0;
             var zPoint = 0.0;
 
+            var rPoint = 0.0;
+            var gPoint = 0.0;
+            var bPoint = 0.0;
 
             var outputfilename = "test2.txt";
             File.Delete(outputfilename);
             for (int i = 0; i < maxPoints; i++)
-            {               
+            {
                 var val = rnd.Next(0, anchorPoints);
 
-                xPoint = (xPoint + anchorsX[val])/2;
-                yPoint = (yPoint + anchorsY[val])/2;
-                zPoint = (zPoint + anchorsZ[val])/2;
+                xPoint = (xPoint + tetrahedron[val].x) / 2;
+                yPoint = (yPoint + tetrahedron[val].y) / 2;
+                zPoint = (zPoint + tetrahedron[val].z) / 2;
+
+                rPoint = (rPoint + tetrahedron[val].r) / 2;
+                gPoint = (gPoint + tetrahedron[val].g) / 2;
+                bPoint = (bPoint + tetrahedron[val].b) / 2;
+
+
 
                 var outputstr = "<" + xPoint + ", " + yPoint + "," + zPoint + ">";
                 output = output + outputstr + ",";
-                Console.WriteLine("Writing points\t"+i+"\t"+maxPoints);
+
+                output = output + "<" + rPoint + ", " + gPoint + "," + bPoint + ">,";
+
+                Console.WriteLine("Writing points\t" + i + "\t" + maxPoints);
             }
 
-            File.AppendAllText(outputfilename,output);
+            File.AppendAllText(outputfilename, output);
 
         }
 
-        private static List<List<double>> GenerateTetrahedron()
+        private static List<AnchorPoint> GenerateTetrahedron()
         {
-
             var anchors = new List<List<double>>();
-
-            var anchor1 = new List<double> {-1, 0, -1 / Math.Sqrt(2)};
+            var anchor1 = new List<double> { -1, 0, -1 / Math.Sqrt(2) };
             var anchor2 = new List<double> { 1, 0, -1 / Math.Sqrt(2) };
-
             var anchor3 = new List<double> { 0, 1, 1 / Math.Sqrt(2) };
             var anchor4 = new List<double> { 0, -1, 1 / Math.Sqrt(2) };
 
@@ -91,6 +111,21 @@ namespace GeneratePoints
             anchors.Add(anchor2);
             anchors.Add(anchor3);
             anchors.Add(anchor4);
+            var rndColor = new Random();
+
+            var output = new List<AnchorPoint>();
+            foreach (var anchor in anchors)
+            {
+                var anch = new AnchorPoint();
+                anch.x = anchor[0];
+                anch.y = anchor[1];
+                anch.z = anchor[2];
+                anch.r = (double)rndColor.Next(0, 100) / 100;
+                anch.g = (double)rndColor.Next(0, 100) / 100;
+                anch.b = (double)rndColor.Next(0, 100) / 100;
+                output.Add(anch);
+            }
+            return output;
 
             var xPoints = new List<double>();
             foreach (var anchor in anchors)
@@ -113,7 +148,7 @@ namespace GeneratePoints
             results.Add(yPoints);
             results.Add(zPoints);
 
-            return results;
+           // return results;
 
 
         }
