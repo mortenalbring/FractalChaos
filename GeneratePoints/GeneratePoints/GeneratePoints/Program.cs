@@ -23,6 +23,8 @@ namespace GeneratePoints
     {
         static void Main(string[] args)
         {
+
+
             var shapeName = "cube";
 
             var tetrahedron = GenerateTetrahedron();
@@ -55,7 +57,7 @@ namespace GeneratePoints
             File.Delete(outputAnchors);            
             File.AppendAllText(outputAnchors, outputAnchorStr);            
 
-            var maxPoints = 30000;
+            var maxPoints = 100000;
             var rnd = new Random();
             var output = "";
 
@@ -116,18 +118,50 @@ namespace GeneratePoints
 
         private static List<AnchorPoint> MakeAnchorPoints(List<List<double>> anchors)
         {
+           
+            var colours = new List<List<double>>();
+
+            colours.Add(new List<double> { 1, 0, 0 });
+            colours.Add(new List<double> { 0, 1, 0 });
+            colours.Add(new List<double> { 0, 0, 1 });
+            colours.Add(new List<double> { 1, 1, 0 });
+            colours.Add(new List<double> { 1, 0, 1 });
+            colours.Add(new List<double> { 0, 1, 1 });
+            colours.Add(new List<double> { 1, 1, 1 });
+            colours.Add(new List<double> { 0, 0, 0 });
+
+
+            var rscale = 1 / anchors.Count;
+            var gscale = 1 / anchors.Count;
+            var bscale = 1 / anchors.Count;
+            for (int i = 7; i < anchors.Count; i++)
+            {
+                rscale = rscale * i;
+                gscale = gscale * i;
+                bscale = bscale * 1;
+
+                colours.Add(new List<double> { rscale, gscale, bscale });
+            }
+
+
             var output = new List<AnchorPoint>();
+            var p = 0;
             foreach (var anchor in anchors)
             {
+                
                 var anch = new AnchorPoint();
+
                 anch.x = anchor[0];
                 anch.y = anchor[1];
                 anch.z = anchor[2];
 
-                anch.r = 1 - (double) anch.x /2;
-                anch.g = 1 - (double)anch.y / 2;
-                anch.b = 1 - (double)anch.z / 2;
+                var color = colours[p];
+
+                anch.r = color[0];
+                anch.g = color[1];
+                anch.b = color[2];
                 output.Add(anch);
+                p++;
             }
             return output;
         }
