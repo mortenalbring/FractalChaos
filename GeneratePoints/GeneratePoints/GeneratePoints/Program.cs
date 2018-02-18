@@ -33,6 +33,7 @@ namespace GeneratePoints
 
             var octo = GenerateOctahedron();
 
+            var ico = GenerateIco();
 
 
             var shape = octo;
@@ -57,7 +58,7 @@ namespace GeneratePoints
             File.Delete(outputAnchors);            
             File.AppendAllText(outputAnchors, outputAnchorStr);            
 
-            var maxPoints = 100000;
+            var maxPoints = 10000000;
             var rnd = new Random();
             var output = "";
 
@@ -71,6 +72,10 @@ namespace GeneratePoints
 
             var outputfilename = shapeName + "-datapoints.txt";
             File.Delete(outputfilename);
+            var sw = new Stopwatch();
+            sw.Start();
+            var cWriteCount = 0;
+
             for (int i = 0; i < maxPoints; i++)
             {
                 var val = rnd.Next(0, anchorPoints);
@@ -90,7 +95,21 @@ namespace GeneratePoints
 
                 output = output + "<" + rPoint + ", " + gPoint + "," + bPoint + ">,";
 
-                Console.WriteLine("Writing points\t" + i + "\t" + maxPoints);
+               
+
+                cWriteCount++;
+                if (cWriteCount == 1000)
+                {
+                    File.AppendAllText(outputfilename, output);
+                    output = "";
+                    cWriteCount = 0;
+
+                    double timePerElem = (double)sw.Elapsed.TotalSeconds / (double)(i + 1);
+                    var elemsRemaining = (maxPoints - i);
+                    var minsRemaining = ((elemsRemaining * timePerElem) / 60).ToString("N");
+
+                    Console.WriteLine("Writing points\t" + i + "\t" + maxPoints + "\t" + minsRemaining + " mins remaining");
+                }
             }
 
             File.AppendAllText(outputfilename, output);
@@ -207,7 +226,38 @@ namespace GeneratePoints
             var output = MakeAnchorPoints(anchors);
             return output;
         }
+        private static List<AnchorPoint> GenerateIco()
+        {
+            var anchors = new List<List<double>>();
+            var phi = (1 + Math.Sqrt(5)) / 2;
 
+            var anchor1 = new List<double> { 0, 0, phi };
+            var anchor2 = new List<double> { 0, 0, -phi };
+
+            var anchor3 = new List<double> { 0.5, phi/2, Math.Sqrt(phi)/2 };
+            var anchor4 = new List<double> { -0.5, phi / 2, Math.Sqrt(phi) / 2 };
+            var anchor5 = new List<double> { 0.5, -(phi / 2), Math.Sqrt(phi) / 2 };
+            var anchor6 = new List<double> { -0.5, -(phi / 2), Math.Sqrt(phi) / 2 };
+
+            var anchor7 = new List<double> { 0.5, phi / 2, -Math.Sqrt(phi) / 2 };
+            var anchor8 = new List<double> { -0.5, phi / 2, -Math.Sqrt(phi) / 2 };
+            var anchor9 = new List<double> { 0.5, -(phi / 2), -Math.Sqrt(phi) / 2 };
+            var anchor10 = new List<double> { -0.5, -(phi / 2), -Math.Sqrt(phi) / 2 };
+
+            anchors.Add(anchor1);
+            anchors.Add(anchor2);
+            anchors.Add(anchor3);
+            anchors.Add(anchor4);
+            anchors.Add(anchor5);
+            anchors.Add(anchor6);
+            anchors.Add(anchor7);
+            anchors.Add(anchor8);
+            anchors.Add(anchor9);
+            anchors.Add(anchor10);
+
+            var output = MakeAnchorPoints(anchors);
+            return output;
+        }
 
     }
 }
