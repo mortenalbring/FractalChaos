@@ -92,7 +92,7 @@ sky_sphere {
 
 
 
-#fopen anchorsFile "GeneratePoints\GeneratePoints\GeneratePoints\bin\Debug\cube-anchors.txt" read
+#fopen anchorsFile "GeneratePoints\GeneratePoints\GeneratePoints\bin\Debug\test-anchors.txt" read
 
 #while (defined(anchorsFile))
      #read (anchorsFile,Vector1,Vector2)
@@ -111,7 +111,7 @@ sky_sphere {
   #end
 
 
-#fopen dataPointsFile "GeneratePoints\GeneratePoints\GeneratePoints\bin\Debug\cube-datapoints.txt" read
+#fopen dataPointsFile "GeneratePoints\GeneratePoints\GeneratePoints\bin\Debug\test-datapoints.txt" read
 
 #while (defined(dataPointsFile))
      #read (dataPointsFile,Vector1,Vector2)         

@@ -25,7 +25,7 @@ namespace GeneratePoints
         {
 
 
-            var shapeName = "cube";
+            var shapeName = "test";
 
             var tetrahedron = GenerateTetrahedron();
 
@@ -36,7 +36,7 @@ namespace GeneratePoints
             var ico = GenerateIco();
 
 
-            var shape = octo;
+            var shape = cube;
             var anchorPoints = shape.Count;
             var outputAnchors = shapeName + "-anchors.txt";
 
@@ -58,7 +58,7 @@ namespace GeneratePoints
             File.Delete(outputAnchors);            
             File.AppendAllText(outputAnchors, outputAnchorStr);            
 
-            var maxPoints = 10000000;
+            var maxPoints = 1000000;
             var rnd = new Random();
             var output = "";
 
