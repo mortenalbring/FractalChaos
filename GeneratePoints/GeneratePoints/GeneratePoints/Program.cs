@@ -55,7 +55,7 @@ namespace GeneratePoints
             File.Delete(outputAnchors);            
             File.AppendAllText(outputAnchors, outputAnchorStr);            
 
-            var maxPoints = 30000;
+            var maxPoints = 300;
             var rnd = new Random();
             var output = "";
 
@@ -117,16 +117,25 @@ namespace GeneratePoints
         private static List<AnchorPoint> MakeAnchorPoints(List<List<double>> anchors)
         {
             var output = new List<AnchorPoint>();
+
+            var r = 0;
+          
             foreach (var anchor in anchors)
-            {
+            {                
                 var anch = new AnchorPoint();
                 anch.x = anchor[0];
                 anch.y = anchor[1];
                 anch.z = anchor[2];
+                if (r == 1)
+                {
+                    r = 0;
+                }
+              
 
-                anch.r = 1 - (double) anch.x /2;
-                anch.g = 1 - (double)anch.y / 2;
-                anch.b = 1 - (double)anch.z / 2;
+
+                anch.r = r;
+                anch.g = 
+                anch.b = Math.Abs((anch.x + anch.y - anch.z) / 3);
                 output.Add(anch);
             }
             return output;
