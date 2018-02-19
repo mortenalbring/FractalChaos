@@ -2,69 +2,52 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 
 namespace GeneratePoints
 {
-    public class Shape
-    {
-        public string ShapeName;
-        public List<AnchorPoint> AnchorPoints = new List<AnchorPoint>();
-    }
-    public class AnchorPoint
-    {
-        public double X;
-        public double Y;
-        public double Z;
-
-        public double R;
-        public double G;
-        public double B;
-    }
     class Program
     {
         static void Main(string[] args)
         {
-            
             var tetrahedron = GenerateTetrahedron();
-
             var cube = GenerateCube();
+            var ico = GenerateIco();
 
             var octo = GenerateOctahedron();
 
-            var ico = GenerateIco();
 
+            var shape = octo;
+            var anchorsFilename = WriteAnchorsFile(shape);
 
-           var shape = octo;            
-           var anchorsFilename = WriteAnchorsFile(shape);
-
-            var maxPoints = 10000000;
-            var ratio = 2;
-           var datapointsFilename = WriteDataPoints(shape, maxPoints,ratio,false);
+            const int maxPoints = 10000000;
+            const int ratio = 2;
+            var datapointsFilename = WriteDataPoints(shape, maxPoints, ratio, false);
 
             //Console.WriteLine("Done");
-           
-           
-            var frames = 1;
+
+
+            const int frames = 100;
 
             var inifiles = new List<string>();
 
-            for (int i = 0; i < frames; i++)
+            for (var i = 0; i < frames; i++)
             {
-                PreparePovRayFiles(i,frames, datapointsFilename,anchorsFilename);
+                PreparePovRayFiles(i, frames, datapointsFilename, anchorsFilename);
 
-                var inifile = WritePovrayIniFile(i,datapointsFilename);
+                var inifile = WritePovrayIniFile(i, datapointsFilename);
 
                 inifiles.Add(inifile);
 
-              
+
             }
 
             foreach (var file in inifiles)
             {
                 Console.WriteLine("Rendering " + file);
                 Process.Start("C:\\Program Files\\POV-Ray\\v3.7\\bin\\pvengine64.exe", "/RENDER " + file);
-                Thread.Sleep(30000);
+                Thread.Sleep(300000);
             }
 
         }
@@ -76,16 +59,16 @@ namespace GeneratePoints
 
             var outputAnchorStr = "";
 
-            for (int i = 0; i < shape.AnchorPoints.Count; i++)
+            foreach (var t in shape.AnchorPoints)
             {
-                var x = shape.AnchorPoints[i].X;
-                var y = shape.AnchorPoints[i].Y;
-                var z = shape.AnchorPoints[i].Z;
+                var x = t.X;
+                var y = t.Y;
+                var z = t.Z;
                 var outputstr = "<" + x + ", " + y + "," + z + ">";
                 outputAnchorStr = outputAnchorStr + outputstr + ",";
 
-                outputAnchorStr = outputAnchorStr + "<" + shape.AnchorPoints[i].R + ", " + shape.AnchorPoints[i].G + "," +
-                                  shape.AnchorPoints[i].B + ">,";
+                outputAnchorStr = outputAnchorStr + "<" + t.R + ", " + t.G + "," +
+                                  t.B + ">,";
             }
 
             File.Delete(outputAnchors);
@@ -94,14 +77,15 @@ namespace GeneratePoints
             return outputAnchors;
         }
 
-        private static void PreparePovRayFiles(int currentFrame,int maxFrames, string datapointsFilename, string anchorsFilename)
+        private static void PreparePovRayFiles(int currentFrame, int maxFrames, string datapointsFilename, string anchorsFilename)
         {
-            var path = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            var directory = System.IO.Path.GetDirectoryName(path);
+            var path = Assembly.GetExecutingAssembly().Location;
+            var directory = Path.GetDirectoryName(path);
 
+            if (directory == null) return;
             var dirsplit = directory.Split('\\');
             var basedir = dirsplit[0] + "\\" + dirsplit[1];
-            var nocamFile = "fc-nocam.pov";
+            const string nocamFile = "fc-nocam.pov";
 
             var compiledFilename = "fc-nocam_f" + currentFrame + ".pov";
 
@@ -112,7 +96,7 @@ namespace GeneratePoints
                 File.Delete(compiledFile);
             }
 
-            double clock = ((double) currentFrame / (double) maxFrames);
+            double clock = currentFrame / (double)maxFrames;
 
             var noCamText = File.ReadAllText(nocamPath);
 
@@ -127,13 +111,7 @@ namespace GeneratePoints
             noCamText = pointsFileVar + anchorsFileVar + cameraString + noCamText;
 
 
-
-
-
-            //File.Copy(nocamPath, compiledFile);
-
-
-            File.WriteAllText(compiledFile,noCamText);
+            File.WriteAllText(compiledFile, noCamText);
         }
 
         private static string WritePovrayIniFile(int currentFrame, string dataPointsFilename)
@@ -144,16 +122,19 @@ namespace GeneratePoints
 
             var lines = new List<string>();
             lines.Add("Input_File_Name=fc-nocam_f" + currentFrame + ".pov\n");
-            lines.Add("Output_File_Name=" + povOutputFilename + "\r\n");                     
-            File.WriteAllLines(iniFile,lines);
+            lines.Add("Output_File_Name=" + povOutputFilename + "\r\n");
+            File.WriteAllLines(iniFile, lines);
 
-            var path = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            var directory = System.IO.Path.GetDirectoryName(path);
+            var path = Assembly.GetExecutingAssembly().Location;
+            var directory = Path.GetDirectoryName(path);
 
-                  
+            if (directory == null)
+            {
+                throw new NullReferenceException();
+            }
             var inifilepath = Path.Combine(directory, iniFile);
 
-           
+
             return inifilepath;
 
         }
@@ -171,7 +152,7 @@ namespace GeneratePoints
             var gPoint = 0.0;
             var bPoint = 0.0;
 
-          
+
             var outputfilename = shape.ShapeName + "_r" + ratio + "_p" + maxPoints + "-datapoints.txt";
 
             if (!overwrite)
@@ -213,9 +194,9 @@ namespace GeneratePoints
                     output = "";
                     cWriteCount = 0;
 
-                    double timePerElem = (double) sw.Elapsed.TotalSeconds / (double) (i + 1);
-                    var elemsRemaining = (maxPoints - i);
-                    var minsRemaining = ((elemsRemaining * timePerElem) / 60).ToString("N");
+                    double timePerElem = sw.Elapsed.TotalSeconds / (i + 1);
+                    var elemsRemaining = maxPoints - i;
+                    var minsRemaining = (elemsRemaining * timePerElem / 60).ToString("N");
 
                     Console.WriteLine("Writing points\t" + i + "\t" + maxPoints + "\t" + minsRemaining + " mins remaining");
                 }
@@ -238,16 +219,15 @@ namespace GeneratePoints
             anchors.Add(anchor2);
             anchors.Add(anchor3);
             anchors.Add(anchor4);
-            var rndColor = new Random();
 
             var output = MakeAnchorPoints(anchors);
-            return output;           
+            return output;
         }
 
 
         private static List<AnchorPoint> MakeAnchorPoints(List<List<double>> anchors)
         {
-           
+
             var colours = new List<List<double>>();
 
             colours.Add(new List<double> { 1, 0, 0 });
@@ -277,7 +257,7 @@ namespace GeneratePoints
             var p = 0;
             foreach (var anchor in anchors)
             {
-                
+
                 var anch = new AnchorPoint();
 
                 anch.X = anchor[0];
@@ -303,10 +283,10 @@ namespace GeneratePoints
             var anchors = new List<List<double>>();
             var anchor1 = new List<double> { -1, -1, -1 };
             var anchor2 = new List<double> { 1, -1, -1 };
-            var anchor3 = new List<double> { -1,  1, -1 };
-            var anchor4 = new List<double> {  1,  1, -1 };
-            var anchor5 = new List<double> { -1 , 1, 1 };
-            var anchor6 = new List<double> { 1 , 1, 1 };
+            var anchor3 = new List<double> { -1, 1, -1 };
+            var anchor4 = new List<double> { 1, 1, -1 };
+            var anchor5 = new List<double> { -1, 1, 1 };
+            var anchor6 = new List<double> { 1, 1, 1 };
 
             anchors.Add(anchor1);
             anchors.Add(anchor2);
@@ -328,7 +308,7 @@ namespace GeneratePoints
 
             var anchors = new List<List<double>>();
             var anchor1 = new List<double> { -1, 0, 0 };
-            var anchor2 = new List<double> {  1, 0, 0 };
+            var anchor2 = new List<double> { 1, 0, 0 };
             var anchor3 = new List<double> { 0, -1, 0 };
             var anchor4 = new List<double> { 0, 1, 0 };
             var anchor5 = new List<double> { 0, 0, -1 };
@@ -357,7 +337,7 @@ namespace GeneratePoints
             var anchor1 = new List<double> { 0, 0, phi };
             var anchor2 = new List<double> { 0, 0, -phi };
 
-            var anchor3 = new List<double> { 0.5, phi/2, Math.Sqrt(phi)/2 };
+            var anchor3 = new List<double> { 0.5, phi / 2, Math.Sqrt(phi) / 2 };
             var anchor4 = new List<double> { -0.5, phi / 2, Math.Sqrt(phi) / 2 };
             var anchor5 = new List<double> { 0.5, -(phi / 2), Math.Sqrt(phi) / 2 };
             var anchor6 = new List<double> { -0.5, -(phi / 2), Math.Sqrt(phi) / 2 };

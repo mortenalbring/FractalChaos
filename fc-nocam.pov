@@ -32,7 +32,7 @@ light_source {
   
 
   
-// create a regular point light source                                  2
+// create a regular point light source                                  
 light_source {
   0*x                  // light's position (translated below)
   color rgb <1,1,1>    // light's color
@@ -68,7 +68,7 @@ light_source {
 #while (defined(dataPointsFile))
      #read (dataPointsFile,Vector1,Vector2)         
      
-      sphere { Vector1,    0.002
+      sphere { Vector1,    0.001
       texture {
       pigment{ rgb Vector2}
       }      }
