@@ -35,43 +35,25 @@ namespace GeneratePoints
             var ico = GenerateIco();
 
 
-            var shape = octo;            
-            var outputAnchors = shape.ShapeName + "-anchors.txt";
+           var shape = octo;            
+           var anchorsFilename = WriteAnchorsFile(shape);
 
-
-            var outputAnchorStr = "";            
-          
-            for (int i = 0; i < shape.AnchorPoints.Count; i++)
-            {                
-                var x = shape.AnchorPoints[i].X;
-                var y = shape.AnchorPoints[i].Y;
-                var z = shape.AnchorPoints[i].Z;
-                var outputstr = "<" + x + ", " + y + "," + z + ">";
-                outputAnchorStr = outputAnchorStr + outputstr + ",";
-                
-                outputAnchorStr = outputAnchorStr + "<" + shape.AnchorPoints[i].R + ", " + shape.AnchorPoints[i].G + "," + shape.AnchorPoints[i].B + ">,";
-
-            }
-
-            File.Delete(outputAnchors);            
-            File.AppendAllText(outputAnchors, outputAnchorStr);            
-
-            var maxPoints = 1000000;
+            var maxPoints = 10000000;
             var ratio = 2;
-            WriteDataPoints(shape, maxPoints,ratio);
+           var datapointsFilename = WriteDataPoints(shape, maxPoints,ratio,false);
 
             //Console.WriteLine("Done");
            
            
-            var frames = 3;
+            var frames = 1;
 
             var inifiles = new List<string>();
 
             for (int i = 0; i < frames; i++)
             {
-                PreparePovRayFiles(i,frames);
+                PreparePovRayFiles(i,frames, datapointsFilename,anchorsFilename);
 
-                var inifile = WritePovrayIniFile(i,frames);
+                var inifile = WritePovrayIniFile(i,datapointsFilename);
 
                 inifiles.Add(inifile);
 
@@ -81,13 +63,38 @@ namespace GeneratePoints
             foreach (var file in inifiles)
             {
                 Console.WriteLine("Rendering " + file);
-             //   Process.Start("C:\\Program Files\\POV-Ray\\v3.7\\bin\\pvengine64.exe", "/RENDER " + file);
-           //     Thread.Sleep(300000);
+                Process.Start("C:\\Program Files\\POV-Ray\\v3.7\\bin\\pvengine64.exe", "/RENDER " + file);
+                Thread.Sleep(30000);
             }
 
         }
 
-        private static void PreparePovRayFiles(int currentFrame,int maxFrames)
+        private static string WriteAnchorsFile(Shape shape)
+        {
+            var outputAnchors = shape.ShapeName + "-anchors.txt";
+
+
+            var outputAnchorStr = "";
+
+            for (int i = 0; i < shape.AnchorPoints.Count; i++)
+            {
+                var x = shape.AnchorPoints[i].X;
+                var y = shape.AnchorPoints[i].Y;
+                var z = shape.AnchorPoints[i].Z;
+                var outputstr = "<" + x + ", " + y + "," + z + ">";
+                outputAnchorStr = outputAnchorStr + outputstr + ",";
+
+                outputAnchorStr = outputAnchorStr + "<" + shape.AnchorPoints[i].R + ", " + shape.AnchorPoints[i].G + "," +
+                                  shape.AnchorPoints[i].B + ">,";
+            }
+
+            File.Delete(outputAnchors);
+            File.AppendAllText(outputAnchors, outputAnchorStr);
+
+            return outputAnchors;
+        }
+
+        private static void PreparePovRayFiles(int currentFrame,int maxFrames, string datapointsFilename, string anchorsFilename)
         {
             var path = System.Reflection.Assembly.GetExecutingAssembly().Location;
             var directory = System.IO.Path.GetDirectoryName(path);
@@ -107,19 +114,33 @@ namespace GeneratePoints
 
             double clock = ((double) currentFrame / (double) maxFrames);
 
-            File.Copy(nocamPath, compiledFile);
+            var noCamText = File.ReadAllText(nocamPath);
+
+
+
+            var pointsFileVar = "#declare strDatapointsFile = \"" + datapointsFilename + "\"; \r\n";
+            var anchorsFileVar = "#declare strAnchorsFile = \"" + anchorsFilename + "\"; \r\n";
 
             var cameraString =
-                "\n\n\ncamera {\t\r\n\tlocation <sin(2*pi*" + clock +")*2.5, 0.1, cos(2*pi* + " + clock +")*2.5>\t\t           \r\n\tlook_at <0,0,0>       \t\r\n\trotate <0,0,0>\r\n}  ";
+                "\n\n\ncamera {\t\r\n\tlocation <sin(2*pi*" + clock + ")*2.1, 0.1, cos(2*pi* + " + clock + ")*2.1>\t\t           \r\n\tlook_at <0,0,0>       \t\r\n\trotate <0,0,0>\r\n}\r\n";
 
-            File.AppendAllText(compiledFile,cameraString);
+            noCamText = pointsFileVar + anchorsFileVar + cameraString + noCamText;
+
+
+
+
+
+            //File.Copy(nocamPath, compiledFile);
+
+
+            File.WriteAllText(compiledFile,noCamText);
         }
 
-        private static string WritePovrayIniFile(int currentFrame, int maxFrames)
+        private static string WritePovrayIniFile(int currentFrame, string dataPointsFilename)
         {
             var iniFile = "fc-nocam_f" + currentFrame + ".ini";
 
-            var povOutputFilename = "test_" + currentFrame.ToString("00000") + ".png";
+            var povOutputFilename = dataPointsFilename + "_" + currentFrame.ToString("00000") + ".png";
 
             var lines = new List<string>();
             lines.Add("Input_File_Name=fc-nocam_f" + currentFrame + ".pov\n");
@@ -137,7 +158,7 @@ namespace GeneratePoints
 
         }
 
-        private static void WriteDataPoints(Shape shape, int maxPoints, int ratio)
+        private static string WriteDataPoints(Shape shape, int maxPoints, int ratio, bool overwrite)
         {
             var rnd = new Random();
             var output = "";
@@ -152,6 +173,15 @@ namespace GeneratePoints
 
           
             var outputfilename = shape.ShapeName + "_r" + ratio + "_p" + maxPoints + "-datapoints.txt";
+
+            if (!overwrite)
+            {
+                if (File.Exists(outputfilename))
+                {
+                    return outputfilename;
+                }
+            }
+
             File.Delete(outputfilename);
             var sw = new Stopwatch();
             sw.Start();
@@ -192,6 +222,8 @@ namespace GeneratePoints
             }
 
             File.AppendAllText(outputfilename, output);
+
+            return outputfilename;
         }
 
         private static List<AnchorPoint> GenerateTetrahedron()
