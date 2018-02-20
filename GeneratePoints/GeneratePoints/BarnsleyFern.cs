@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GeneratePoints
@@ -13,6 +14,11 @@ namespace GeneratePoints
         public BarnsleyFern()
         {
             ShapeName = "barnsley";
+
+            Settings.DataPointRadius = 0.004;
+            Settings.CameraOffset = 11;
+            Settings.AnchorTransmit = 1.0;
+
             var anchors = new List<List<double>>();
             var anchor1 = new List<double> { -1, -1, 0 };
             var anchor2 = new List<double> { 1, -1, 0 };
@@ -24,28 +30,9 @@ namespace GeneratePoints
             AnchorPoints = MakeAnchorPoints(anchors);
         }
 
-        public override string WriteAnchorsFile()
-        {
-            var outputAnchors = ShapeName + "-anchors.txt";
-            var outputAnchorStr = "";
+      
 
-            foreach (var t in AnchorPoints)
-            {
-                var x = t.X;
-                var y = t.Y;
-                var z = t.Z;
-                var outputstr = "<" + x + ", " + y + "," + z + ">";
-                outputAnchorStr = outputAnchorStr + outputstr + ",";
-
-                outputAnchorStr = outputAnchorStr + "<" + t.R + "," + t.G + "," + t.B + ">,";
-            }
-
-            File.Delete(outputAnchors);
-            File.AppendAllText(outputAnchors, outputAnchorStr);
-            return outputAnchors;
-        }
-
-        public override string WriteDataPoints()
+        public override string WriteDataPoints(int currentFrame = 1)
         {
             var xPoint = 0.0;
             var yPoint = 0.0;
@@ -68,34 +55,49 @@ namespace GeneratePoints
                     return outputfilename;
                 }
             }
+            File.Delete(outputfilename);
+            double yShift = -5;
             var rnd = new Random();
             var output = "";
+
+            var a = new List<double> {0.0, 0.85, 0.2, -0.15};
+            var b = new List<double> {0.0, 0.04, -0.26, 0.28 };
+            var c = new List<double> {0.0, -0.04, 0.23, 0.26 };
+            var d = new List<double> {0.16, 0.85, 0.22, 0.24 };
+            var f = new List<double> {0, 1.6, 1.6, 0.44 };
+            
+            var min = 0.04;
+            var max = 0.7;
+            var steps = (max - min) / (double)Settings.FrameCount;
+            var bval = min + (steps * currentFrame);
+            b[2] = bval;
+
             for (int i = 0; i < Settings.MaxDataPoints; i++)
             {
                 var val = rnd.Next(0, 100);
+                int n;
                 if (val == 1)
                 {
-                    xPoint = 0;
-                    yPoint = yPoint * 0.16;
-                    continue;
+                    n = 0;                  
                 }
-
-                if (val < 85)
+                else if (val < 85)
                 {
-                    xPoint = 0.85 * xPoint + 0.04 * yPoint;
-                    yPoint = -0.04 * xPoint + 0.85 * yPoint + 1.6;
-                    continue;
+                    n = 1;                                      
                 }
-                if (val < 92)
+                else if (val < 93)
                 {
-                    xPoint = 0.2* xPoint - 0.26 * yPoint;
-                    yPoint = 0.23 * xPoint + 0.22 * yPoint + 1.6;
-                    continue;
+                    n = 2;                       
                 }
-                xPoint = -0.15 * xPoint + 0.28 * yPoint;
-                yPoint = 0.26 * xPoint + 0.24 * yPoint + 0.44;
+                else
+                {
+                    n = 3;                        
+                }
+                xPoint = a[n] * xPoint + b[n] * yPoint;
+                yPoint = c[n] * xPoint + d[n] * yPoint + f[n];
+              
 
-                var outputstr = "<" + xPoint + "," + yPoint + "," + zPoint + ">";
+
+                var outputstr = "<" + xPoint + "," + (yPoint + yShift) + "," + zPoint + ">";
                 output = output + outputstr + ",";
 
                 output = output + "<" + rPoint + "," + gPoint + "," + bPoint + ">,";
@@ -115,9 +117,26 @@ namespace GeneratePoints
                 }
             }
 
+        
             File.AppendAllText(outputfilename, output);
 
             return outputfilename;
+        }
+
+        public override void StartRender()
+        {
+            var anchorsFilename = WriteAnchorsFile();
+                       
+            for (var i = 0; i < Settings.FrameCount; i++)
+            {
+                var datapointsFilename = WriteDataPoints(i);
+                var povFilename = PreparePovRayFiles(i, datapointsFilename, anchorsFilename);
+                var inifile = WritePovrayIniFile(i, datapointsFilename, povFilename);
+                Console.WriteLine("Rendering " + inifile);
+              //  Process.Start(Settings.PovRayPath, "/RENDER " + inifile);
+                 //Thread.Sleep(3000);
+            }
+
         }
     }
 }

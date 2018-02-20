@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 
 namespace GeneratePoints
 {
@@ -34,7 +35,7 @@ namespace GeneratePoints
             return outputAnchors;
         }
 
-        public virtual string WriteDataPoints()
+        public virtual string WriteDataPoints(int currentFrame = 1)
         {
             var rnd = new Random();
             var output = "";
@@ -100,6 +101,106 @@ namespace GeneratePoints
             File.AppendAllText(outputfilename, output);
 
             return outputfilename;
+        }
+
+        public virtual void StartRender()
+        {
+            var anchorsFilename = WriteAnchorsFile();
+
+            var datapointsFilename = WriteDataPoints();
+            var inifiles = new List<string>();
+
+            for (var i = 0; i < Settings.FrameCount; i++)
+            {
+               var povFile = PreparePovRayFiles(i, datapointsFilename, anchorsFilename);
+                var inifile = WritePovrayIniFile(i, datapointsFilename,povFile);
+                inifiles.Add(inifile);
+            }
+
+            foreach (var file in inifiles)
+            {
+                Console.WriteLine("Rendering " + file);
+               // Process.Start(Settings.PovRayPath, "/RENDER " + file);
+                // Thread.Sleep(30000);
+            }
+
+        }
+
+        public string WritePovrayIniFile(int currentFrame, string dataPointsFilename, string povFilename)
+        {
+            var iniFile = povFilename + ".ini";
+
+            var povOutputFilename = dataPointsFilename + "_" + currentFrame.ToString("00000") + ".png";
+
+            var lines = new List<string>();
+            lines.Add("Input_File_Name=" + povFilename + "\n");
+            lines.Add("Output_File_Name=" + povOutputFilename + "\r\n");
+            File.WriteAllLines(iniFile, lines);
+
+            var path = Assembly.GetExecutingAssembly().Location;
+            var directory = Path.GetDirectoryName(path);
+
+            if (directory == null)
+            {
+                throw new NullReferenceException();
+            }
+            var inifilepath = Path.Combine(directory, iniFile);
+
+
+            return inifilepath;
+
+        }
+
+        public string PreparePovRayFiles(int currentFrame, string datapointsFilename, string anchorsFilename)
+        {
+            var path = Assembly.GetExecutingAssembly().Location;
+            var directory = Path.GetDirectoryName(path);
+            if (directory == null) return "";
+
+            var dirname = datapointsFilename.Replace(".txt", "").Replace(".","");
+
+            var newDir = Path.Combine(directory, dirname);
+
+            if (!Directory.Exists(newDir))
+            {
+                Directory.CreateDirectory(newDir);
+            }                       
+
+            
+            var dirsplit = directory.Split('\\');
+            var basedir = dirsplit[0] + "\\" + dirsplit[1];
+            const string nocamFile = "fc-nocam.pov";
+
+            var compiledFilename = "fc-" + ShapeName + "_f" + currentFrame.ToString("00000") + ".pov";
+
+            var nocamPath = Path.Combine(basedir, nocamFile);
+            var compiledFile = Path.Combine(newDir, compiledFilename);
+            if (File.Exists(compiledFile))
+            {
+                File.Delete(compiledFile);
+            }
+
+            double clock = currentFrame / (double)Settings.FrameCount;
+
+            var noCamText = File.ReadAllText(nocamPath);
+
+
+            var pointsFileVar = "#declare strDatapointsFile = \"../" + datapointsFilename + "\"; \r\n";
+            var anchorsFileVar = "#declare strAnchorsFile = \"../" + anchorsFilename + "\"; \r\n";
+            var anchorRadiusVar = "#declare nAnchorRadius = " + Settings.AnchorRadius + "; \r\n";
+            var datapointRadius = "#declare nDataPointRadius = " + Settings.DataPointRadius + "; \r\n";
+
+            var anchorTransmit = "#declare nAnchorTransmit = " + Settings.AnchorTransmit + "; \r\n";
+
+            var cameraString =
+                "\n\n\ncamera {\t\r\n\tlocation <sin(2*pi*" + clock + ")*" + Settings.CameraOffset + ", 0.1, cos(2*pi*" + clock + ")*" + Settings.CameraOffset + ">\t\t           \r\n\tlook_at <0,0,0>       \t\r\n\trotate <0,0,0>\r\n}\r\n";
+
+            noCamText = pointsFileVar + anchorsFileVar + anchorRadiusVar + datapointRadius + anchorTransmit + cameraString + noCamText;
+
+
+            File.WriteAllText(compiledFile, noCamText);
+
+            return compiledFilename;
         }
 
 
