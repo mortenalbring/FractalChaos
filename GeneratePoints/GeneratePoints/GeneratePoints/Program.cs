@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using GeneratePoints.Shapes3d;
 
 namespace GeneratePoints
 {
@@ -11,24 +12,24 @@ namespace GeneratePoints
     {
         static void Main(string[] args)
         {
-            var tetrahedron = GenerateTetrahedron();
-            var cube = GenerateCube();
-            var ico = GenerateIco();
+            var tetrahedron = new Tetrahedron();
+            var cube = new Cube();
+            var ico = new Ico();
 
-            var octo = GenerateOctahedron();
+           
+            var octo = new Octahedron();
 
-
-            var shape = octo;
+            var shape = new Triangle();
             var anchorsFilename = WriteAnchorsFile(shape);
 
-            const int maxPoints = 10000000;
-            const int ratio = 2;
-            var datapointsFilename = WriteDataPoints(shape, maxPoints, ratio, false);
+            const int maxPoints = 100000;
+            const double ratio = 2.5;
+            var datapointsFilename = WriteDataPoints(shape, maxPoints, ratio, true);
 
             //Console.WriteLine("Done");
 
 
-            const int frames = 100;
+            const int frames = 1;
 
             var inifiles = new List<string>();
 
@@ -47,7 +48,7 @@ namespace GeneratePoints
             {
                 Console.WriteLine("Rendering " + file);
                 Process.Start("C:\\Program Files\\POV-Ray\\v3.7\\bin\\pvengine64.exe", "/RENDER " + file);
-                Thread.Sleep(300000);
+              //  Thread.Sleep(300000);
             }
 
         }
@@ -106,7 +107,7 @@ namespace GeneratePoints
             var anchorsFileVar = "#declare strAnchorsFile = \"" + anchorsFilename + "\"; \r\n";
 
             var cameraString =
-                "\n\n\ncamera {\t\r\n\tlocation <sin(2*pi*" + clock + ")*2.1, 0.1, cos(2*pi* + " + clock + ")*2.1>\t\t           \r\n\tlook_at <0,0,0>       \t\r\n\trotate <0,0,0>\r\n}\r\n";
+                "\n\n\ncamera {\t\r\n\tlocation <sin(2*pi*" + clock + ")*2.1, 0.1, cos(2*pi*" + clock + ")*2.1>\t\t           \r\n\tlook_at <0,0,0>       \t\r\n\trotate <0,0,0>\r\n}\r\n";
 
             noCamText = pointsFileVar + anchorsFileVar + cameraString + noCamText;
 
@@ -139,7 +140,7 @@ namespace GeneratePoints
 
         }
 
-        private static string WriteDataPoints(Shape shape, int maxPoints, int ratio, bool overwrite)
+        private static string WriteDataPoints(Shape shape, int maxPoints, double ratio, bool overwrite)
         {
             var rnd = new Random();
             var output = "";
@@ -181,10 +182,10 @@ namespace GeneratePoints
                 bPoint = (bPoint + shape.AnchorPoints[val].B) / ratio;
 
 
-                var outputstr = "<" + xPoint + ", " + yPoint + "," + zPoint + ">";
+                var outputstr = "<" + xPoint + "," + yPoint + "," + zPoint + ">";
                 output = output + outputstr + ",";
 
-                output = output + "<" + rPoint + ", " + gPoint + "," + bPoint + ">,";
+                output = output + "<" + rPoint + "," +gPoint + "," + bPoint + ">,";
 
 
                 cWriteCount++;
@@ -206,163 +207,7 @@ namespace GeneratePoints
 
             return outputfilename;
         }
-
-        private static List<AnchorPoint> GenerateTetrahedron()
-        {
-            var anchors = new List<List<double>>();
-            var anchor1 = new List<double> { -1, 0, -1 / Math.Sqrt(2) };
-            var anchor2 = new List<double> { 1, 0, -1 / Math.Sqrt(2) };
-            var anchor3 = new List<double> { 0, 1, 1 / Math.Sqrt(2) };
-            var anchor4 = new List<double> { 0, -1, 1 / Math.Sqrt(2) };
-
-            anchors.Add(anchor1);
-            anchors.Add(anchor2);
-            anchors.Add(anchor3);
-            anchors.Add(anchor4);
-
-            var output = MakeAnchorPoints(anchors);
-            return output;
-        }
-
-
-        private static List<AnchorPoint> MakeAnchorPoints(List<List<double>> anchors)
-        {
-
-            var colours = new List<List<double>>();
-
-            colours.Add(new List<double> { 1, 0, 0 });
-            colours.Add(new List<double> { 0, 1, 0 });
-            colours.Add(new List<double> { 0, 0, 1 });
-            colours.Add(new List<double> { 1, 1, 0 });
-            colours.Add(new List<double> { 1, 0, 1 });
-            colours.Add(new List<double> { 0, 1, 1 });
-            colours.Add(new List<double> { 1, 1, 1 });
-            colours.Add(new List<double> { 0, 0, 0 });
-
-
-            var rscale = 1 / anchors.Count;
-            var gscale = 1 / anchors.Count;
-            var bscale = 1 / anchors.Count;
-            for (int i = 7; i < anchors.Count; i++)
-            {
-                rscale = rscale * i;
-                gscale = gscale * i;
-                bscale = bscale * 1;
-
-                colours.Add(new List<double> { rscale, gscale, bscale });
-            }
-
-
-            var output = new List<AnchorPoint>();
-            var p = 0;
-            foreach (var anchor in anchors)
-            {
-
-                var anch = new AnchorPoint();
-
-                anch.X = anchor[0];
-                anch.Y = anchor[1];
-                anch.Z = anchor[2];
-
-                var color = colours[p];
-
-                anch.R = color[0];
-                anch.G = color[1];
-                anch.B = color[2];
-                output.Add(anch);
-                p++;
-            }
-            return output;
-        }
-
-        private static Shape GenerateCube()
-        {
-            var anch = new Shape();
-            anch.ShapeName = "cube";
-
-            var anchors = new List<List<double>>();
-            var anchor1 = new List<double> { -1, -1, -1 };
-            var anchor2 = new List<double> { 1, -1, -1 };
-            var anchor3 = new List<double> { -1, 1, -1 };
-            var anchor4 = new List<double> { 1, 1, -1 };
-            var anchor5 = new List<double> { -1, 1, 1 };
-            var anchor6 = new List<double> { 1, 1, 1 };
-
-            anchors.Add(anchor1);
-            anchors.Add(anchor2);
-            anchors.Add(anchor3);
-            anchors.Add(anchor4);
-            anchors.Add(anchor5);
-            anchors.Add(anchor6);
-
-            var output = MakeAnchorPoints(anchors);
-            anch.AnchorPoints = output;
-
-            return anch;
-        }
-
-        private static Shape GenerateOctahedron()
-        {
-            var anch = new Shape();
-            anch.ShapeName = "octahedron";
-
-            var anchors = new List<List<double>>();
-            var anchor1 = new List<double> { -1, 0, 0 };
-            var anchor2 = new List<double> { 1, 0, 0 };
-            var anchor3 = new List<double> { 0, -1, 0 };
-            var anchor4 = new List<double> { 0, 1, 0 };
-            var anchor5 = new List<double> { 0, 0, -1 };
-            var anchor6 = new List<double> { 0, 0, 1 };
-
-            anchors.Add(anchor1);
-            anchors.Add(anchor2);
-            anchors.Add(anchor3);
-            anchors.Add(anchor4);
-            anchors.Add(anchor5);
-            anchors.Add(anchor6);
-
-            var output = MakeAnchorPoints(anchors);
-            anch.AnchorPoints = output;
-
-            return anch;
-        }
-        private static Shape GenerateIco()
-        {
-            var anch = new Shape();
-            anch.ShapeName = "ico";
-
-            var anchors = new List<List<double>>();
-            var phi = (1 + Math.Sqrt(5)) / 2;
-
-            var anchor1 = new List<double> { 0, 0, phi };
-            var anchor2 = new List<double> { 0, 0, -phi };
-
-            var anchor3 = new List<double> { 0.5, phi / 2, Math.Sqrt(phi) / 2 };
-            var anchor4 = new List<double> { -0.5, phi / 2, Math.Sqrt(phi) / 2 };
-            var anchor5 = new List<double> { 0.5, -(phi / 2), Math.Sqrt(phi) / 2 };
-            var anchor6 = new List<double> { -0.5, -(phi / 2), Math.Sqrt(phi) / 2 };
-
-            var anchor7 = new List<double> { 0.5, phi / 2, -Math.Sqrt(phi) / 2 };
-            var anchor8 = new List<double> { -0.5, phi / 2, -Math.Sqrt(phi) / 2 };
-            var anchor9 = new List<double> { 0.5, -(phi / 2), -Math.Sqrt(phi) / 2 };
-            var anchor10 = new List<double> { -0.5, -(phi / 2), -Math.Sqrt(phi) / 2 };
-
-            anchors.Add(anchor1);
-            anchors.Add(anchor2);
-            anchors.Add(anchor3);
-            anchors.Add(anchor4);
-            anchors.Add(anchor5);
-            anchors.Add(anchor6);
-            anchors.Add(anchor7);
-            anchors.Add(anchor8);
-            anchors.Add(anchor9);
-            anchors.Add(anchor10);
-
-            var output = MakeAnchorPoints(anchors);
-            anch.AnchorPoints = output;
-
-            return anch;
-        }
-
+  
+       
     }
 }
