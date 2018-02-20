@@ -7,7 +7,8 @@ namespace GeneratePoints
     {
         public string ShapeName;
         public List<AnchorPoint> AnchorPoints = new List<AnchorPoint>();
-        public double AnchorRadius = 0.016;
+
+        public Settings Settings = new Settings();
 
         public static List<AnchorPoint> MakeAnchorPoints(List<List<double>> anchors)
         {

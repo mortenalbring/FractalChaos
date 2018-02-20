@@ -7,6 +7,8 @@ namespace GeneratePoints
         {
             public Triangle()
             {
+                Settings.CameraOffset = 2.5;
+                Settings.AnchorRadius = 0.015;
                 ShapeName = "triangle";
                 var anchors = new List<List<double>>();
                 var anchor1 = new List<double> { -1, -1, 0 };

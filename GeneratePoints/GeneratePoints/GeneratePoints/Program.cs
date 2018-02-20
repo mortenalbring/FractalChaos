@@ -8,7 +8,7 @@ using GeneratePoints.Shapes3d;
 
 namespace GeneratePoints
 {
-    class Program
+    partial class Program
     {
         static void Main(string[] args)
         {
@@ -16,39 +16,33 @@ namespace GeneratePoints
             var cube = new Cube();
             var ico = new Ico();
 
-           
+
             var octo = new Octahedron();
 
-            var shape = new TruncIco();
+            var shape = new Triangle();
+            shape.Settings.MaxDataPoints = 10000;
+            StartRender(shape);
+        }
+
+        private static void StartRender(Shape shape)
+        {
             var anchorsFilename = WriteAnchorsFile(shape);
 
-            const int maxPoints = 1000;
-            const double ratio = 0.5;
-            var datapointsFilename = WriteDataPoints(shape, maxPoints, ratio, true);
-
-            //Console.WriteLine("Done");
-
-
-            const int frames = 10;
-
+            var datapointsFilename = WriteDataPoints(shape);
             var inifiles = new List<string>();
 
-            for (var i = 0; i < frames; i++)
+            for (var i = 0; i < shape.Settings.FrameCount; i++)
             {
-                PreparePovRayFiles(i, frames, datapointsFilename, anchorsFilename,shape);
-
+                PreparePovRayFiles(i, datapointsFilename, anchorsFilename, shape);
                 var inifile = WritePovrayIniFile(i, datapointsFilename);
-
                 inifiles.Add(inifile);
-
-
             }
 
             foreach (var file in inifiles)
             {
                 Console.WriteLine("Rendering " + file);
-                Process.Start("C:\\Program Files\\POV-Ray\\v3.7\\bin\\pvengine64.exe", "/RENDER " + file);
-                Thread.Sleep(30000);
+                Process.Start(shape.Settings.PovRayPath, "/RENDER " + file);
+                // Thread.Sleep(30000);
             }
 
         }
@@ -56,10 +50,8 @@ namespace GeneratePoints
         private static string WriteAnchorsFile(Shape shape)
         {
             var outputAnchors = shape.ShapeName + "-anchors.txt";
-
-
             var outputAnchorStr = "";
-
+       
             foreach (var t in shape.AnchorPoints)
             {
                 var x = t.X;
@@ -68,17 +60,18 @@ namespace GeneratePoints
                 var outputstr = "<" + x + ", " + y + "," + z + ">";
                 outputAnchorStr = outputAnchorStr + outputstr + ",";
 
-                outputAnchorStr = outputAnchorStr + "<" + t.R + ", " + t.G + "," +
-                                  t.B + ">,";
+                outputAnchorStr = outputAnchorStr + "<" + t.R + "," + t.G + "," + t.B + ">,";
             }
 
             File.Delete(outputAnchors);
             File.AppendAllText(outputAnchors, outputAnchorStr);
 
+
+
             return outputAnchors;
         }
 
-        private static void PreparePovRayFiles(int currentFrame, int maxFrames, string datapointsFilename, string anchorsFilename, Shape shape)
+        private static void PreparePovRayFiles(int currentFrame, string datapointsFilename, string anchorsFilename, Shape shape)
         {
             var path = Assembly.GetExecutingAssembly().Location;
             var directory = Path.GetDirectoryName(path);
@@ -97,19 +90,22 @@ namespace GeneratePoints
                 File.Delete(compiledFile);
             }
 
-            double clock = currentFrame / (double)maxFrames;
+            double clock = currentFrame / (double)shape.Settings.FrameCount;
 
             var noCamText = File.ReadAllText(nocamPath);
-          
-            var cameraOffset = 15;    
+
+            
             var pointsFileVar = "#declare strDatapointsFile = \"" + datapointsFilename + "\"; \r\n";
             var anchorsFileVar = "#declare strAnchorsFile = \"" + anchorsFilename + "\"; \r\n";
-            var anchorRadiusVar = "#declare nAnchorRadius = " + shape.AnchorRadius + "; \r\n";
+            var anchorRadiusVar = "#declare nAnchorRadius = " + shape.Settings.AnchorRadius + "; \r\n";
+            var datapointRadius = "#declare nDataPointRadius = " + shape.Settings.DataPointRadius + "; \r\n";
+
+            var anchorTransmit = "#declare nAnchorTransmit = " + shape.Settings.AnchorTransmit + "; \r\n";
 
             var cameraString =
-                "\n\n\ncamera {\t\r\n\tlocation <sin(2*pi*" + clock + ")*" + cameraOffset + ", 0.1, cos(2*pi*" + clock + ")*" + cameraOffset + ">\t\t           \r\n\tlook_at <0,0,0>       \t\r\n\trotate <0,0,0>\r\n}\r\n";
+                "\n\n\ncamera {\t\r\n\tlocation <sin(2*pi*" + clock + ")*" + shape.Settings.CameraOffset + ", 0.1, cos(2*pi*" + clock + ")*" + shape.Settings.CameraOffset + ">\t\t           \r\n\tlook_at <0,0,0>       \t\r\n\trotate <0,0,0>\r\n}\r\n";
 
-            noCamText = pointsFileVar + anchorsFileVar + anchorRadiusVar + cameraString + noCamText;
+            noCamText = pointsFileVar + anchorsFileVar + anchorRadiusVar + datapointRadius + anchorTransmit + cameraString + noCamText;
 
 
             File.WriteAllText(compiledFile, noCamText);
@@ -140,7 +136,7 @@ namespace GeneratePoints
 
         }
 
-        private static string WriteDataPoints(Shape shape, int maxPoints, double ratio, bool overwrite)
+        private static string WriteDataPoints(Shape shape)
         {
             var rnd = new Random();
             var output = "";
@@ -154,9 +150,9 @@ namespace GeneratePoints
             var bPoint = 0.0;
 
 
-            var outputfilename = shape.ShapeName + "_r" + ratio + "_p" + maxPoints + "-datapoints.txt";
+            var outputfilename = shape.ShapeName + "_r" + shape.Settings.Ratio + "_p" + shape.Settings.MaxDataPoints + "-datapoints.txt";
 
-            if (!overwrite)
+            if (!shape.Settings.Overwrite)
             {
                 if (File.Exists(outputfilename))
                 {
@@ -169,23 +165,23 @@ namespace GeneratePoints
             sw.Start();
             var cWriteCount = 0;
 
-            for (int i = 0; i < maxPoints; i++)
+            for (int i = 0; i < shape.Settings.MaxDataPoints; i++)
             {
                 var val = rnd.Next(0, shape.AnchorPoints.Count);
 
-                xPoint = (xPoint + shape.AnchorPoints[val].X) * ratio;
-                yPoint = (yPoint + shape.AnchorPoints[val].Y) * ratio;
-                zPoint = (zPoint + shape.AnchorPoints[val].Z) * ratio;
+                xPoint = (xPoint + shape.AnchorPoints[val].X) * shape.Settings.Ratio;
+                yPoint = (yPoint + shape.AnchorPoints[val].Y) * shape.Settings.Ratio;
+                zPoint = (zPoint + shape.AnchorPoints[val].Z) * shape.Settings.Ratio;
 
-                rPoint = (rPoint + shape.AnchorPoints[val].R) * ratio;
-                gPoint = (gPoint + shape.AnchorPoints[val].G) * ratio;
-                bPoint = (bPoint + shape.AnchorPoints[val].B) * ratio;
+                rPoint = (rPoint + shape.AnchorPoints[val].R) * shape.Settings.Ratio;
+                gPoint = (gPoint + shape.AnchorPoints[val].G) * shape.Settings.Ratio;
+                bPoint = (bPoint + shape.AnchorPoints[val].B) * shape.Settings.Ratio;
 
 
                 var outputstr = "<" + xPoint + "," + yPoint + "," + zPoint + ">";
                 output = output + outputstr + ",";
 
-                output = output + "<" + rPoint + "," +gPoint + "," + bPoint + ">,";
+                output = output + "<" + rPoint + "," + gPoint + "," + bPoint + ">,";
 
 
                 cWriteCount++;
@@ -196,10 +192,10 @@ namespace GeneratePoints
                     cWriteCount = 0;
 
                     double timePerElem = sw.Elapsed.TotalSeconds / (i + 1);
-                    var elemsRemaining = maxPoints - i;
+                    var elemsRemaining = shape.Settings.MaxDataPoints - i;
                     var minsRemaining = (elemsRemaining * timePerElem / 60).ToString("N");
 
-                    Console.WriteLine("Writing points\t" + i + "\t" + maxPoints + "\t" + minsRemaining + " mins remaining");
+                    Console.WriteLine("Writing points\t" + i + "\t" + shape.Settings.MaxDataPoints + "\t" + minsRemaining + " mins remaining");
                 }
             }
 
@@ -207,7 +203,7 @@ namespace GeneratePoints
 
             return outputfilename;
         }
-  
-       
+
+
     }
 }

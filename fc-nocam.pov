@@ -48,11 +48,11 @@ light_source {
 
 #while (defined(anchorsFile))
      #read (anchorsFile,Vector1,Vector2)
-      sphere { Vector1,    nAnchorRadius
+      sphere { Vector1,  nAnchorRadius
       texture {        
         
       pigment{ 
-        rgb Vector2 transmit 0.7
+        rgbf Vector2 transmit nAnchorTransmit
       }
       
       }
@@ -68,7 +68,7 @@ light_source {
 #while (defined(dataPointsFile))
      #read (dataPointsFile,Vector1,Vector2)         
      
-      sphere { Vector1,    0.001
+      sphere { Vector1,    nDataPointRadius
       texture {
       pigment{ rgb Vector2}
       }      }
