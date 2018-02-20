@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 
 namespace GeneratePoints
 {
@@ -9,6 +11,97 @@ namespace GeneratePoints
         public List<AnchorPoint> AnchorPoints = new List<AnchorPoint>();
 
         public Settings Settings = new Settings();
+
+
+        public string WriteAnchorsFile()
+        {
+            var outputAnchors = ShapeName + "-anchors.txt";
+            var outputAnchorStr = "";
+
+            foreach (var t in AnchorPoints)
+            {
+                var x = t.X;
+                var y = t.Y;
+                var z = t.Z;
+                var outputstr = "<" + x + ", " + y + "," + z + ">";
+                outputAnchorStr = outputAnchorStr + outputstr + ",";
+
+                outputAnchorStr = outputAnchorStr + "<" + t.R + "," + t.G + "," + t.B + ">,";
+            }
+
+            File.Delete(outputAnchors);
+            File.AppendAllText(outputAnchors, outputAnchorStr);
+            return outputAnchors;
+        }
+
+        public string WriteDataPoints()
+        {
+            var rnd = new Random();
+            var output = "";
+
+            var xPoint = 0.0;
+            var yPoint = 0.0;
+            var zPoint = 0.0;
+
+            var rPoint = 0.0;
+            var gPoint = 0.0;
+            var bPoint = 0.0;
+
+
+            var outputfilename = ShapeName + "_r" + Settings.Ratio + "_p" + Settings.MaxDataPoints + "-datapoints.txt";
+
+            if (!Settings.Overwrite)
+            {
+                if (File.Exists(outputfilename))
+                {
+                    return outputfilename;
+                }
+            }
+
+            File.Delete(outputfilename);
+            var sw = new Stopwatch();
+            sw.Start();
+            var cWriteCount = 0;
+
+            for (int i = 0; i < Settings.MaxDataPoints; i++)
+            {
+                var val = rnd.Next(0, AnchorPoints.Count);
+
+                xPoint = (xPoint + AnchorPoints[val].X) * Settings.Ratio;
+                yPoint = (yPoint + AnchorPoints[val].Y) * Settings.Ratio;
+                zPoint = (zPoint + AnchorPoints[val].Z) * Settings.Ratio;
+
+                rPoint = (rPoint + AnchorPoints[val].R) * Settings.Ratio;
+                gPoint = (gPoint + AnchorPoints[val].G) * Settings.Ratio;
+                bPoint = (bPoint + AnchorPoints[val].B) * Settings.Ratio;
+
+
+                var outputstr = "<" + xPoint + "," + yPoint + "," + zPoint + ">";
+                output = output + outputstr + ",";
+
+                output = output + "<" + rPoint + "," + gPoint + "," + bPoint + ">,";
+
+
+                cWriteCount++;
+                if (cWriteCount == 1000)
+                {
+                    File.AppendAllText(outputfilename, output);
+                    output = "";
+                    cWriteCount = 0;
+
+                    double timePerElem = sw.Elapsed.TotalSeconds / (i + 1);
+                    var elemsRemaining = Settings.MaxDataPoints - i;
+                    var minsRemaining = (elemsRemaining * timePerElem / 60).ToString("N");
+
+                    Console.WriteLine("Writing points\t" + i + "\t" + Settings.MaxDataPoints + "\t" + minsRemaining + " mins remaining");
+                }
+            }
+
+            File.AppendAllText(outputfilename, output);
+
+            return outputfilename;
+        }
+
 
         public static List<AnchorPoint> MakeAnchorPoints(List<List<double>> anchors)
         {
