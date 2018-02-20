@@ -22,8 +22,8 @@ namespace GeneratePoints
             var shape = new Triangle();
             var anchorsFilename = WriteAnchorsFile(shape);
 
-            const int maxPoints = 100000;
-            const double ratio = 2.5;
+            const int maxPoints = 10000000;
+            const double ratio = 0.5;
             var datapointsFilename = WriteDataPoints(shape, maxPoints, ratio, true);
 
             //Console.WriteLine("Done");
@@ -173,13 +173,13 @@ namespace GeneratePoints
             {
                 var val = rnd.Next(0, shape.AnchorPoints.Count);
 
-                xPoint = (xPoint + shape.AnchorPoints[val].X) / ratio;
-                yPoint = (yPoint + shape.AnchorPoints[val].Y) / ratio;
-                zPoint = (zPoint + shape.AnchorPoints[val].Z) / ratio;
+                xPoint = (xPoint + shape.AnchorPoints[val].X) * ratio;
+                yPoint = (yPoint + shape.AnchorPoints[val].Y) * ratio;
+                zPoint = (zPoint + shape.AnchorPoints[val].Z) * ratio;
 
-                rPoint = (rPoint + shape.AnchorPoints[val].R) / ratio;
-                gPoint = (gPoint + shape.AnchorPoints[val].G) / ratio;
-                bPoint = (bPoint + shape.AnchorPoints[val].B) / ratio;
+                rPoint = (rPoint + shape.AnchorPoints[val].R) * ratio;
+                gPoint = (gPoint + shape.AnchorPoints[val].G) * ratio;
+                bPoint = (bPoint + shape.AnchorPoints[val].B) * ratio;
 
 
                 var outputstr = "<" + xPoint + "," + yPoint + "," + zPoint + ">";
