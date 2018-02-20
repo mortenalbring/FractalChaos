@@ -19,9 +19,14 @@ namespace GeneratePoints
 
             var octo = new Octahedron();
 
+
             var shape = new Triangle();
-            shape.Settings.MaxDataPoints = 10000;
-            StartRender(shape);
+            
+            var b = new BarnsleyFern();
+            b.Settings.Overwrite = false;
+            b.Settings.MaxDataPoints = 10000000;
+            b.Settings.CameraOffset = 5;
+            StartRender(b);
         }
 
         private static void StartRender(Shape shape)

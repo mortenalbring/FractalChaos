@@ -13,7 +13,7 @@ namespace GeneratePoints
         public Settings Settings = new Settings();
 
 
-        public string WriteAnchorsFile()
+        public virtual string WriteAnchorsFile()
         {
             var outputAnchors = ShapeName + "-anchors.txt";
             var outputAnchorStr = "";
@@ -34,7 +34,7 @@ namespace GeneratePoints
             return outputAnchors;
         }
 
-        public string WriteDataPoints()
+        public virtual string WriteDataPoints()
         {
             var rnd = new Random();
             var output = "";
