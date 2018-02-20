@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GeneratePoints
 {
@@ -6,6 +7,7 @@ namespace GeneratePoints
     {
         public string ShapeName;
         public List<AnchorPoint> AnchorPoints = new List<AnchorPoint>();
+        public double AnchorRadius = 0.016;
 
         public static List<AnchorPoint> MakeAnchorPoints(List<List<double>> anchors)
         {
@@ -22,14 +24,18 @@ namespace GeneratePoints
             colours.Add(new List<double> { 0, 0, 0 });
 
 
-            var rscale = 1 / anchors.Count;
-            var gscale = 1 / anchors.Count;
-            var bscale = 1 / anchors.Count;
+            var rscale = 1 / (double)anchors.Count;
+            var gscale = 1 / (double)anchors.Count;
+            var bscale = 1 / (double)anchors.Count;
+            var rnd = new Random();
             for (int i = 7; i < anchors.Count; i++)
             {
-                rscale = rscale * i;
-                gscale = gscale * i;
-                bscale = bscale * 1;
+                var val = rnd.Next(0, 7);
+                var col = colours[val];
+
+                rscale = (col[0] + col[1])/2;
+                gscale = (col[1] + col[2]) / 2;
+                bscale = (col[0] + col[2]) / 2;
 
                 colours.Add(new List<double> { rscale, gscale, bscale });
             }

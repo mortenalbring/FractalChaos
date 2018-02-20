@@ -48,7 +48,7 @@ light_source {
 
 #while (defined(anchorsFile))
      #read (anchorsFile,Vector1,Vector2)
-      sphere { Vector1,    0.016
+      sphere { Vector1,    nAnchorRadius
       texture {        
         
       pigment{ 

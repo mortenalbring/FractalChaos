@@ -19,23 +19,23 @@ namespace GeneratePoints
            
             var octo = new Octahedron();
 
-            var shape = new Triangle();
+            var shape = new TruncIco();
             var anchorsFilename = WriteAnchorsFile(shape);
 
-            const int maxPoints = 10000000;
+            const int maxPoints = 1000;
             const double ratio = 0.5;
             var datapointsFilename = WriteDataPoints(shape, maxPoints, ratio, true);
 
             //Console.WriteLine("Done");
 
 
-            const int frames = 1;
+            const int frames = 10;
 
             var inifiles = new List<string>();
 
             for (var i = 0; i < frames; i++)
             {
-                PreparePovRayFiles(i, frames, datapointsFilename, anchorsFilename);
+                PreparePovRayFiles(i, frames, datapointsFilename, anchorsFilename,shape);
 
                 var inifile = WritePovrayIniFile(i, datapointsFilename);
 
@@ -48,7 +48,7 @@ namespace GeneratePoints
             {
                 Console.WriteLine("Rendering " + file);
                 Process.Start("C:\\Program Files\\POV-Ray\\v3.7\\bin\\pvengine64.exe", "/RENDER " + file);
-              //  Thread.Sleep(300000);
+                Thread.Sleep(30000);
             }
 
         }
@@ -78,7 +78,7 @@ namespace GeneratePoints
             return outputAnchors;
         }
 
-        private static void PreparePovRayFiles(int currentFrame, int maxFrames, string datapointsFilename, string anchorsFilename)
+        private static void PreparePovRayFiles(int currentFrame, int maxFrames, string datapointsFilename, string anchorsFilename, Shape shape)
         {
             var path = Assembly.GetExecutingAssembly().Location;
             var directory = Path.GetDirectoryName(path);
@@ -100,16 +100,16 @@ namespace GeneratePoints
             double clock = currentFrame / (double)maxFrames;
 
             var noCamText = File.ReadAllText(nocamPath);
-
-
-
+          
+            var cameraOffset = 15;    
             var pointsFileVar = "#declare strDatapointsFile = \"" + datapointsFilename + "\"; \r\n";
             var anchorsFileVar = "#declare strAnchorsFile = \"" + anchorsFilename + "\"; \r\n";
+            var anchorRadiusVar = "#declare nAnchorRadius = " + shape.AnchorRadius + "; \r\n";
 
             var cameraString =
-                "\n\n\ncamera {\t\r\n\tlocation <sin(2*pi*" + clock + ")*2.1, 0.1, cos(2*pi*" + clock + ")*2.1>\t\t           \r\n\tlook_at <0,0,0>       \t\r\n\trotate <0,0,0>\r\n}\r\n";
+                "\n\n\ncamera {\t\r\n\tlocation <sin(2*pi*" + clock + ")*" + cameraOffset + ", 0.1, cos(2*pi*" + clock + ")*" + cameraOffset + ">\t\t           \r\n\tlook_at <0,0,0>       \t\r\n\trotate <0,0,0>\r\n}\r\n";
 
-            noCamText = pointsFileVar + anchorsFileVar + cameraString + noCamText;
+            noCamText = pointsFileVar + anchorsFileVar + anchorRadiusVar + cameraString + noCamText;
 
 
             File.WriteAllText(compiledFile, noCamText);
