@@ -57,7 +57,7 @@ namespace GeneratePoints
             }
             File.Delete(outputfilename);
             double yShift = -5;
-            var rnd = new Random();
+            var rnd = new Random(42);
             var output = "";
 
             var a = new List<double> {0.0, 0.85, 0.2, -0.15};
@@ -130,7 +130,9 @@ namespace GeneratePoints
             for (var i = 0; i < Settings.FrameCount; i++)
             {
                 var datapointsFilename = WriteDataPoints(i);
-                var povFilename = PreparePovRayFiles(i, datapointsFilename, anchorsFilename);
+                var dirname = datapointsFilename.Replace(".txt", "").Replace(".", "");
+
+                var povFilename = PreparePovRayFiles(i, datapointsFilename, anchorsFilename, dirname);
                 var inifile = WritePovrayIniFile(i, datapointsFilename, povFilename);
                 Console.WriteLine("Rendering " + inifile);
               //  Process.Start(Settings.PovRayPath, "/RENDER " + inifile);

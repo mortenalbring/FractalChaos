@@ -24,14 +24,15 @@ namespace GeneratePoints
             
             var b = new BarnsleyFern();
             b.Settings.Overwrite = true;
-            b.Settings.MaxDataPoints = 100000;
+            b.Settings.MaxDataPoints = 1000000;
             b.Settings.FrameCount = 10;
          
          //   b.StartRender();
-            octo.Settings.FrameCount = 1000;
+            octo.Settings.FrameCount = 50;
          
           //  octo.Settings.Overwrite = true;
-            octo.StartRender();
+            //octo.StartRender();
+            octo.RenderProgressively();
         }
 
      

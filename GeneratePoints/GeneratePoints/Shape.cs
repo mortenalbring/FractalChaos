@@ -13,10 +13,18 @@ namespace GeneratePoints
 
         public Settings Settings = new Settings();
 
-
+        
         public virtual string WriteAnchorsFile()
         {
             var outputAnchors = ShapeName + "-anchors.txt";
+            if (!Settings.Overwrite)
+            {
+                if (File.Exists(outputAnchors))
+                {
+                    return outputAnchors;
+                }
+            }
+
             var outputAnchorStr = "";
 
             foreach (var t in AnchorPoints)
@@ -29,6 +37,8 @@ namespace GeneratePoints
 
                 outputAnchorStr = outputAnchorStr + "<" + t.R + "," + t.G + "," + t.B + ">,";
             }
+
+            
 
             File.Delete(outputAnchors);
             File.AppendAllText(outputAnchors, outputAnchorStr);
@@ -112,9 +122,12 @@ namespace GeneratePoints
 
             for (var i = 0; i < Settings.FrameCount; i++)
             {
-               var povFile = PreparePovRayFiles(i, datapointsFilename, anchorsFilename);
-                var inifile = WritePovrayIniFile(i, datapointsFilename,povFile);
-                inifiles.Add(inifile);
+                var dirname = datapointsFilename.Replace(".txt", "").Replace(".","");
+
+                var povFile = PreparePovRayFiles(i, datapointsFilename, anchorsFilename, dirname);
+                Console.WriteLine("Written " + povFile);
+               // var inifile = WritePovrayIniFile(i, datapointsFilename,povFile);
+               // inifiles.Add(inifile);
             }
 
             foreach (var file in inifiles)
@@ -151,15 +164,42 @@ namespace GeneratePoints
 
         }
 
-        public string PreparePovRayFiles(int currentFrame, string datapointsFilename, string anchorsFilename)
+        public static void CreateDirectory(string dirName)
+        {
+            var path = Assembly.GetExecutingAssembly().Location;
+            var directory = Path.GetDirectoryName(path);
+            if (directory == null)
+            {
+                throw new Exception("No root directory found");
+            }
+
+            var newDir = Path.Combine(directory, dirName);
+
+            if (!Directory.Exists(newDir))
+            {
+                Directory.CreateDirectory(newDir);
+            }
+            else
+            {
+                var di = new DirectoryInfo(newDir);
+                foreach (FileInfo file in di.GetFiles())
+                {
+                    file.Delete();
+                }
+                foreach (DirectoryInfo dir in di.GetDirectories())
+                {
+                    dir.Delete(true);
+                }
+            }
+
+        }
+        public string PreparePovRayFiles(int currentFrame, string datapointsFilename, string anchorsFilename, string dirName)
         {
             var path = Assembly.GetExecutingAssembly().Location;
             var directory = Path.GetDirectoryName(path);
             if (directory == null) return "";
 
-            var dirname = datapointsFilename.Replace(".txt", "").Replace(".","");
-
-            var newDir = Path.Combine(directory, dirname);
+            var newDir = Path.Combine(directory, dirName);
 
             if (!Directory.Exists(newDir))
             {
