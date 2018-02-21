@@ -28,7 +28,7 @@ namespace GeneratePoints
             b.Settings.FrameCount = 10;
          
          //   b.StartRender();
-            octo.Settings.FrameCount = 50;
+         //   octo.Settings.FrameCount = 50;
          
           //  octo.Settings.Overwrite = true;
             //octo.StartRender();

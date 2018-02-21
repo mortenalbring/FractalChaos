@@ -12,16 +12,17 @@ namespace GeneratePoints.Shapes3d
         {
             Settings.DataPointRadius = 0.002;
             Settings.MaxDataPoints = 10000000;
+            Settings.FrameCount = 4000;
             Settings.CameraOffset = 2.2;
             Settings.Overwrite = false;
             ShapeName = "octahedron";
             var anchors = new List<List<double>>();
-            var anchor1 = new List<double> { -1, 0, 0 };
-            var anchor2 = new List<double> { 1, 0, 0 };
-            var anchor3 = new List<double> { 0, -1, 0 };
-            var anchor4 = new List<double> { 0, 1, 0 };
-            var anchor5 = new List<double> { 0, 0, -1 };
-            var anchor6 = new List<double> { 0, 0, 1 };
+            var anchor1 = new List<double> {-1, 0, 0};
+            var anchor2 = new List<double> {1, 0, 0};
+            var anchor3 = new List<double> {0, -1, 0};
+            var anchor4 = new List<double> {0, 1, 0};
+            var anchor5 = new List<double> {0, 0, -1};
+            var anchor6 = new List<double> {0, 0, 1};
 
             anchors.Add(anchor1);
             anchors.Add(anchor2);
@@ -37,29 +38,13 @@ namespace GeneratePoints.Shapes3d
         {
             var anchorPoints = WriteAnchorsFile();
             var maxDataPoints = Settings.MaxDataPoints;
-            var dirname = "octoprogressive3";
+            var dirname = "octoprogressive5";
 
-            WriteDataPointsProgressively(dirname, anchorPoints);
-
-            /*
-            for (int currentFrame = 0; currentFrame < Settings.FrameCount; currentFrame++)
-            {
-                double c = currentFrame / (double)Settings.FrameCount;
-
-                int d = (int)(c * maxDataPoints);
-
-                Settings.MaxDataPoints = d;
-
-                var dataPointsFile = WriteDataPoints();
-                PreparePovRayFiles(currentFrame, dataPointsFile, anchorPoints, dirname);
-
-                Console.WriteLine(currentFrame + " / " + Settings.FrameCount);
-              
-
-            }
-            */
+            WriteDataPointsProgressively(dirname, anchorPoints);          
 
         }
+
+       
 
         public void WriteDataPointsProgressively(string dirname, string anchorsFilename)
         {
@@ -76,18 +61,19 @@ namespace GeneratePoints.Shapes3d
             var bPoint = 0.0;
 
 
-            
+
             var sw = new Stopwatch();
             sw.Start();
 
             var dataPointCount = 0;
             var frameProgress = 0;
             var cWriteCount = 0;
-            var frameCountSteps = (int)(Settings.MaxDataPoints / (double)Settings.FrameCount);
-            var outputfilename = dirname + "/" + ShapeName + "_r" + Settings.Ratio + "_p" + dataPointCount + "-datapoints.txt";
+            var frameCountSteps = (int) (Settings.MaxDataPoints / (double) Settings.FrameCount);
+            var outputfilename = dirname + "/" + ShapeName + "_r" + Settings.Ratio + "_p" + Settings.MaxDataPoints +
+                                 "-datapoints.txt";
             for (int i = 0; i < Settings.MaxDataPoints; i++)
             {
-               
+
                 var val = rnd.Next(0, AnchorPoints.Count);
 
                 xPoint = (xPoint + AnchorPoints[val].X) * Settings.Ratio;
@@ -113,37 +99,28 @@ namespace GeneratePoints.Shapes3d
 
                 if (i == dataPointCount)
                 {
+                    this.Settings.PointStop = dataPointCount;
                     frameProgress++;
                     dataPointCount = dataPointCount + frameCountSteps;
-                    outputfilename = dirname + "/" + ShapeName + "_r" + Settings.Ratio + "_p" + dataPointCount + "-datapoints.txt";
-
-                    if (i > 0)
-                    {
-                        var prevFile = dirname + "/" + ShapeName + "_r" + Settings.Ratio + "_p" + (dataPointCount - frameCountSteps) + "-datapoints.txt";
-
-                        File.Copy(prevFile, outputfilename);
-                    }
-                    File.AppendAllText(outputfilename, output);
 
 
                     double timePerElem = sw.Elapsed.TotalSeconds / (i + 1);
                     var elemsRemaining = Settings.MaxDataPoints - i;
                     var minsRemaining = (elemsRemaining * timePerElem / 60).ToString("N");
-                    Console.WriteLine("Writing points\t" + i + "\t" + Settings.MaxDataPoints + "\t" + minsRemaining + " mins remaining");
+                    Console.WriteLine("Writing points\t" + i + "\t" + Settings.MaxDataPoints + "\t" + minsRemaining +
+                                      " mins remaining");
 
                     PreparePovRayFiles(frameProgress, outputfilename, anchorsFilename, dirname);
 
-                    
+
                 }
             }
-
-            //  File.AppendAllText(outputfilename, output);
 
 
         }
 
 
     }
-
-
 }
+
+

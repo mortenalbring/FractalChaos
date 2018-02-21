@@ -1,4 +1,6 @@
-﻿namespace GeneratePoints
+﻿using System.Runtime.CompilerServices;
+
+namespace GeneratePoints
 {
     public class Settings
     {
@@ -13,8 +15,13 @@
         public int FrameCount = 1;
 
         public bool Overwrite = false;
-
+        public int PointStop;
         public string PovRayPath = "C:\\Program Files\\POV-Ray\\v3.7\\bin\\pvengine64.exe";
+        public Settings()
+        {
+            PointStop = MaxDataPoints;
+        }
+
     }
 
 

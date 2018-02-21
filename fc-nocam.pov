@@ -64,8 +64,10 @@ light_source {
 
 
 #fopen dataPointsFile strDatapointsFile read
+#declare pp = 0;
 
-#while (defined(dataPointsFile))
+#while (defined(dataPointsFile) & pp < nPointStop)  
+#declare pp = pp + 1;
      #read (dataPointsFile,Vector1,Vector2)         
      
       sphere { Vector1,    nDataPointRadius

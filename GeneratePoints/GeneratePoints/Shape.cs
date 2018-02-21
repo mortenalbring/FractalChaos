@@ -193,7 +193,7 @@ namespace GeneratePoints
             }
 
         }
-        public string PreparePovRayFiles(int currentFrame, string datapointsFilename, string anchorsFilename, string dirName)
+        public string PreparePovRayFiles(int currentFrame,  string datapointsFilename, string anchorsFilename, string dirName)
         {
             var path = Assembly.GetExecutingAssembly().Location;
             var directory = Path.GetDirectoryName(path);
@@ -229,13 +229,14 @@ namespace GeneratePoints
             var anchorsFileVar = "#declare strAnchorsFile = \"../" + anchorsFilename + "\"; \r\n";
             var anchorRadiusVar = "#declare nAnchorRadius = " + Settings.AnchorRadius + "; \r\n";
             var datapointRadius = "#declare nDataPointRadius = " + Settings.DataPointRadius + "; \r\n";
+            var pointStop = "#declare nPointStop = " + Settings.PointStop + "; \r\n";
 
             var anchorTransmit = "#declare nAnchorTransmit = " + Settings.AnchorTransmit + "; \r\n";
 
             var cameraString =
                 "\n\n\ncamera {\t\r\n\tlocation <sin(2*pi*" + clock + ")*" + Settings.CameraOffset + ", 0.1, cos(2*pi*" + clock + ")*" + Settings.CameraOffset + ">\t\t           \r\n\tlook_at <0,0,0>       \t\r\n\trotate <0,0,0>\r\n}\r\n";
 
-            noCamText = pointsFileVar + anchorsFileVar + anchorRadiusVar + datapointRadius + anchorTransmit + cameraString + noCamText;
+            noCamText = pointsFileVar + anchorsFileVar + anchorRadiusVar + datapointRadius + anchorTransmit + pointStop + cameraString + noCamText;
 
 
             File.WriteAllText(compiledFile, noCamText);
