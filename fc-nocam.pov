@@ -1,7 +1,7 @@
 #include "math.inc"
 
                
-
+ 
       
 light_source {
   <0,0,0>             // light's position 
@@ -13,7 +13,7 @@ light_source {
   jitter              // adds random softening of light
   circular            // make the shape of the light circular
   orient              // orient light
-  translate <0, 80, 0>   // <x y z> position of light
+  translate <0, 8, 0>   // <x y z> position of light
 }  
   
 
@@ -27,9 +27,22 @@ light_source {
   jitter              // adds random softening of light
   circular            // make the shape of the light circular
   orient              // orient light
-  translate <0, -80, 0>   // <x y z> position of light
+  translate <0, -8, 0>   // <x y z> position of light
 }  
   
+
+light_source {
+  <0,0,0>             // light's position 
+  color rgb 1.0       // light's color
+  area_light
+  <8, 0, 0> <0, 0, 8> // lights spread out across this distance (x * z)
+  5, 5                // total number of lights in grid (4x*4z = 16 lights)
+  adaptive 0          // 0,1,2,3...
+  jitter              // adds random softening of light
+  circular            // make the shape of the light circular
+  orient              // orient light
+  translate <0, 0, 0>   // <x y z> position of light
+}  
 
   
 // create a regular point light source                                  
