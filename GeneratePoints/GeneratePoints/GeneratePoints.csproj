@@ -45,6 +45,7 @@
     <Compile Include="AnchorPoint.cs" />
     <Compile Include="BarnsleyFern.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="Shapes2d\Square.cs" />
     <Compile Include="Shapes2d\Triangle.cs" />
     <Compile Include="Shapes3d\Cube.cs" />
     <Compile Include="Shapes3d\Ico.cs" />

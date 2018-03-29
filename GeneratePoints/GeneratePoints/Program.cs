@@ -28,25 +28,32 @@ namespace GeneratePoints
             tetrahedron.Settings.MaxDataPoints = 100000;
             //tetrahedron.RenderProgressively("tetra1");
 
-      // TrianglePost();
-           
-      //      FindUnrun("octoprogressive6");
-            
+            // TrianglePost();
+
+            //      FindUnrun("octoprogressive6");
+
             var c = new Cube();
             c.Settings.FrameCount = 10;
             c.Settings.Ratio = 0.33;
             c.Settings.MaxDataPoints = 1000000;
-            c.RenderProgressively("cube6");
-       
-          
-         var octo = new Octahedron();
-          //  octo.Settings.FrameCount = 2000;
-           // octo.Settings.MaxDataPoints = 4000;
-         
-         //   octo.Settings.Overwrite = true;
+            //c.RenderProgressively("cube6");
+
+            var th = new Tetrahedron();
+            th.Settings.FrameCount = 300;
+            th.Settings.MaxDataPoints = 100000;
+            th.Settings.DataPointRadius = 0.002;
+            th.Settings.RotateCamera = true;
+            th.Settings.Overwrite = true;
+            th.RenderProgressively("tetra8");
+            
+            var octo = new Octahedron();
+            //  octo.Settings.FrameCount = 2000;
+            // octo.Settings.MaxDataPoints = 4000;
+
+            //   octo.Settings.Overwrite = true;
             //octo.StartRender();
-           // octo.RenderProgressively("octoprogressive7");
-         //   FindUnrun("octoprogressive7");
+            // octo.RenderProgressively("octoprogressive7");
+            //   FindUnrun("octoprogressive7");
 
         }
 
@@ -70,7 +77,7 @@ namespace GeneratePoints
             var rootDir = Path.GetDirectoryName(path);
             var dirpath = Path.Combine(rootDir, directoryName);
             var files = Directory.GetFiles(dirpath);
-        
+
             var povfiles = files.Where(e => e.EndsWith(".pov")).ToList();
             var unrunfiles = new List<string>();
             foreach (var povfile in povfiles)
@@ -78,9 +85,9 @@ namespace GeneratePoints
                 var png = povfile.Replace(".pov", ".png");
                 if (!File.Exists(png))
                 {
-                    unrunfiles.Add(povfile);               
+                    unrunfiles.Add(povfile);
                 }
-                
+
             }
 
 
