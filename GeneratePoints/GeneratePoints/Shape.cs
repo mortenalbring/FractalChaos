@@ -6,14 +6,31 @@ using System.Reflection;
 
 namespace GeneratePoints
 {
+    /// <summary>
+    /// This is the general class for rendering the chaos game for any particular shape.    
+    /// </summary>
     public class Shape
     {
+        /// <summary>
+        /// The name of the shape (triangle, octohedron, etc.). This is just used as part of the filenames
+        /// </summary>
         public string ShapeName;
+
+        /// <summary>
+        /// The list of anchor points for the shape
+        /// </summary>
         public List<AnchorPoint> AnchorPoints = new List<AnchorPoint>();
 
+        /// <summary>
+        /// The rendering and animation settings for this shape
+        /// </summary>
         public Settings Settings = new Settings();
 
         
+        /// <summary>
+        /// Writes the file for the anchor points of the shape
+        /// </summary>
+        /// <returns>Path to the anchors</returns>
         public virtual string WriteAnchorsFile()
         {
             var outputAnchors = ShapeName + "-anchors.txt";
@@ -37,14 +54,19 @@ namespace GeneratePoints
 
                 outputAnchorStr = outputAnchorStr + "<" + t.R + "," + t.G + "," + t.B + ">,";
             }
-
-            
-
+           
             File.Delete(outputAnchors);
             File.AppendAllText(outputAnchors, outputAnchorStr);
             return outputAnchors;
         }
 
+        /// <summary>
+        /// Plays the chaos game and writes the data points file for the co-ordinates and colours of the data point.
+        /// The output file is a series of vectors of 'x,y,z' co-ordinates and then also 'r,g,b' values for each point.
+        /// The format is chosen to be easily read by POV-Ray.
+        /// </summary>
+        /// <param name="currentFrame"></param>
+        /// <returns>Path to data point file</returns>
         public virtual string WriteDataPoints(int currentFrame = 1)
         {
             var rnd = new Random();
@@ -57,7 +79,6 @@ namespace GeneratePoints
             var rPoint = 0.0;
             var gPoint = 0.0;
             var bPoint = 0.0;
-
 
             var outputfilename = ShapeName + "_r" + Settings.Ratio + "_p" + Settings.MaxDataPoints + "-datapoints.txt";
 
@@ -113,13 +134,15 @@ namespace GeneratePoints
             return outputfilename;
         }
 
+        /// <summary>
+        /// Starts the normal render
+        /// </summary>
         public virtual void StartRender()
         {
             var anchorsFilename = WriteAnchorsFile();
 
             var datapointsFilename = WriteDataPoints();
-            var inifiles = new List<string>();
-
+            
             for (var i = 0; i < Settings.FrameCount; i++)
             {
                 var dirname = datapointsFilename.Replace(".txt", "").Replace(".","");
@@ -128,15 +151,7 @@ namespace GeneratePoints
                 Console.WriteLine("Written " + povFile);
                // var inifile = WritePovrayIniFile(i, datapointsFilename,povFile);
                // inifiles.Add(inifile);
-            }
-
-            foreach (var file in inifiles)
-            {
-                Console.WriteLine("Rendering " + file);
-               // Process.Start(Settings.PovRayPath, "/RENDER " + file);
-                // Thread.Sleep(30000);
-            }
-
+            }       
         }
 
         public string WritePovrayIniFile(int currentFrame, string dataPointsFilename, string povFilename)
@@ -233,6 +248,10 @@ namespace GeneratePoints
 
             var anchorTransmit = "#declare nAnchorTransmit = " + Settings.AnchorTransmit + "; \r\n";
 
+            if (!Settings.RotateCamera)
+            {
+                clock = 0;
+            }
             var cameraString =
                 "\n\n\ncamera {\t\r\n\tlocation <sin(2*pi*" + clock + ")*" + Settings.CameraOffset + ", 0.1, cos(2*pi*" + clock + ")*" + Settings.CameraOffset + ">\t\t           \r\n\tlook_at <0,0,0>       \t\r\n\trotate <0,0,0>\r\n}\r\n";
 
@@ -314,6 +333,7 @@ namespace GeneratePoints
                     PreparePovRayFiles(frameProgress, outputfilename, anchorsFilename, dirname);
                 }
             }
+            File.AppendAllText(outputfilename, output);
         }
 
         public static List<AnchorPoint> MakeAnchorPoints(List<List<double>> anchors)

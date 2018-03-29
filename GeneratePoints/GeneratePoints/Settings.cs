@@ -15,6 +15,8 @@ namespace GeneratePoints
         public int FrameCount = 1;
 
         public bool Overwrite = false;
+
+        public bool RotateCamera = true;
         public int PointStop;
         public string PovRayPath = "C:\\Program Files\\POV-Ray\\v3.7\\bin\\pvengine64.exe";
         public Settings()
