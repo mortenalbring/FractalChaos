@@ -20,41 +20,14 @@ namespace GeneratePoints
     {
         static void Main(string[] args)
         {
-            var tetrahedron = new Tetrahedron();
-            var cube = new Cube();
-            var ico = new Ico();
-
-            tetrahedron.Settings.FrameCount = 10;
-            tetrahedron.Settings.MaxDataPoints = 100000;
-            //tetrahedron.RenderProgressively("tetra1");
-
-            // TrianglePost();
-
-            //      FindUnrun("octoprogressive6");
-
-            var c = new Cube();
-            c.Settings.FrameCount = 10;
-            c.Settings.Ratio = 0.33;
-            c.Settings.MaxDataPoints = 1000000;
-            //c.RenderProgressively("cube6");
-
-            var th = new Tetrahedron();
-            th.Settings.FrameCount = 300;
-            th.Settings.MaxDataPoints = 100000;
-            th.Settings.DataPointRadius = 0.002;
-            th.Settings.RotateCamera = true;
-            th.Settings.Overwrite = true;
-            th.RenderProgressively("tetra8");
+        
+            var p = new Pentagon();
+            p.Settings.MaxDataPoints = 1000000;
+            p.Settings.Overwrite = true;
+            p.StartRender();
             
-            var octo = new Octahedron();
-            //  octo.Settings.FrameCount = 2000;
-            // octo.Settings.MaxDataPoints = 4000;
-
-            //   octo.Settings.Overwrite = true;
-            //octo.StartRender();
-            // octo.RenderProgressively("octoprogressive7");
-            //   FindUnrun("octoprogressive7");
-
+            //TrianglePost2();
+         
         }
 
         private static void TrianglePost()
@@ -66,7 +39,32 @@ namespace GeneratePoints
             triangle.Settings.AnchorRadius = 0.04;
             triangle.Settings.DataPointRadius = 0.006;
             triangle.Settings.CameraOffset = 2.2;
-            triangle.RenderProgressively("triangle4");
+            triangle.RenderProgressively("triangle5");
+        }
+
+        private static void TrianglePost2()
+        {
+            var triangle = new Triangle();
+            triangle.Settings.RotateCamera = false;
+            triangle.Settings.MaxDataPoints = 10;
+            triangle.Settings.FrameCount = 10;
+            triangle.Settings.AnchorRadius = 0.04;
+            triangle.Settings.DataPointRadius = triangle.Settings.AnchorRadius / 2;
+            triangle.Settings.CameraOffset = 2.2;
+            triangle.RenderProgressively("triangePost2");
+        }
+
+
+        private static void SquarePost()
+        {
+            var s = new Square();
+            s.Settings.RotateCamera = false;
+            s.Settings.MaxDataPoints = 100;
+            s.Settings.FrameCount = 100;
+            s.Settings.AnchorRadius = 0.04;
+            s.Settings.DataPointRadius = 0.006;
+            s.Settings.CameraOffset = 2.2;
+            s.RenderProgressively("squarepost");
 
 
         }
