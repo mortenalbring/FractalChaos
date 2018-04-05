@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
 
-namespace GeneratePoints
+namespace GeneratePoints.Shapes2d
 {
    
         public class Triangle : Shape
         {
             public Triangle()
             {
+                Settings.CameraOffset = 2.5;
+                Settings.AnchorRadius = 0.015;
+                Settings.FrameCount = 10;
                 ShapeName = "triangle";
                 var anchors = new List<List<double>>();
                 var anchor1 = new List<double> { -1, -1, 0 };
