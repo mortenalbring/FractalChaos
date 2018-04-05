@@ -22,9 +22,11 @@ namespace GeneratePoints
         {
         
             var p = new Pentagon();
-            p.Settings.MaxDataPoints = 1000000;
-            p.Settings.Overwrite = true;
-            p.StartRender();
+            p.Settings.MaxDataPoints = 10000000;
+            p.Settings.Overwrite = false;
+            p.Settings.FrameCount = 300;
+            //p.StartRender();
+           // p.RenderProgressively("Petangon1");
             
             //TrianglePost2();
          

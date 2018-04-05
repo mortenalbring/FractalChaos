@@ -13,7 +13,7 @@ namespace GeneratePoints.Shapes2d
             Settings.FrameCount = 10;
             Settings.RotateCamera = false;
             Settings.AnchorTransmit = 0.2;
-            Settings.DataPointRadius = 0.001;
+            Settings.DataPointRadius = 0.0015;
             ShapeName = "Pentagon";
             var anchors = new List<List<double>>();
             var c1 = Math.Cos((2 * Math.PI) / 5);
