@@ -46,11 +46,11 @@
     <Compile Include="BarnsleyFern.cs" />
     <Compile Include="Models\Polygon.cs" />
     <Compile Include="Models\Settings.cs" />
-    <Compile Include="Shapes2d\Hexagon.cs" />
-    <Compile Include="Shapes2d\Septagon.cs" />
-    <Compile Include="Shapes2d\Pentagon.cs" />
-    <Compile Include="Shapes2d\Square.cs" />
-    <Compile Include="Shapes2d\Triangle.cs" />
+    <Compile Include="Polygons\Hexagon.cs" />
+    <Compile Include="Polygons\Septagon.cs" />
+    <Compile Include="Polygons\Pentagon.cs" />
+    <Compile Include="Polygons\Square.cs" />
+    <Compile Include="Polygons\Triangle.cs" />
     <Compile Include="Shapes3d\Cube.cs" />
     <Compile Include="Shapes3d\Ico.cs" />
     <Compile Include="Shapes3d\Octahedron.cs" />

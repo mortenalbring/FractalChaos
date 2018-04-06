@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using GeneratePoints.Models;
-using GeneratePoints.Shapes2d;
+using GeneratePoints.Polygons;
 using GeneratePoints.Shapes3d;
 
 namespace GeneratePoints
@@ -30,8 +30,10 @@ namespace GeneratePoints
 
            // var s = new Septagon();
             //s.RenderProgressively("sept1");
-            SeptagonPost();
-            
+            //SeptagonPost();
+
+         
+
         }
 
         private static void SeptagonPost()
@@ -40,7 +42,7 @@ namespace GeneratePoints
             var p = new Polygon(7);
             p.Settings.MaxDataPoints = 10000000;
             p.Settings.Overwrite = true;
-            p.Settings.DataPointRadius = 0.001;
+            p.Settings.DataPointRadius = 0.0005;
             p.ShapeName = "Septagon";
             p.Settings.FrameCount = 10;
             p.RenderProgressively("septagonPost1");
@@ -52,6 +54,7 @@ namespace GeneratePoints
             var oct = new Polygon(8);
             oct.ShapeName = "Octagon";
             oct.Settings.FrameCount = 10;
+            oct.Settings.DataPointRadius = 0.0005;
             oct.RenderProgressively("octagonpost1");
 
         }

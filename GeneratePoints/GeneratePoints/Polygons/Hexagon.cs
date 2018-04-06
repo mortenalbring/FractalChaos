@@ -1,10 +1,11 @@
 ﻿using GeneratePoints.Models;
 
-namespace GeneratePoints.Shapes2d
+namespace GeneratePoints.Polygons
 {
-    public class Septagon : Polygon 
+
+    public class Hexagon : Polygon
     {
-        public Septagon()
+        public Hexagon()
         {
             Settings.CameraOffset = 2.2;
             Settings.AnchorRadius = 0.025;
@@ -12,8 +13,8 @@ namespace GeneratePoints.Shapes2d
             Settings.RotateCamera = false;
             Settings.AnchorTransmit = 0.7;
             Settings.DataPointRadius = 0.005;
-            ShapeName = "Septagon";            
-            Vertices = 7;
+            ShapeName = "Hexagon";
+            Vertices = 6;
             var anchors = CalculateVertices();
 
             AnchorPoints = MakeAnchorPoints(anchors);
