@@ -14,6 +14,7 @@ namespace GeneratePoints.Models
         public Polygon(int vertices)
         {
             Vertices = vertices;
+            ShapeName = vertices + "-gon";
             var anchors = CalculateVertices();
             AnchorPoints = MakeAnchorPoints(anchors);
         }

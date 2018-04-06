@@ -32,10 +32,16 @@ namespace GeneratePoints
             //s.RenderProgressively("sept1");
             //SeptagonPost();
 
-         
+        // OcatgonPost();
+        NonagonPost();
 
         }
 
+        private static void NonagonPost()
+        {
+            var p = new Polygon(9);
+            p.RenderProgressively("nonagonPost1");
+        }
         private static void SeptagonPost()
         {
 
@@ -50,12 +56,14 @@ namespace GeneratePoints
         }
         private static void OcatgonPost()
         {
-
-            var oct = new Polygon(8);
-            oct.ShapeName = "Octagon";
-            oct.Settings.FrameCount = 10;
-            oct.Settings.DataPointRadius = 0.0005;
-            oct.RenderProgressively("octagonpost1");
+            var p = new Polygon(8);
+            p.Settings.MaxDataPoints = 10000000;
+            p.Settings.Overwrite = true;
+            p.Settings.DataPointRadius = 0.0005;
+            p.ShapeName = "Octagon";
+            p.Settings.FrameCount = 10;
+            p.Settings.DataPointRadius = 0.0005;
+            p.RenderProgressively("octagonpost1");
 
         }
 
