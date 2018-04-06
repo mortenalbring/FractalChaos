@@ -33,8 +33,15 @@ namespace GeneratePoints
             //SeptagonPost();
 
         // OcatgonPost();
-        NonagonPost();
+        //NonagonPost();
+        CirclePost();
 
+        }
+
+        private static void CirclePost()
+        {
+            var p = new Polygon(10000);        
+            p.RenderProgressively("circlePost1");
         }
 
         private static void NonagonPost()
