@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using GeneratePoints.Models;
 
 namespace GeneratePoints
 {
@@ -28,7 +29,7 @@ namespace GeneratePoints
 
 
 
-        public override string WriteDataPoints(int currentFrame = 1)
+        public override string WriteDataPoints(string dirname,int currentFrame = 1)
         {
             var xPoint = 0.0;
             var yPoint = 0.0;
@@ -121,11 +122,11 @@ namespace GeneratePoints
 
         public void StartRenderProgressive(string dirname)
         {
-            var anchorsFilename = WriteAnchorsFile();
+            var anchorsFilename = WriteAnchorsFile(dirname);
 
             for (var i = 0; i < Settings.FrameCount; i++)
             {
-                var datapointsFilename = WriteDataPoints(i);
+                var datapointsFilename = WriteDataPoints(dirname,i);
                
                 var povFilename = PreparePovRayFiles(i, datapointsFilename, anchorsFilename, dirname);
                 Console.WriteLine(povFilename);

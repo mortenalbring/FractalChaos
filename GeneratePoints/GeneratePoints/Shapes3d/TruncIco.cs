@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GeneratePoints.Models;
 
 namespace GeneratePoints.Shapes3d
 {

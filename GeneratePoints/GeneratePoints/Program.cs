@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using GeneratePoints.Models;
 using GeneratePoints.Shapes2d;
 using GeneratePoints.Shapes3d;
 
@@ -21,15 +22,62 @@ namespace GeneratePoints
         static void Main(string[] args)
         {
         
+            //PentagonPost();
+      //HexagonPost();
+            //TrianglePost2();
+          //  TrianglePost3();
+         //SquarePost();
+
+           // var s = new Septagon();
+            //s.RenderProgressively("sept1");
+            SeptagonPost();
+            
+        }
+
+        private static void SeptagonPost()
+        {
+
+            var p = new Polygon(7);
+            p.Settings.MaxDataPoints = 10000000;
+            p.Settings.Overwrite = true;
+            p.Settings.DataPointRadius = 0.001;
+            p.ShapeName = "Septagon";
+            p.Settings.FrameCount = 10;
+            p.RenderProgressively("septagonPost1");
+
+        }
+        private static void OcatgonPost()
+        {
+
+            var oct = new Polygon(8);
+            oct.ShapeName = "Octagon";
+            oct.Settings.FrameCount = 10;
+            oct.RenderProgressively("octagonpost1");
+
+        }
+
+        private static void HexagonPost()
+        {
+            var h = new Hexagon();
+            h.Settings.MaxDataPoints = 10000000;
+            h.Settings.Overwrite = true;
+            h.Settings.DataPointRadius = 0.001;
+            h.Settings.FrameCount = 10;
+            h.Settings.RotateCamera = false;
+            h.StartRender();
+          //  h.RenderProgressively("Hexagon2");
+
+        }
+        private static void PentagonPost()
+        {
             var p = new Pentagon();
             p.Settings.MaxDataPoints = 10000000;
             p.Settings.Overwrite = false;
-            p.Settings.FrameCount = 300;
-            //p.StartRender();
-           // p.RenderProgressively("Petangon1");
-            
-            //TrianglePost2();
-         
+            p.Settings.DataPointRadius = 0.0005;
+            p.Settings.FrameCount = 600;
+            p.StartRender();
+            p.RenderProgressively("Petangon2");
+
         }
 
         private static void TrianglePost()
@@ -55,16 +103,26 @@ namespace GeneratePoints
             triangle.Settings.CameraOffset = 2.2;
             triangle.RenderProgressively("triangePost2");
         }
-
+        private static void TrianglePost3()
+        {
+            var triangle = new Triangle();
+            triangle.Settings.RotateCamera = false;
+            triangle.Settings.MaxDataPoints = 1000000;
+            triangle.Settings.FrameCount = 10;
+            triangle.Settings.AnchorRadius = 0.04;
+            triangle.Settings.DataPointRadius = 0.001;
+            triangle.Settings.CameraOffset = 2.2;
+            triangle.RenderProgressively("triangePost3");
+        }
 
         private static void SquarePost()
         {
             var s = new Square();
             s.Settings.RotateCamera = false;
-            s.Settings.MaxDataPoints = 100;
+            s.Settings.MaxDataPoints = 100000;
             s.Settings.FrameCount = 100;
             s.Settings.AnchorRadius = 0.04;
-            s.Settings.DataPointRadius = 0.006;
+            s.Settings.DataPointRadius = 0.003;
             s.Settings.CameraOffset = 2.2;
             s.RenderProgressively("squarepost");
 

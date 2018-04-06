@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GeneratePoints.Models;
 
 namespace GeneratePoints.Shapes2d
 {
@@ -12,9 +13,9 @@ namespace GeneratePoints.Shapes2d
             Settings.FrameCount = 10;
             ShapeName = "Square";
             var anchors = new List<List<double>>();
-            var anchor1 = new List<double> { 0, 0, 0 };
-            var anchor2 = new List<double> { 0, 1, 0 };
-            var anchor3 = new List<double> { 1, 0, 0 };
+            var anchor1 = new List<double> { -1, -1, 0 };
+            var anchor2 = new List<double> { -1, 1, 0 };
+            var anchor3 = new List<double> { 1, -1, 0 };
             var anchor4 = new List<double> { 1, 1, 0 };
 
             anchors.Add(anchor1);

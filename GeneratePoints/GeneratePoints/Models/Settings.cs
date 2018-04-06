@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace GeneratePoints
+﻿namespace GeneratePoints.Models
 {
     public class Settings
     {
@@ -15,7 +13,7 @@ namespace GeneratePoints
         public int FrameCount = 1;
 
         public bool Overwrite = false;
-
+        public bool TransparentBackground = true;
         public bool RotateCamera = true;
         public int PointStop;
         public string PovRayPath = "C:\\Program Files\\POV-Ray\\v3.7\\bin\\pvengine64.exe";

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GeneratePoints.Models;
 
 namespace GeneratePoints.Shapes2d
 {
@@ -11,9 +12,8 @@ namespace GeneratePoints.Shapes2d
             Settings.CameraOffset = 2.2;
             Settings.AnchorRadius = 0.025;
             Settings.FrameCount = 10;
-            Settings.RotateCamera = false;
-            Settings.AnchorTransmit = 0.2;
-            Settings.DataPointRadius = 0.0015;
+            Settings.RotateCamera = false;       
+            Settings.DataPointRadius = 0.0005;
             ShapeName = "Pentagon";
             var anchors = new List<List<double>>();
             var c1 = Math.Cos((2 * Math.PI) / 5);

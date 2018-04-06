@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
-namespace GeneratePoints
+namespace GeneratePoints.Models
 {
     /// <summary>
     /// This is the general class for rendering the chaos game for any particular shape.    
@@ -31,9 +31,10 @@ namespace GeneratePoints
         /// Writes the file for the anchor points of the shape
         /// </summary>
         /// <returns>Path to the anchors</returns>
-        public virtual string WriteAnchorsFile()
+        public virtual string WriteAnchorsFile(string dirname)
         {
             var outputAnchors = ShapeName + "-anchors.txt";
+            outputAnchors = dirname + "/" + outputAnchors;
             if (!Settings.Overwrite)
             {
                 if (File.Exists(outputAnchors))
@@ -54,9 +55,24 @@ namespace GeneratePoints
 
                 outputAnchorStr = outputAnchorStr + "<" + t.R + "," + t.G + "," + t.B + ">,";
             }
+            if (File.Exists(outputAnchors))
+            {
+                File.Delete(outputAnchors);
+            }
 
-            File.Delete(outputAnchors);
             File.AppendAllText(outputAnchors, outputAnchorStr);
+            return outputAnchors;
+        }
+
+        private string GetDatapointsFilename()
+        {
+            var outputfilename = ShapeName + "_r" + Settings.Ratio + "_p" + Settings.MaxDataPoints + "-datapoints.txt";
+            return outputfilename;
+        }
+
+        private string GetAnchorsFilename()
+        {
+            var outputAnchors = ShapeName + "-anchors.txt";
             return outputAnchors;
         }
 
@@ -67,7 +83,7 @@ namespace GeneratePoints
         /// </summary>
         /// <param name="currentFrame"></param>
         /// <returns>Path to data point file</returns>
-        public virtual string WriteDataPoints(int currentFrame = 1)
+        public virtual string WriteDataPoints(string dirname, int currentFrame = 1)
         {
             var rnd = new Random();
             var output = "";
@@ -80,7 +96,8 @@ namespace GeneratePoints
             var gPoint = 0.0;
             var bPoint = 0.0;
 
-            var outputfilename = ShapeName + "_r" + Settings.Ratio + "_p" + Settings.MaxDataPoints + "-datapoints.txt";
+            var outputfilename = GetDatapointsFilename();
+            outputfilename = dirname + "/" + outputfilename;
 
             if (!Settings.Overwrite)
             {
@@ -127,10 +144,9 @@ namespace GeneratePoints
 
                     Console.WriteLine("Writing points\t" + i + "\t" + Settings.MaxDataPoints + "\t" + minsRemaining + " mins remaining");
                 }
+              
             }
-
             File.AppendAllText(outputfilename, output);
-
             return outputfilename;
         }
 
@@ -139,15 +155,17 @@ namespace GeneratePoints
         /// </summary>
         public virtual void StartRender()
         {
-            var anchorsFilename = WriteAnchorsFile();
-
-            var datapointsFilename = WriteDataPoints();
-
+            var dataPointsFilename = GetDatapointsFilename();
+            var anchorsFilename = GetAnchorsFilename();
+            var dirname = dataPointsFilename.Replace(".txt", "").Replace(".", "");
+            CreateDirectory(dirname);
+            WriteAnchorsFile(dirname);
+            WriteDataPoints(dirname);
+            Settings.PointStop = Settings.MaxDataPoints;
             for (var i = 0; i < Settings.FrameCount; i++)
             {
-                var dirname = datapointsFilename.Replace(".txt", "").Replace(".", "");
 
-                var povFile = PreparePovRayFiles(i, datapointsFilename, anchorsFilename, dirname);
+                var povFile = PreparePovRayFiles(i, dataPointsFilename, anchorsFilename, dirname);
                 Console.WriteLine("Written " + povFile);
                 // var inifile = WritePovrayIniFile(i, datapointsFilename,povFile);
                 // inifiles.Add(inifile);
@@ -174,12 +192,10 @@ namespace GeneratePoints
             }
             var inifilepath = Path.Combine(directory, iniFile);
 
-
             return inifilepath;
-
         }
 
-        public static void CreateDirectory(string dirName)
+        private static void CreateDirectory(string dirName)
         {
             var path = Assembly.GetExecutingAssembly().Location;
             var directory = Path.GetDirectoryName(path);
@@ -240,8 +256,8 @@ namespace GeneratePoints
             var noCamText = File.ReadAllText(nocamPath);
 
 
-            var pointsFileVar = "#declare strDatapointsFile = \"../" + datapointsFilename + "\"; \r\n";
-            var anchorsFileVar = "#declare strAnchorsFile = \"../" + anchorsFilename + "\"; \r\n";
+            var pointsFileVar = "#declare strDatapointsFile = \"" + datapointsFilename + "\"; \r\n";
+            var anchorsFileVar = "#declare strAnchorsFile = \"" + anchorsFilename + "\"; \r\n";
             var anchorRadiusVar = "#declare nAnchorRadius = " + Settings.AnchorRadius + "; \r\n";
             var datapointRadius = "#declare nDataPointRadius = " + Settings.DataPointRadius + "; \r\n";
             var pointStop = "#declare nPointStop = " + Settings.PointStop + "; \r\n";
@@ -265,10 +281,14 @@ namespace GeneratePoints
             variableStrings.Add(datapointRadius);
             variableStrings.Add(pointStop);
             variableStrings.Add(anchorTransmit);
-            variableStrings.Add(background);
+            if (!Settings.TransparentBackground)
+            {
+                variableStrings.Add(background);
+            }
+
             variableStrings.Add(cameraString);
 
-            var vString = string.Join("\r\n",variableStrings.ToArray());
+            var vString = string.Join("\r\n", variableStrings.ToArray());
 
             noCamText = vString + noCamText;
 
@@ -280,9 +300,12 @@ namespace GeneratePoints
 
         public void RenderProgressively(string dirname)
         {
-            var anchorsFilename = WriteAnchorsFile();
+            CreateDirectory(dirname);
+            var anchorsFilename = GetAnchorsFilename();
+            var dataPointsFilename = GetDatapointsFilename();
+            WriteAnchorsFile(dirname);
 
-            Shape.CreateDirectory(dirname);
+            
             var rnd = new Random();
             var output = "";
 
@@ -301,9 +324,10 @@ namespace GeneratePoints
             var frameProgress = 0;
             var cWriteCount = 0;
             var frameCountSteps = (int)(Settings.MaxDataPoints / (double)Settings.FrameCount);
-            var outputfilename = dirname + "/" + ShapeName + "_r" + Settings.Ratio + "_p" + Settings.MaxDataPoints +
-                                 "-datapoints.txt";
+            //var outputfilename = dirname + "/" + ShapeName + "_r" + Settings.Ratio + "_p" + Settings.MaxDataPoints + "-datapoints.txt";
 
+            
+           var dataPointsLocation = dirname + "/" + dataPointsFilename;
 
             for (int i = 0; i < Settings.MaxDataPoints; i++)
             {
@@ -317,8 +341,7 @@ namespace GeneratePoints
                 rPoint = (rPoint + AnchorPoints[val].R) * Settings.Ratio;
                 gPoint = (gPoint + AnchorPoints[val].G) * Settings.Ratio;
                 bPoint = (bPoint + AnchorPoints[val].B) * Settings.Ratio;
-
-
+          
                 var outputstr = "<" + xPoint + "," + yPoint + "," + zPoint + ">";
                 output = output + outputstr + ",";
 
@@ -326,7 +349,7 @@ namespace GeneratePoints
                 cWriteCount++;
                 if (cWriteCount == 1000)
                 {
-                    File.AppendAllText(outputfilename, output);
+                    File.AppendAllText(dataPointsLocation, output);
                     output = "";
                     cWriteCount = 0;
                 }
@@ -334,7 +357,7 @@ namespace GeneratePoints
                 if (i == dataPointCount)
                 {
 
-                    this.Settings.PointStop = dataPointCount;
+                    Settings.PointStop = dataPointCount;
                     frameProgress++;
                     dataPointCount = dataPointCount + frameCountSteps;
 
@@ -345,10 +368,10 @@ namespace GeneratePoints
                     Console.WriteLine("Writing points\t" + i + "\t" + Settings.MaxDataPoints + "\t" + minsRemaining +
                                       " mins remaining");
 
-                    PreparePovRayFiles(frameProgress, outputfilename, anchorsFilename, dirname);
+                    PreparePovRayFiles(frameProgress, dataPointsFilename, anchorsFilename, dirname);
                 }
             }
-            File.AppendAllText(outputfilename, output);
+            File.AppendAllText(dataPointsLocation, output);
         }
 
         public static List<AnchorPoint> MakeAnchorPoints(List<List<double>> anchors)
@@ -362,8 +385,8 @@ namespace GeneratePoints
             colours.Add(new List<double> { 1, 1, 0 });
             colours.Add(new List<double> { 1, 0, 1 });
             colours.Add(new List<double> { 0, 1, 1 });
-            colours.Add(new List<double> { 1, 1, 1 });
-            colours.Add(new List<double> { 0, 0, 0 });
+            colours.Add(new List<double> { 0.9, 0.9, 0.9 });
+            colours.Add(new List<double> { 0.1, 0.1, 0.1 });
 
 
             var rscale = 1 / (double)anchors.Count;
