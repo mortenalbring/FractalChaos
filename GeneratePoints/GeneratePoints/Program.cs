@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -34,10 +35,107 @@ namespace GeneratePoints
 
         // OcatgonPost();
         //NonagonPost();
-        CirclePost();
+       // CirclePost();
+       //HexagonPost2();
+     //  TetraPost();
+     //TestTriangle();
+
+   //  RenameImages("testRatioTestPngs");
+   TriangleRotate();
+          //  HexagonRotate();
+        }
+
+        private static void RenameImages(string directoryName)
+        {
+            var path = Assembly.GetExecutingAssembly().Location;
+            var rootDir = Path.GetDirectoryName(path);
+            var dirpath = Path.Combine(rootDir, directoryName);
+            var files = Directory.GetFiles(dirpath);
+            var filesDict = new Dictionary<double,string>();
+            foreach (var file in files)
+            {
+                var filesplit = file.Split('/');
+                var filename = filesplit[filesplit.Length - 1];
+                var filepart = filename.Split('_');
+                var ratiopart = filepart[1];
+                var numpart = ratiopart.Replace("r", "");
+                double num;
+                var s = double.TryParse(numpart, out num);
+                if (s)
+                {
+                    filesDict.Add(num,file);
+                    var xx = 42;
+                }
+                
+            }
+
+            filesDict = filesDict.OrderBy(e => e.Key).ToDictionary(e => e.Key, e => e.Value);
+
+            var i = 1;
+            foreach (var file in filesDict)
+            {
+                var parsedKey = String.Format("{0:0.0000}", file.Key).Replace('.', '-');
+                var newfilename = "t3/triangle_" + i + ".png";
+                var newpath = Path.Combine(dirpath, newfilename);
+                File.Copy(file.Value,newpath);
+
+                i++;
+            }
 
         }
 
+        private static void TriangleRotate()
+        {
+            var t = new Triangle();
+            t.Settings.CameraOffset = 4;
+            t.Settings.MaxDataPoints = 100000;
+            t.Settings.DataPointRadius = 0.005;
+            t.Settings.FrameCount = 10;
+            t.Settings.RotateCamera = false;
+            t.Settings.Overwrite = true;
+            t.RenderRotate("triangleRotate");
+        }
+
+        private static void HexagonRotate()
+        {
+            var t = new Hexagon();
+            t.Settings.CameraOffset = 4;
+            t.Settings.MaxDataPoints = 100000;
+            t.Settings.DataPointRadius = 0.005;
+            t.Settings.FrameCount = 10;
+            t.Settings.RotateCamera = false;
+            t.RenderRotate("hexagonRotate");
+        }
+        private static void TriangleVaryRatio()
+        {
+            var test = new Triangle();
+            test.Settings.FrameCount = 1;
+            test.Settings.MaxDataPoints = 100000;
+            test.Settings.DataPointRadius = 0.001;
+            test.Settings.PointStop = 10000;
+            test.Settings.Ratio = 0.3;
+            test.Settings.Overwrite = false;
+            var max = 300;
+            var minR = 0.01;
+            var maxR = 0.8;
+            var sw = new Stopwatch();
+            sw.Start();
+            for (int i = 0; i < max; i++)
+            {
+                var step = (i / (double) max);
+
+                var r = (maxR * step) + minR;
+
+                test.Settings.Ratio = r;
+                test.RenderProgressively("testRatioTest");
+                double timePerElem = sw.Elapsed.TotalSeconds / (i + 1);
+                var elemsRemaining = max - i;
+                var minsRemaining = (elemsRemaining * timePerElem / 60).ToString("N");
+                Console.WriteLine("Writing ratios\t" + i + "\t" + minsRemaining + " mins remaining");
+            }
+            
+
+        }
         private static void CirclePost()
         {
             var p = new Polygon(10000);        
@@ -86,6 +184,7 @@ namespace GeneratePoints
           //  h.RenderProgressively("Hexagon2");
 
         }
+       
         private static void PentagonPost()
         {
             var p = new Pentagon();
@@ -145,6 +244,14 @@ namespace GeneratePoints
             s.RenderProgressively("squarepost");
 
 
+        }
+
+        private static void TetraPost()
+        {
+            var t = new Tetrahedron();
+            t.Settings.MaxDataPoints = 1000000;
+            t.Settings.FrameCount = 10;
+            t.RenderProgressively("tetraAnimPost");
         }
 
         private static void FindUnrun(string directoryName)

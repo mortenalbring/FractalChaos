@@ -21,7 +21,7 @@ namespace GeneratePoints.Polygons
             anchors.Add(anchor2);
             anchors.Add(anchor3);
             AnchorPoints = MakeAnchorPoints(anchors);
-        }
+        }        
     }
 
 

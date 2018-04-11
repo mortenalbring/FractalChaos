@@ -64,9 +64,9 @@ namespace GeneratePoints.Models
             return outputAnchors;
         }
 
-        private string GetDatapointsFilename()
+        private string GetDatapointsFilename(string append = "")
         {
-            var outputfilename = ShapeName + "_r" + Settings.Ratio + "_p" + Settings.MaxDataPoints + "-datapoints.txt";
+            var outputfilename = ShapeName + "_r" + Settings.Ratio + "_p" + Settings.MaxDataPoints + append + "-datapoints.txt";
             return outputfilename;
         }
 
@@ -144,7 +144,7 @@ namespace GeneratePoints.Models
 
                     Console.WriteLine("Writing points\t" + i + "\t" + Settings.MaxDataPoints + "\t" + minsRemaining + " mins remaining");
                 }
-              
+
             }
             File.AppendAllText(outputfilename, output);
             return outputfilename;
@@ -172,6 +172,7 @@ namespace GeneratePoints.Models
             }
         }
 
+
         public string WritePovrayIniFile(int currentFrame, string dataPointsFilename, string povFilename)
         {
             var iniFile = povFilename + ".ini";
@@ -195,7 +196,7 @@ namespace GeneratePoints.Models
             return inifilepath;
         }
 
-        private static void CreateDirectory(string dirName)
+        private void CreateDirectory(string dirName)
         {
             var path = Assembly.GetExecutingAssembly().Location;
             var directory = Path.GetDirectoryName(path);
@@ -212,6 +213,10 @@ namespace GeneratePoints.Models
             }
             else
             {
+                if (!Settings.Overwrite)
+                {
+                    return;
+                }
                 var di = new DirectoryInfo(newDir);
                 foreach (FileInfo file in di.GetFiles())
                 {
@@ -242,7 +247,8 @@ namespace GeneratePoints.Models
             var basedir = dirsplit[0] + "\\" + dirsplit[1];
             const string nocamFile = "fc-nocam.pov";
 
-            var compiledFilename = "fc-" + ShapeName + "_f" + currentFrame.ToString("00000") + ".pov";
+
+            var compiledFilename = datapointsFilename + "_f" + currentFrame.ToString("00000") + ".pov";
 
             var nocamPath = Path.Combine(basedir, nocamFile);
             var compiledFile = Path.Combine(newDir, compiledFilename);
@@ -305,7 +311,7 @@ namespace GeneratePoints.Models
             var dataPointsFilename = GetDatapointsFilename();
             WriteAnchorsFile(dirname);
 
-            
+
             var rnd = new Random();
             var output = "";
 
@@ -326,8 +332,8 @@ namespace GeneratePoints.Models
             var frameCountSteps = (int)(Settings.MaxDataPoints / (double)Settings.FrameCount);
             //var outputfilename = dirname + "/" + ShapeName + "_r" + Settings.Ratio + "_p" + Settings.MaxDataPoints + "-datapoints.txt";
 
-            
-           var dataPointsLocation = dirname + "/" + dataPointsFilename;
+
+            var dataPointsLocation = dirname + "/" + dataPointsFilename;
 
             for (int i = 0; i < Settings.MaxDataPoints; i++)
             {
@@ -338,11 +344,16 @@ namespace GeneratePoints.Models
                 yPoint = (yPoint + AnchorPoints[val].Y) * Settings.Ratio;
                 zPoint = (zPoint + AnchorPoints[val].Z) * Settings.Ratio;
 
-                rPoint = (rPoint + AnchorPoints[val].R) * Settings.Ratio;
-                gPoint = (gPoint + AnchorPoints[val].G) * Settings.Ratio;
-                bPoint = (bPoint + AnchorPoints[val].B) * Settings.Ratio;
-          
-                var outputstr = "<" + xPoint + "," + yPoint + "," + zPoint + ">";
+                //  rPoint = (rPoint + AnchorPoints[val].R) * Settings.Ratio;
+                //   gPoint = (gPoint + AnchorPoints[val].G) * Settings.Ratio;
+                //  bPoint = (bPoint + AnchorPoints[val].B) * Settings.Ratio;
+
+                rPoint = (rPoint + AnchorPoints[val].R) * 0.5;
+                gPoint = (gPoint + AnchorPoints[val].G) * 0.5;
+                bPoint = (bPoint + AnchorPoints[val].B) * 0.5;
+
+                var outputstr = "<" + String.Format("{0:0.0000}", xPoint) + "," + String.Format("{0:0.0000}", yPoint) + "," + String.Format("{0:0.0000}", zPoint) + ">";
+
                 output = output + outputstr + ",";
 
                 output = output + "<" + rPoint + "," + gPoint + "," + bPoint + ">,";
@@ -358,6 +369,10 @@ namespace GeneratePoints.Models
                 {
 
                     Settings.PointStop = dataPointCount;
+                    if (Settings.FrameCount == 1)
+                    {
+                        Settings.PointStop = Settings.MaxDataPoints;
+                    }
                     frameProgress++;
                     dataPointCount = dataPointCount + frameCountSteps;
 
@@ -373,6 +388,135 @@ namespace GeneratePoints.Models
             }
             File.AppendAllText(dataPointsLocation, output);
         }
+        public void RenderRotate(string dirname)
+        {
+
+            CreateDirectory(dirname);
+            var anchorsFilename = GetAnchorsFilename();
+
+            WriteAnchorsFile(dirname);
+
+
+            var rnd = new Random();
+        
+
+            var sw = new Stopwatch();
+            sw.Start();
+
+            var dataPointCount = Settings.MaxDataPoints;
+            var frameProgress = 0;
+            var cWriteCount = 0;
+            var frameCountSteps = (int)(Settings.MaxDataPoints / (double)Settings.FrameCount);
+            //var outputfilename = dirname + "/" + ShapeName + "_r" + Settings.Ratio + "_p" + Settings.MaxDataPoints + "-datapoints.txt";
+
+
+
+            var xmax = 0.0;
+
+            var minAngle = 0;
+            var maxAngle = 2 * Math.PI;
+
+            var angleSteps = (maxAngle - minAngle) / Settings.FrameCount;
+
+            for (int fIndex = 0; fIndex < Settings.FrameCount; fIndex++)
+            {
+                var angle = minAngle + (angleSteps * fIndex);
+                var dataPointsFilename = GetDatapointsFilename("_a" + angle);
+                var dataPointsLocation = dirname + "/" + dataPointsFilename;
+
+                var output = "";
+
+                var xPoint = 0.0;
+                var yPoint = 0.0;
+                var zPoint = 0.0;
+
+                var rPoint = 0.0;
+                var gPoint = 0.0;
+                var bPoint = 0.0;
+
+                for (int i = 0; i < Settings.MaxDataPoints; i++)
+                {
+
+                    var val = rnd.Next(0, AnchorPoints.Count);
+
+                    //xPoint = (xPoint + AnchorPoints[val].X) * Settings.Ratio;
+                    //yPoint = (yPoint + AnchorPoints[val].Y) * Settings.Ratio;
+                    zPoint = (zPoint + AnchorPoints[val].Z) * Settings.Ratio;
+
+                    if (val == (AnchorPoints.Count - 1))
+                    {
+
+
+                        var cx = AnchorPoints[val].X;
+                        var cy = AnchorPoints[val].Y;
+
+                        var s = Math.Sin(angle);
+                        var c = Math.Cos(angle);
+
+                        xPoint = xPoint - cx;
+                        yPoint = yPoint - cy;
+
+
+                        var xnew = (xPoint * c) - (yPoint * s);
+                        var ynew = (xPoint * s) + (yPoint * c);
+                        xPoint = (cx + xnew);
+                        yPoint = (cy + ynew);
+                        xPoint = (xPoint + AnchorPoints[val].X) * Settings.Ratio;
+                        yPoint = (yPoint + AnchorPoints[val].Y) * Settings.Ratio;
+
+                    }
+                    else
+                    {
+                        xPoint = (xPoint + AnchorPoints[val].X) * Settings.Ratio;
+                        yPoint = (yPoint + AnchorPoints[val].Y) * Settings.Ratio;
+
+                    }
+
+                    if (xPoint > xmax)
+                    {
+                        xmax = xPoint;
+                    }
+
+                    //  rPoint = (rPoint + AnchorPoints[val].R) * Settings.Ratio;
+                    //   gPoint = (gPoint + AnchorPoints[val].G) * Settings.Ratio;
+                    //  bPoint = (bPoint + AnchorPoints[val].B) * Settings.Ratio;
+
+                    rPoint = (rPoint + AnchorPoints[val].R) * 0.5;
+                    gPoint = (gPoint + AnchorPoints[val].G) * 0.5;
+                    bPoint = (bPoint + AnchorPoints[val].B) * 0.5;
+
+                    var outputstr = "<" + xPoint + "," + yPoint + "," + zPoint + ">";
+
+                    output = output + outputstr + ",";
+
+                    output = output + "<" + rPoint + "," + gPoint + "," + bPoint + ">,";
+                    cWriteCount++;
+                    if (cWriteCount == 1000)
+                    {
+                        File.AppendAllText(dataPointsLocation, output);
+                        output = "";
+                        cWriteCount = 0;
+
+                        double timePerElem = sw.Elapsed.TotalSeconds / (i + 1);
+                        var elemsRemaining = Settings.MaxDataPoints - i;
+                        var minsRemaining = (elemsRemaining * timePerElem / 60).ToString("N");
+                        Console.WriteLine("Writing points\t" + i + "\t" + Settings.MaxDataPoints + "\t" + minsRemaining +
+                                          " mins remaining");
+
+                    }
+
+
+                }
+                PreparePovRayFiles(1, dataPointsFilename, anchorsFilename, dirname);
+
+                Debug.WriteLine(xmax);
+                File.AppendAllText(dataPointsLocation, output);
+
+            }
+
+        }
+
+
 
         public static List<AnchorPoint> MakeAnchorPoints(List<List<double>> anchors)
         {
