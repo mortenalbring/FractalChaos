@@ -123,21 +123,20 @@ namespace GeneratePoints
         public void StartRenderProgressive(string dirname)
         {
             var anchorsFilename = WriteAnchorsFile(dirname);
-
+            var dataFiles = new List<string>();
             for (var i = 0; i < Settings.FrameCount; i++)
             {
                 var datapointsFilename = WriteDataPoints(dirname,i);
-               
-                var povFilename = PreparePovRayFiles(i, datapointsFilename, anchorsFilename, dirname);
-                Console.WriteLine(povFilename);
+               dataFiles.Add(datapointsFilename);
             }
 
-        }
-        public override void StartRender()
-        {
-       
+            var povFilename = PreparePovRayFilesWithIni( dataFiles, anchorsFilename, dirname);
+            Console.WriteLine(povFilename);
+
+
         }
 
-        
+
+
     }
 }

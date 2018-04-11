@@ -15,11 +15,9 @@
         public bool Overwrite = false;
         public bool TransparentBackground = true;
         public bool RotateCamera = true;
-        public int PointStop;       
-        public Settings()
-        {
-            PointStop = MaxDataPoints;
-        }
+        public bool RenderProgressively = true;
+         
+       
 
     }
 

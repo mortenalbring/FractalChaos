@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace GeneratePoints.Models
@@ -153,26 +154,34 @@ namespace GeneratePoints.Models
         /// <summary>
         /// Starts the normal render
         /// </summary>
-        public virtual void StartRender()
+        public virtual void StartRender(string dirname)
         {
             var dataPointsFilename = GetDatapointsFilename();
             var anchorsFilename = GetAnchorsFilename();
-            var dirname = dataPointsFilename.Replace(".txt", "").Replace(".", "");
-            CreateDirectory(dirname);
+            
+            Utility.CreateDirectory(dirname, Settings.Overwrite);
             WriteAnchorsFile(dirname);
-            WriteDataPoints(dirname);
-            Settings.PointStop = Settings.MaxDataPoints;
-            for (var i = 0; i < Settings.FrameCount; i++)
-            {
+            WriteDataPoints(dirname);         
+            var dataFiles = new List<string>();
+            dataFiles.Add(dataPointsFilename);
+            var povFile = PreparePovRayFilesWithIni(dataFiles, anchorsFilename, dirname);
+            Console.WriteLine("Written " + povFile);
 
-                var povFile = PreparePovRayFiles(i, dataPointsFilename, anchorsFilename, dirname);
-                Console.WriteLine("Written " + povFile);
-                // var inifile = WritePovrayIniFile(i, datapointsFilename,povFile);
-                // inifiles.Add(inifile);
-            }
+           
         }
 
+        public void WritePovrayIniFile2(string dirname,string povFilename)
+        {
+            var iniFile = povFilename + ".ini";            
 
+            var lines = new List<string>();
+            lines.Add("Input_File_Name=" + povFilename + "\n");
+            lines.Add("Output_File_Name=" + povFilename + "\r\n");
+            lines.Add("Initial_Frame=1");
+            lines.Add("Final_Frame=" + Settings.FrameCount);
+            var iniPath = dirname + "/" + iniFile;
+            File.WriteAllLines(iniPath, lines);          
+        }
         public string WritePovrayIniFile(int currentFrame, string dataPointsFilename, string povFilename)
         {
             var iniFile = povFilename + ".ini";
@@ -196,14 +205,13 @@ namespace GeneratePoints.Models
             return inifilepath;
         }
 
-        private void CreateDirectory(string dirName)
+
+        public string PreparePovRayFilesWithIni(List<string> datapointsFilenames, string anchorsFilename,
+            string dirName)
         {
             var path = Assembly.GetExecutingAssembly().Location;
             var directory = Path.GetDirectoryName(path);
-            if (directory == null)
-            {
-                throw new Exception("No root directory found");
-            }
+            if (directory == null) return "";
 
             var newDir = Path.Combine(directory, dirName);
 
@@ -211,24 +219,102 @@ namespace GeneratePoints.Models
             {
                 Directory.CreateDirectory(newDir);
             }
-            else
+
+            var dirsplit = directory.Split('\\');
+            var basedir = dirsplit[0] + "\\" + dirsplit[1];
+            const string nocamFile = "fc-nocam.pov";
+            var nocamPath = Path.Combine(basedir, nocamFile);
+            var compiledFilename = datapointsFilenames.First() +  ".pov";
+
+            var compiledFile = Path.Combine(newDir, compiledFilename);
+            if (File.Exists(compiledFile))
             {
-                if (!Settings.Overwrite)
-                {
-                    return;
-                }
-                var di = new DirectoryInfo(newDir);
-                foreach (FileInfo file in di.GetFiles())
-                {
-                    file.Delete();
-                }
-                foreach (DirectoryInfo dir in di.GetDirectories())
-                {
-                    dir.Delete(true);
-                }
+                File.Delete(compiledFile);
             }
 
+           
+            var noCamText = File.ReadAllText(nocamPath);
+
+        
+            var fileNameStr = "{";
+            for (var index = 0; index < datapointsFilenames.Count; index++)
+            {
+                var file = datapointsFilenames[index];
+                fileNameStr = fileNameStr + "\"" + file + "\"";
+                if (index < (datapointsFilenames.Count - 1))
+                {
+                    fileNameStr = fileNameStr + ",";
+                }
+            }
+            fileNameStr = fileNameStr + "}";
+
+            var myClockVar = "#declare Start = 0;\r\n#declare End = " + (Settings.FrameCount-1) +
+                           ";\r\n#declare MyClock = Start+(End-Start)*clock;\r\n";
+            
+
+            var filenameVar = "#declare FileNames = array[" + datapointsFilenames.Count + "] " + fileNameStr + ";\r\n";
+
+            var pointsFileVar = "#declare strDatapointsFile = FileNames[MyClock]; \r\n";
+            if (datapointsFilenames.Count == 1)
+            {
+                pointsFileVar = "#declare strDatapointsFile = FileNames[0]; \r\n";
+            }
+
+            var anchorsFileVar = "#declare strAnchorsFile = \"" + anchorsFilename + "\"; \r\n";
+            var anchorRadiusVar = "#declare nAnchorRadius = " + Settings.AnchorRadius + "; \r\n";
+            var datapointRadius = "#declare nDataPointRadius = " + Settings.DataPointRadius + "; \r\n";
+            var pointStop = "#declare nPointStop = " + Settings.MaxDataPoints + "; \r\n";
+            if (Settings.RenderProgressively)
+            {
+                pointStop = "#declare nPointStop = " + Settings.MaxDataPoints + "*clock; \r\n";
+            }
+
+            var anchorTransmit = "#declare nAnchorTransmit = " + Settings.AnchorTransmit + "; \r\n";
+
+            var background = " background { color rgb <1, 1, 1> }";
+            var clock = 0;
+            var cameraString =
+                "\n\n\ncamera {\t\r\n\tlocation <sin(2*pi*" + clock + ")*" + Settings.CameraOffset + ", 0.1, cos(2*pi*" + clock + ")*" + Settings.CameraOffset + ">\t\t           \r\n\tlook_at <0,0,0>       \t\r\n\trotate <0,0,0>\r\n}\r\n";
+
+            if (Settings.RotateCamera)
+            {
+                cameraString =
+                    "\n\n\ncamera {\t\r\n\tlocation <sin(2*pi*clock)*" + Settings.CameraOffset + ", 0.1, cos(2*pi*clock)*" + Settings.CameraOffset + ">\t\t           \r\n\tlook_at <0,0,0>       \t\r\n\trotate <0,0,0>\r\n}\r\n";
+
+            }
+
+            var variableStrings = new List<string>();
+            variableStrings.Add(myClockVar);
+            variableStrings.Add(filenameVar);
+            variableStrings.Add(pointsFileVar);
+            variableStrings.Add(anchorsFileVar);
+            variableStrings.Add(anchorRadiusVar);
+            variableStrings.Add(datapointRadius);
+            variableStrings.Add(pointStop);
+            variableStrings.Add(anchorTransmit);
+            if (!Settings.TransparentBackground)
+            {
+                variableStrings.Add(background);
+            }
+
+            variableStrings.Add(cameraString);
+
+            var vString = string.Join("\r\n", variableStrings.ToArray());
+
+            noCamText = vString + noCamText;
+
+
+            File.WriteAllText(compiledFile, noCamText);
+
+            WritePovrayIniFile2(dirName,compiledFilename);
+            return compiledFilename;
+
+
+
         }
+
+
+        /*
         public string PreparePovRayFiles(int currentFrame, string datapointsFilename, string anchorsFilename, string dirName)
         {
             var path = Assembly.GetExecutingAssembly().Location;
@@ -304,94 +390,11 @@ namespace GeneratePoints.Models
             return compiledFilename;
         }
 
-        public void RenderProgressively(string dirname)
-        {
-            CreateDirectory(dirname);
-            var anchorsFilename = GetAnchorsFilename();
-            var dataPointsFilename = GetDatapointsFilename();
-            WriteAnchorsFile(dirname);
-
-
-            var rnd = new Random();
-            var output = "";
-
-            var xPoint = 0.0;
-            var yPoint = 0.0;
-            var zPoint = 0.0;
-
-            var rPoint = 0.0;
-            var gPoint = 0.0;
-            var bPoint = 0.0;
-
-            var sw = new Stopwatch();
-            sw.Start();
-
-            var dataPointCount = 0;
-            var frameProgress = 0;
-            var cWriteCount = 0;
-            var frameCountSteps = (int)(Settings.MaxDataPoints / (double)Settings.FrameCount);
-            //var outputfilename = dirname + "/" + ShapeName + "_r" + Settings.Ratio + "_p" + Settings.MaxDataPoints + "-datapoints.txt";
-
-
-            var dataPointsLocation = dirname + "/" + dataPointsFilename;
-
-            for (int i = 0; i < Settings.MaxDataPoints; i++)
-            {
-
-                var val = rnd.Next(0, AnchorPoints.Count);
-
-                xPoint = (xPoint + AnchorPoints[val].X) * Settings.Ratio;
-                yPoint = (yPoint + AnchorPoints[val].Y) * Settings.Ratio;
-                zPoint = (zPoint + AnchorPoints[val].Z) * Settings.Ratio;
-
-                //  rPoint = (rPoint + AnchorPoints[val].R) * Settings.Ratio;
-                //   gPoint = (gPoint + AnchorPoints[val].G) * Settings.Ratio;
-                //  bPoint = (bPoint + AnchorPoints[val].B) * Settings.Ratio;
-
-                rPoint = (rPoint + AnchorPoints[val].R) * 0.5;
-                gPoint = (gPoint + AnchorPoints[val].G) * 0.5;
-                bPoint = (bPoint + AnchorPoints[val].B) * 0.5;
-
-                var outputstr = "<" + String.Format("{0:0.0000}", xPoint) + "," + String.Format("{0:0.0000}", yPoint) + "," + String.Format("{0:0.0000}", zPoint) + ">";
-
-                output = output + outputstr + ",";
-
-                output = output + "<" + rPoint + "," + gPoint + "," + bPoint + ">,";
-                cWriteCount++;
-                if (cWriteCount == 1000)
-                {
-                    File.AppendAllText(dataPointsLocation, output);
-                    output = "";
-                    cWriteCount = 0;
-                }
-
-                if (i == dataPointCount)
-                {
-
-                    Settings.PointStop = dataPointCount;
-                    if (Settings.FrameCount == 1)
-                    {
-                        Settings.PointStop = Settings.MaxDataPoints;
-                    }
-                    frameProgress++;
-                    dataPointCount = dataPointCount + frameCountSteps;
-
-
-                    double timePerElem = sw.Elapsed.TotalSeconds / (i + 1);
-                    var elemsRemaining = Settings.MaxDataPoints - i;
-                    var minsRemaining = (elemsRemaining * timePerElem / 60).ToString("N");
-                    Console.WriteLine("Writing points\t" + i + "\t" + Settings.MaxDataPoints + "\t" + minsRemaining +
-                                      " mins remaining");
-
-                    PreparePovRayFiles(frameProgress, dataPointsFilename, anchorsFilename, dirname);
-                }
-            }
-            File.AppendAllText(dataPointsLocation, output);
-        }
+       */
         public void RenderRotate(string dirname)
         {
 
-            CreateDirectory(dirname);
+            Utility.CreateDirectory(dirname, Settings.Overwrite);
             var anchorsFilename = GetAnchorsFilename();
 
             WriteAnchorsFile(dirname);
@@ -417,7 +420,7 @@ namespace GeneratePoints.Models
             var maxAngle = 2 * Math.PI;
 
             var angleSteps = (maxAngle - minAngle) / Settings.FrameCount;
-
+            var datapointFiles = new List<string>();
             for (int fIndex = 0; fIndex < Settings.FrameCount; fIndex++)
             {
                 var angle = minAngle + (angleSteps * fIndex);
@@ -507,12 +510,15 @@ namespace GeneratePoints.Models
 
 
                 }
-                PreparePovRayFiles(1, dataPointsFilename, anchorsFilename, dirname);
+                datapointFiles.Add(dataPointsFilename);
+                
 
                 Debug.WriteLine(xmax);
                 File.AppendAllText(dataPointsLocation, output);
 
             }
+
+            PreparePovRayFilesWithIni(datapointFiles, anchorsFilename, dirname);
 
         }
 

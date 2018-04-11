@@ -59,9 +59,11 @@
     <Compile Include="Models\Shape.cs" />
     <Compile Include="Polyhedra\Tetrahedron.cs" />
     <Compile Include="Polyhedra\TruncIco.cs" />
+    <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
