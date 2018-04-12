@@ -44,21 +44,26 @@
   <ItemGroup>
     <Compile Include="AnchorPoint.cs" />
     <Compile Include="BarnsleyFern.cs" />
-    <Compile Include="Settings.cs" />
-    <Compile Include="Shapes2d\Pentagon.cs" />
-    <Compile Include="Shapes2d\Square.cs" />
-    <Compile Include="Shapes2d\Triangle.cs" />
-    <Compile Include="Shapes3d\Cube.cs" />
-    <Compile Include="Shapes3d\Ico.cs" />
-    <Compile Include="Shapes3d\Octahedron.cs" />
+    <Compile Include="Models\Polygon.cs" />
+    <Compile Include="Models\Settings.cs" />
+    <Compile Include="Polygons\Hexagon.cs" />
+    <Compile Include="Polygons\Septagon.cs" />
+    <Compile Include="Polygons\Pentagon.cs" />
+    <Compile Include="Polygons\Square.cs" />
+    <Compile Include="Polygons\Triangle.cs" />
+    <Compile Include="Polyhedra\Cube.cs" />
+    <Compile Include="Polyhedra\Ico.cs" />
+    <Compile Include="Polyhedra\Octahedron.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Shape.cs" />
-    <Compile Include="Shapes3d\Tetrahedron.cs" />
-    <Compile Include="Shapes3d\TruncIco.cs" />
+    <Compile Include="Models\Shape.cs" />
+    <Compile Include="Polyhedra\Tetrahedron.cs" />
+    <Compile Include="Polyhedra\TruncIco.cs" />
+    <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

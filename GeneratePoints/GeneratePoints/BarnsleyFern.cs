@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using GeneratePoints.Models;
 
 namespace GeneratePoints
 {
@@ -12,7 +13,7 @@ namespace GeneratePoints
             ShapeName = "barnsley";
 
             Settings.DataPointRadius = 0.004;
-            Settings.CameraOffset = 11;
+            Settings.CameraZoom = 11;
             Settings.AnchorTransmit = 1.0;
 
             var anchors = new List<List<double>>();
@@ -28,7 +29,7 @@ namespace GeneratePoints
 
 
 
-        public override string WriteDataPoints(int currentFrame = 1)
+        public override string WriteDataPoints(string dirname,int currentFrame = 1)
         {
             var xPoint = 0.0;
             var yPoint = 0.0;
@@ -121,22 +122,21 @@ namespace GeneratePoints
 
         public void StartRenderProgressive(string dirname)
         {
-            var anchorsFilename = WriteAnchorsFile();
-
+            var anchorsFilename = WriteAnchorsFile(dirname);
+            var dataFiles = new List<string>();
             for (var i = 0; i < Settings.FrameCount; i++)
             {
-                var datapointsFilename = WriteDataPoints(i);
-               
-                var povFilename = PreparePovRayFiles(i, datapointsFilename, anchorsFilename, dirname);
-                Console.WriteLine(povFilename);
+                var datapointsFilename = WriteDataPoints(dirname,i);
+               dataFiles.Add(datapointsFilename);
             }
 
-        }
-        public override void StartRender()
-        {
-       
+            var povFilename = PreparePovRayFilesWithIni( dataFiles, anchorsFilename, dirname);
+            Console.WriteLine(povFilename);
+
+
         }
 
-        
+
+
     }
 }

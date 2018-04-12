@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GeneratePoints.Models;
 
 namespace GeneratePoints.Shapes3d
 {
@@ -7,7 +8,7 @@ namespace GeneratePoints.Shapes3d
     {
         public Cube()
         {
-            Settings.CameraOffset = 5;
+            Settings.CameraZoom = 5;
             ShapeName = "cube";
             var anchors = new List<List<double>>();
             var anchor1 = new List<double> { -1, -1, -1 };

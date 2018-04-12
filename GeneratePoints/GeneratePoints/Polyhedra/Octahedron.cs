@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using GeneratePoints.Models;
 
 namespace GeneratePoints.Shapes3d
 {
@@ -13,7 +14,7 @@ namespace GeneratePoints.Shapes3d
             Settings.DataPointRadius = 0.002;
             Settings.MaxDataPoints = 10000000;
             Settings.FrameCount = 4000;
-            Settings.CameraOffset = 2.2;
+            Settings.CameraZoom = 2.2;
             Settings.Overwrite = false;
             ShapeName = "octahedron";
             var anchors = new List<List<double>>();
