@@ -7,7 +7,7 @@ namespace GeneratePoints.Polygons
     {
         public Pentagon()
         {
-            Settings.CameraOffset = 2.2;
+            Settings.CameraZoom = 2.2;
             Settings.AnchorRadius = 0.025;
             Settings.FrameCount = 10;
             Settings.RotateCamera = false;       

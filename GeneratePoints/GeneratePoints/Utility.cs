@@ -43,5 +43,44 @@ namespace GeneratePoints
             }
 
         }
+
+        public static void RenameImages(string directoryName)
+        {
+            var path = Assembly.GetExecutingAssembly().Location;
+            var rootDir = Path.GetDirectoryName(path);
+            var dirpath = Path.Combine(rootDir, directoryName);
+            var files = Directory.GetFiles(dirpath);
+            var filesDict = new Dictionary<double, string>();
+            foreach (var file in files)
+            {
+                var filesplit = file.Split('/');
+                var filename = filesplit[filesplit.Length - 1];
+                var filepart = filename.Split('_');
+                var ratiopart = filepart[1];
+                var numpart = ratiopart.Replace("r", "");
+                double num;
+                var s = double.TryParse(numpart, out num);
+                if (s)
+                {
+                    filesDict.Add(num, file);
+                    var xx = 42;
+                }
+
+            }
+
+            filesDict = filesDict.OrderBy(e => e.Key).ToDictionary(e => e.Key, e => e.Value);
+
+            var i = 1;
+            foreach (var file in filesDict)
+            {
+                var parsedKey = String.Format("{0:0.0000}", file.Key).Replace('.', '-');
+                var newfilename = "t3/triangle_" + i + ".png";
+                var newpath = Path.Combine(dirpath, newfilename);
+                File.Copy(file.Value, newpath);
+
+                i++;
+            }
+
+        }
     }
 }

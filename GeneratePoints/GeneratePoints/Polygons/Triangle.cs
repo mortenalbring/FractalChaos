@@ -8,7 +8,7 @@ namespace GeneratePoints.Polygons
     {
         public Triangle()
         {
-            Settings.CameraOffset = 2.5;
+            Settings.CameraZoom = 2.5;
             Settings.AnchorRadius = 0.015;
             Settings.FrameCount = 10;
             ShapeName = "triangle";

@@ -1,8 +1,12 @@
-﻿namespace GeneratePoints.Models
+﻿using System.Collections.Generic;
+
+namespace GeneratePoints.Models
 {
     public class Settings
     {
-        public double CameraOffset = 2.5;
+        public double CameraZoom = 2.5;
+        public double CameraYOffset = 0.1;
+        public List<double> LookAt = new List<double>(3){0,0,0};
         public int MaxDataPoints = 10000000;
         public double Ratio = 0.5;
         public double AnchorRadius = 0.016;

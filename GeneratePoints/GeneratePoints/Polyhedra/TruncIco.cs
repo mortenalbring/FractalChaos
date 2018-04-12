@@ -12,7 +12,7 @@ namespace GeneratePoints.Shapes3d
             Settings.AnchorRadius = 0.15;
             Settings.DataPointRadius = 0.005;
 
-            Settings.CameraOffset = 5;
+            Settings.CameraZoom = 5;
             Settings.AnchorTransmit = 1;
             Settings.Ratio = 0.3;
 

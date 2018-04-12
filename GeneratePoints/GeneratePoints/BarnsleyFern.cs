@@ -13,7 +13,7 @@ namespace GeneratePoints
             ShapeName = "barnsley";
 
             Settings.DataPointRadius = 0.004;
-            Settings.CameraOffset = 11;
+            Settings.CameraZoom = 11;
             Settings.AnchorTransmit = 1.0;
 
             var anchors = new List<List<double>>();

@@ -22,107 +22,114 @@ namespace GeneratePoints
     {
         static void Main(string[] args)
         {
-        
-            //PentagonPost();
-      //HexagonPost();
-            //TrianglePost2();
-          //  TrianglePost3();
-         //SquarePost();
 
-           // var s = new Septagon();
+            //PentagonPost();
+            //HexagonPost();
+            //TrianglePost2();
+            //  TrianglePost3();
+            //SquarePost();
+
+            // var s = new Septagon();
             //s.RenderProgressively("sept1");
             //SeptagonPost();
 
-        // OcatgonPost();
-        //NonagonPost();
-       // CirclePost();
-       //HexagonPost2();
-     //  TetraPost();
-     //TestTriangle();
+            // OcatgonPost();
+            //NonagonPost();
+            // CirclePost();
+            //HexagonPost2();
+            //  TetraPost();
+            //TestTriangle();
 
-   //  RenameImages("testRatioTestPngs");
-   TriangleRotate();
-     
-   //         TriangleNewTest();
+            //  RenameImages("testRatioTestPngs");
+            // TriangleRotateSmall();
+            // TriangleRotateSingle();
+            //TetraRotate();
+
+            //TriangleNewTest();
+            //   HexagonRotate();
+            //TriangleRotate();
+            TetraRotate();
         }
 
-        private static void RenameImages(string directoryName)
+
+        private static void TetraRotate()
         {
-            var path = Assembly.GetExecutingAssembly().Location;
-            var rootDir = Path.GetDirectoryName(path);
-            var dirpath = Path.Combine(rootDir, directoryName);
-            var files = Directory.GetFiles(dirpath);
-            var filesDict = new Dictionary<double,string>();
-            foreach (var file in files)
-            {
-                var filesplit = file.Split('/');
-                var filename = filesplit[filesplit.Length - 1];
-                var filepart = filename.Split('_');
-                var ratiopart = filepart[1];
-                var numpart = ratiopart.Replace("r", "");
-                double num;
-                var s = double.TryParse(numpart, out num);
-                if (s)
-                {
-                    filesDict.Add(num,file);
-                    var xx = 42;
-                }
-                
-            }
-
-            filesDict = filesDict.OrderBy(e => e.Key).ToDictionary(e => e.Key, e => e.Value);
-
-            var i = 1;
-            foreach (var file in filesDict)
-            {
-                var parsedKey = String.Format("{0:0.0000}", file.Key).Replace('.', '-');
-                var newfilename = "t3/triangle_" + i + ".png";
-                var newpath = Path.Combine(dirpath, newfilename);
-                File.Copy(file.Value,newpath);
-
-                i++;
-            }
-
+            var t = new Tetrahedron();
+            t.Settings.CameraZoom = 4;
+            t.Settings.LookAt[1] = 0.3;
+            t.Settings.MaxDataPoints = 100000;
+            t.Settings.DataPointRadius = 0.002;
+            t.Settings.FrameCount = 4000;
+            t.Settings.RotateCamera = false;
+            t.Settings.RenderProgressively = false;
+            t.Settings.TransparentBackground = false;
+            t.Settings.Overwrite = false;
+            t.RenderWithAngle("tetraRotatePost", 0, (2 * Math.PI));
         }
 
-        private static void TriangleNewTest()
+        private static void TriangleRotateSmall()
         {
             var t = new Triangle();
-            t.Settings.Overwrite = true;
-            t.Settings.MaxDataPoints = 10000;
-            t.Settings.FrameCount = 7;
-            t.Settings.RenderProgressively = false;
+            t.Settings.CameraZoom = 3;
+            t.Settings.LookAt[1] = 0.4;
+            t.Settings.MaxDataPoints = 10;
+            t.Settings.DataPointRadius = 0.02;
+            t.Settings.FrameCount = 10;
             t.Settings.RotateCamera = false;
-            t.StartRender("triangletest");
+            t.Settings.RenderProgressively = true;
+            t.Settings.TransparentBackground = false;
+            t.Settings.Overwrite = true;
+            t.Settings.AnchorTransmit = 0.1;
+            t.RenderWithAngle("triangleRotatePostSmall", (2 * Math.PI));
         }
+
         private static void TriangleRotate()
         {
             var t = new Triangle();
-            t.Settings.CameraOffset = 4;
-            t.Settings.MaxDataPoints = 10000;
-            t.Settings.DataPointRadius = 0.005;
-            t.Settings.FrameCount = 10;
+            t.Settings.CameraZoom = 3;
+            t.Settings.LookAt[1] = 0.4;
+            t.Settings.MaxDataPoints = 100000;
+            t.Settings.DataPointRadius = 0.002;
+            t.Settings.FrameCount = 500;
             t.Settings.RotateCamera = false;
+            t.Settings.RenderProgressively = false;
+            t.Settings.TransparentBackground = false;
+            t.Settings.Overwrite = true;            
+            t.RenderWithAngle("triangleRotatePost", 0, (2 * Math.PI));
+        }
+        private static void TriangleRotateSingle()
+        {
+            var t = new Triangle();
+            t.Settings.CameraZoom = 3;
+            t.Settings.LookAt[1] = 0.4;
+            t.Settings.MaxDataPoints = 1000000;
+            t.Settings.DataPointRadius = 0.001;
+            t.Settings.FrameCount = 1;
+            t.Settings.RotateCamera = false;
+            t.Settings.RenderProgressively = false;
+            t.Settings.TransparentBackground = false;
             t.Settings.Overwrite = true;
-            t.RenderRotate("triangleRotate3");
+            t.RenderWithAngle("triangleRotateSingle2", (Math.PI / 2));
+            //t.RenderRotate("triangleRotate4", 0, (2 * Math.PI));
         }
 
         private static void HexagonRotate()
         {
             var t = new Hexagon();
-            t.Settings.CameraOffset = 4;
+            t.Settings.CameraZoom = 4;
             t.Settings.MaxDataPoints = 100000;
-            t.Settings.DataPointRadius = 0.005;
+            t.Settings.DataPointRadius = 0.004;
             t.Settings.FrameCount = 10;
             t.Settings.RotateCamera = false;
-            t.RenderRotate("hexagonRotate");
+            t.Settings.Overwrite = true;
+            t.RenderWithAngle("hexagonRotate", 0, (2 * Math.PI));
         }
         private static void TriangleVaryRatio()
         {
             var test = new Triangle();
             test.Settings.FrameCount = 1;
             test.Settings.MaxDataPoints = 100000;
-            test.Settings.DataPointRadius = 0.001;      
+            test.Settings.DataPointRadius = 0.001;
             test.Settings.Ratio = 0.3;
             test.Settings.Overwrite = false;
             var max = 300;
@@ -132,7 +139,7 @@ namespace GeneratePoints
             sw.Start();
             for (int i = 0; i < max; i++)
             {
-                var step = (i / (double) max);
+                var step = (i / (double)max);
 
                 var r = (maxR * step) + minR;
 
@@ -143,12 +150,12 @@ namespace GeneratePoints
                 var minsRemaining = (elemsRemaining * timePerElem / 60).ToString("N");
                 Console.WriteLine("Writing ratios\t" + i + "\t" + minsRemaining + " mins remaining");
             }
-            
+
 
         }
         private static void CirclePost()
         {
-            var p = new Polygon(10000);        
+            var p = new Polygon(10000);
             p.StartRender("circlePost1");
         }
 
@@ -191,10 +198,10 @@ namespace GeneratePoints
             h.Settings.FrameCount = 10;
             h.Settings.RotateCamera = false;
             h.StartRender("hexagonPost");
-          //  h.RenderProgressively("Hexagon2");
+            //  h.RenderProgressively("Hexagon2");
 
         }
-       
+
         private static void PentagonPost()
         {
             var p = new Pentagon();
@@ -215,7 +222,7 @@ namespace GeneratePoints
             triangle.Settings.FrameCount = 300;
             triangle.Settings.AnchorRadius = 0.04;
             triangle.Settings.DataPointRadius = 0.006;
-            triangle.Settings.CameraOffset = 2.2;
+            triangle.Settings.CameraZoom = 2.2;
             triangle.StartRender("triangle5");
         }
 
@@ -227,7 +234,7 @@ namespace GeneratePoints
             triangle.Settings.FrameCount = 10;
             triangle.Settings.AnchorRadius = 0.04;
             triangle.Settings.DataPointRadius = triangle.Settings.AnchorRadius / 2;
-            triangle.Settings.CameraOffset = 2.2;
+            triangle.Settings.CameraZoom = 2.2;
             triangle.StartRender("triangePost2");
         }
         private static void TrianglePost3()
@@ -238,7 +245,7 @@ namespace GeneratePoints
             triangle.Settings.FrameCount = 10;
             triangle.Settings.AnchorRadius = 0.04;
             triangle.Settings.DataPointRadius = 0.001;
-            triangle.Settings.CameraOffset = 2.2;
+            triangle.Settings.CameraZoom = 2.2;
             triangle.StartRender("triangePost3");
         }
 
@@ -250,7 +257,7 @@ namespace GeneratePoints
             s.Settings.FrameCount = 100;
             s.Settings.AnchorRadius = 0.04;
             s.Settings.DataPointRadius = 0.003;
-            s.Settings.CameraOffset = 2.2;
+            s.Settings.CameraZoom = 2.2;
             s.StartRender("squarepost");
 
 
