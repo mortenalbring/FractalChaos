@@ -151,6 +151,82 @@ namespace GeneratePoints.Models
             return outputfilename;
         }
 
+        public virtual string WriteDataPointsNoRepeatAnchor(string dirname, int currentFrame = 1)
+        {
+            var rnd = new Random();
+            var output = "";
+
+            var xPoint = 0.0;
+            var yPoint = 0.0;
+            var zPoint = 0.0;
+
+            var rPoint = 0.0;
+            var gPoint = 0.0;
+            var bPoint = 0.0;
+
+            var outputfilename = GetDatapointsFilename();
+            outputfilename = dirname + "/" + outputfilename;
+
+            if (!Settings.Overwrite)
+            {
+                if (File.Exists(outputfilename))
+                {
+                    return outputfilename;
+                }
+            }
+
+            File.Delete(outputfilename);
+            var sw = new Stopwatch();
+            sw.Start();
+            var cWriteCount = 0;
+            var previousVal = 0;
+
+            for (int i = 0; i < Settings.MaxDataPoints; i++)
+            {
+                var val = rnd.Next(0, AnchorPoints.Count);
+                if (val == previousVal)
+                {
+                    while (val == previousVal)
+                    {
+                        val = rnd.Next(0, AnchorPoints.Count);
+                    }
+                }
+                previousVal = val;
+
+                xPoint = (xPoint + AnchorPoints[val].X) * Settings.Ratio;
+                yPoint = (yPoint + AnchorPoints[val].Y) * Settings.Ratio;
+                zPoint = (zPoint + AnchorPoints[val].Z) * Settings.Ratio;
+
+                rPoint = (rPoint + AnchorPoints[val].R) * Settings.Ratio;
+                gPoint = (gPoint + AnchorPoints[val].G) * Settings.Ratio;
+                bPoint = (bPoint + AnchorPoints[val].B) * Settings.Ratio;
+
+
+                var outputstr = "<" + xPoint + "," + yPoint + "," + zPoint + ">";
+                output = output + outputstr + ",";
+
+                output = output + "<" + rPoint + "," + gPoint + "," + bPoint + ">,";
+
+
+                cWriteCount++;
+                if (cWriteCount == 1000)
+                {
+                    File.AppendAllText(outputfilename, output);
+                    output = "";
+                    cWriteCount = 0;
+
+                    double timePerElem = sw.Elapsed.TotalSeconds / (i + 1);
+                    var elemsRemaining = Settings.MaxDataPoints - i;
+                    var minsRemaining = (elemsRemaining * timePerElem / 60).ToString("N");
+
+                    Console.WriteLine("Writing points\t" + i + "\t" + Settings.MaxDataPoints + "\t" + minsRemaining + " mins remaining");
+                }
+
+            }
+            File.AppendAllText(outputfilename, output);
+            return outputfilename;
+        }
+
         /// <summary>
         /// Starts the normal render
         /// </summary>
@@ -165,9 +241,20 @@ namespace GeneratePoints.Models
             var dataFiles = new List<string>();
             dataFiles.Add(dataPointsFilename);
             var povFile = PreparePovRayFilesWithIni(dataFiles, anchorsFilename, dirname);
-            Console.WriteLine("Written " + povFile);
+            Console.WriteLine("Written " + povFile);           
+        }
+        public virtual void StartRenderNoRepeat(string dirname)
+        {
+            var dataPointsFilename = GetDatapointsFilename();
+            var anchorsFilename = GetAnchorsFilename();
 
-           
+            Utility.CreateDirectory(dirname, Settings.Overwrite);
+            WriteAnchorsFile(dirname);
+            WriteDataPointsNoRepeatAnchor(dirname);
+            var dataFiles = new List<string>();
+            dataFiles.Add(dataPointsFilename);
+            var povFile = PreparePovRayFilesWithIni(dataFiles, anchorsFilename, dirname);
+            Console.WriteLine("Written " + povFile);
         }
 
         public void WritePovrayIniFile(string dirname,string povFilename)
@@ -296,25 +383,20 @@ namespace GeneratePoints.Models
         {
             RenderWithAngle(dirname,angle,angle);
         }
+
+
         public void RenderWithAngle(string dirname, double minAngle, double maxAngle)
         {
-
             Utility.CreateDirectory(dirname, Settings.Overwrite);
             var anchorsFilename = GetAnchorsFilename();
-
             WriteAnchorsFile(dirname);
-
 
             var rnd = new Random();
         
 
             var sw = new Stopwatch();
-            sw.Start();
-
-         
-            var cWriteCount = 0;
-            
-
+            sw.Start();         
+            var cWriteCount = 0;        
             var xmax = 0.0;
 
             var angleSteps = (maxAngle - minAngle) / Settings.FrameCount;
@@ -397,12 +479,7 @@ namespace GeneratePoints.Models
                         File.AppendAllText(dataPointsLocation, output);
                         output = "";
                         cWriteCount = 0;
-
-               
-
                     }
-
-
                 }
 
                 double timePerElem = sw.Elapsed.TotalSeconds / (fIndex + 1);

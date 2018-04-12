@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GeneratePoints
 {
@@ -15,9 +13,7 @@ namespace GeneratePoints
             var path = Assembly.GetExecutingAssembly().Location;
             var directory = Path.GetDirectoryName(path);
             if (directory == null)
-            {
                 throw new Exception("No root directory found");
-            }
 
             var newDir = Path.Combine(directory, dirName);
 
@@ -28,20 +24,47 @@ namespace GeneratePoints
             else
             {
                 if (!overwrite)
-                {
                     return;
-                }
                 var di = new DirectoryInfo(newDir);
-                foreach (FileInfo file in di.GetFiles())
-                {
+                foreach (var file in di.GetFiles())
                     file.Delete();
-                }
-                foreach (DirectoryInfo dir in di.GetDirectories())
-                {
+                foreach (var dir in di.GetDirectories())
                     dir.Delete(true);
-                }
+            }
+        }
+
+        public static void FindUnrun(string directoryName)
+        {
+            var path = Assembly.GetExecutingAssembly().Location;
+            var rootDir = Path.GetDirectoryName(path);
+            var dirpath = Path.Combine(rootDir, directoryName);
+            var files = Directory.GetFiles(dirpath);
+
+            var povfiles = files.Where(e => e.EndsWith(".pov")).ToList();
+            var unrunfiles = new List<string>();
+            foreach (var povfile in povfiles)
+            {
+                var png = povfile.Replace(".pov", ".png");
+                if (!File.Exists(png))
+                    unrunfiles.Add(povfile);
             }
 
+
+            var chunks = ChunkList(unrunfiles, 300);
+
+            var c = 0;
+            foreach (var chunk in chunks)
+            {
+                c++;
+                var dirName = Path.Combine(rootDir, directoryName + "-unrun-" + c);
+                Directory.CreateDirectory(dirName);
+                foreach (var povfile in chunk)
+                {
+                    var povFileName = Path.GetFileName(povfile);
+                    var unrunPath = Path.Combine(dirName, povFileName);
+                    File.Copy(povfile, unrunPath);
+                }
+            }
         }
 
         public static void RenameImages(string directoryName)
@@ -65,7 +88,6 @@ namespace GeneratePoints
                     filesDict.Add(num, file);
                     var xx = 42;
                 }
-
             }
 
             filesDict = filesDict.OrderBy(e => e.Key).ToDictionary(e => e.Key, e => e.Value);
@@ -73,14 +95,23 @@ namespace GeneratePoints
             var i = 1;
             foreach (var file in filesDict)
             {
-                var parsedKey = String.Format("{0:0.0000}", file.Key).Replace('.', '-');
+                var parsedKey = string.Format("{0:0.0000}", file.Key).Replace('.', '-');
                 var newfilename = "t3/triangle_" + i + ".png";
                 var newpath = Path.Combine(dirpath, newfilename);
                 File.Copy(file.Value, newpath);
 
                 i++;
             }
+        }
 
+        private static List<List<T>> ChunkList<T>(List<T> list, int nSize = 30)
+        {
+            var chunkedList = new List<List<T>>();
+
+            for (var i = 0; i < list.Count; i += nSize)
+                chunkedList.Add(list.GetRange(i, Math.Min(nSize, list.Count - i)));
+
+            return chunkedList;
         }
     }
 }
