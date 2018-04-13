@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using GeneratePoints.Models;
-using GeneratePoints.Polygons;
-using GeneratePoints.Shapes3d;
-
-namespace GeneratePoints
+﻿namespace GeneratePoints
 {
     /// <summary>
     /// This program generates the data points and POV-Ray files for rendering the chaos game for various different shapes

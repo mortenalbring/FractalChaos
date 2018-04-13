@@ -55,6 +55,7 @@
     <Compile Include="Polyhedra\Ico.cs" />
     <Compile Include="Polyhedra\Octahedron.cs" />
     <Compile Include="Posts.cs" />
+    <Compile Include="PovRay.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Shape.cs" />

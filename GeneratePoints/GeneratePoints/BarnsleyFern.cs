@@ -12,9 +12,9 @@ namespace GeneratePoints
         {
             ShapeName = "barnsley";
 
-            Settings.DataPointRadius = 0.004;
-            Settings.CameraZoom = 11;
-            Settings.AnchorTransmit = 1.0;
+            Settings.Render.DataPointRadius = 0.004;
+            Settings.Render.CameraZoom = 11;
+            Settings.Render.AnchorTransmit = 1.0;
 
             var anchors = new List<List<double>>();
             var anchor1 = new List<double> { -1, -1, 0 };
@@ -43,9 +43,9 @@ namespace GeneratePoints
             sw.Start();
 
             var cWriteCount = 0;
-            var outputfilename = ShapeName + "_c" + currentFrame + "_p" + Settings.MaxDataPoints + "-datapoints.txt";
+            var outputfilename = ShapeName + "_c" + currentFrame + "_p" + Settings.Calculation.MaxDataPoints + "-datapoints.txt";
 
-            if (!Settings.Overwrite)
+            if (!Settings.Calculation.Overwrite)
             {
                 if (File.Exists(outputfilename))
                 {
@@ -65,11 +65,11 @@ namespace GeneratePoints
 
             var min = -0.04;
             var max = 0.08;
-            var steps = (max - min) / (double)Settings.FrameCount;
+            var steps = (max - min) / (double)Settings.Calculation.FrameCount;
             var bval = min + (steps * currentFrame);
             b[2] = bval;
 
-            for (int i = 0; i < Settings.MaxDataPoints; i++)
+            for (int i = 0; i < Settings.Calculation.MaxDataPoints; i++)
             {
                 var val = rnd.Next(0, 100);
                 int n;
@@ -107,10 +107,10 @@ namespace GeneratePoints
                     cWriteCount = 0;
 
                     double timePerElem = sw.Elapsed.TotalSeconds / (i + 1);
-                    var elemsRemaining = Settings.MaxDataPoints - i;
+                    var elemsRemaining = Settings.Calculation.MaxDataPoints - i;
                     var minsRemaining = (elemsRemaining * timePerElem / 60).ToString("N");
 
-                    Console.WriteLine("Writing points\t" + i + "\t" + Settings.MaxDataPoints + "\t" + minsRemaining + " mins remaining");
+                    Console.WriteLine("Writing points\t" + i + "\t" + Settings.Calculation.MaxDataPoints + "\t" + minsRemaining + " mins remaining");
                 }
             }
 
@@ -124,13 +124,13 @@ namespace GeneratePoints
         {
             var anchorsFilename = WriteAnchorsFile(dirname);
             var dataFiles = new List<string>();
-            for (var i = 0; i < Settings.FrameCount; i++)
+            for (var i = 0; i < Settings.Calculation.FrameCount; i++)
             {
                 var datapointsFilename = WriteDataPoints(dirname,i);
                dataFiles.Add(datapointsFilename);
             }
 
-            var povFilename = PreparePovRayFilesWithIni( dataFiles, anchorsFilename, dirname);
+            var povFilename = PovRay.PreparePovRayFilesWithIni(Settings, dataFiles, anchorsFilename, dirname);
             Console.WriteLine(povFilename);
 
 

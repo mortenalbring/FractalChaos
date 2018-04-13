@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using GeneratePoints.Models;
 
-namespace GeneratePoints.Shapes3d
+namespace GeneratePoints.Polyhedra
 {
 
     public class Cube : Shape
     {
         public Cube()
         {
-            Settings.CameraZoom = 5;
+            Settings.Render.CameraZoom = 5;
             ShapeName = "cube";
             var anchors = new List<List<double>>();
             var anchor1 = new List<double> { -1, -1, -1 };
