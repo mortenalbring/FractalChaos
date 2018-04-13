@@ -12,6 +12,18 @@ namespace GeneratePoints
 {
     public class Posts
     {
+        public static void TriangleNoRepeat()
+        {
+            var s = new Triangle();
+            s.Settings.RotateCamera = false;
+            s.Settings.MaxDataPoints = 100000;
+            s.Settings.FrameCount = 100;
+            s.Settings.AnchorRadius = 0.04;
+            s.Settings.DataPointRadius = 0.003;
+            s.Settings.CameraZoom = 2.2;
+            s.Settings.Overwrite = true;
+            s.StartRenderNoRepeat("trianglePostNoRepeat");
+        }
         public static void SquareNoRepeat()
         {
             var s = new Square();
@@ -134,9 +146,9 @@ namespace GeneratePoints
                 var minsRemaining = (elemsRemaining * timePerElem / 60).ToString("N");
                 Console.WriteLine("Writing ratios\t" + i + "\t" + minsRemaining + " mins remaining");
             }
-
-
         }
+
+
         public static void CirclePost()
         {
             var p = new Polygon(10000);
@@ -185,7 +197,6 @@ namespace GeneratePoints
           //  h.StartRender("hexagonPost");
             h.StartRenderNoRepeat("hexagonNoRepeat");
             //  h.RenderProgressively("Hexagon2");
-
         }
 
         public static void PentagonPost()
@@ -239,7 +250,7 @@ namespace GeneratePoints
         {
             var s = new Square();
             s.Settings.RotateCamera = false;
-            s.Settings.MaxDataPoints = 1000000;
+            s.Settings.MaxDataPoints = 10000000;
             s.Settings.FrameCount = 100;
             s.Settings.AnchorRadius = 0.04;
             s.Settings.DataPointRadius = 0.001;
@@ -249,7 +260,7 @@ namespace GeneratePoints
             s.Settings.TransparentBackground = false;
             s.Settings.RenderProgressively = false;
           //  s.StartRender("squarepost");
-            s.StartRenderNoRepeat("squarePostNoRepeat");
+            s.StartRenderNoRepeat("squarePostNoRepeat2");
 
 
         }

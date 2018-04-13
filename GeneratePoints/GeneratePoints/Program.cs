@@ -22,8 +22,9 @@ namespace GeneratePoints
     {
         static void Main(string[] args)
         {
-            //Posts.SquarePost();           
-            Posts.HexagonPost();
+           // Posts.SquarePost();           
+           // Posts.TriangleNoRepeat();
+           Posts.HexagonPost();
         }
     }
 }
