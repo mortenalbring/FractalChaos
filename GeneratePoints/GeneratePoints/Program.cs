@@ -14,7 +14,8 @@
         {
            // Posts.SquarePost();           
            // Posts.TriangleNoRepeat();
-           Posts.HexagonPost();
+           //Posts.HexagonPost();
+            Posts.CubeNoRepeat();
         }
     }
 }

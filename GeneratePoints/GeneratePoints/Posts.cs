@@ -8,6 +8,18 @@ namespace GeneratePoints
 {
     public class Posts
     {
+        public static void CubeNoRepeat()
+        {
+            var s = new Cube();
+            s.Settings.Render.RotateCamera = false;
+            s.Settings.Calculation.MaxDataPoints = 100000;
+            s.Settings.Calculation.FrameCount = 100;
+            s.Settings.Render.AnchorRadius = 0.04;
+            s.Settings.Render.DataPointRadius = 0.003;            
+            s.Settings.Calculation.Overwrite = true;
+            s.StartRenderNoRepeat("cubePostNoRepeat");
+        }
+
         public static void TriangleNoRepeat()
         {
             var s = new Triangle();

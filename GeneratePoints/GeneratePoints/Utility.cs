@@ -3,11 +3,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using GeneratePoints.Models;
 
 namespace GeneratePoints
 {
     public class Utility
     {
+        public static string GetDatapointsFilename(string shapeName, Settings settings, string append = "")
+        {
+            var outputfilename = shapeName + "_r" + settings.Calculation.Ratio + "_p" + settings.Calculation.MaxDataPoints + append + "-datapoints.txt";
+            return outputfilename;
+        }
         public static void CreateDirectory(string dirName, bool overwrite)
         {
             var path = Assembly.GetExecutingAssembly().Location;

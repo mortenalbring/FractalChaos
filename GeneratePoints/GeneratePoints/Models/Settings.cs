@@ -58,7 +58,7 @@ namespace GeneratePoints.Models
         public double AnchorRadius = 0.016;
 
         /// <summary>
-        ///     The transparency of the anchor points (1.0 is opaque, 0.0 is transparent)
+        ///     The transparency of the anchor points (0.0 is opaque, 1.0 is transparent)
         /// </summary>
         public double AnchorTransmit = 0.7;
 
@@ -73,7 +73,7 @@ namespace GeneratePoints.Models
         public double CameraZoom = 2.5;
 
         /// <summary>
-        ///     The radius of the data points
+        ///     The radius of the data points. You may want to scale this with the number of data points. 
         /// </summary>
         public double DataPointRadius = 0.0005;
 
