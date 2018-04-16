@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using GeneratePoints.Models;
 
-namespace GeneratePoints.Shapes3d
+namespace GeneratePoints.Polyhedra
 {
 
     public class Tetrahedron : Shape
@@ -10,7 +10,7 @@ namespace GeneratePoints.Shapes3d
         public Tetrahedron()
         {
             ShapeName = "tetra";
-            Settings.CameraZoom = 3;
+            Settings.Render.CameraZoom = 3;
             var anchors = new List<List<double>>();
             var anchor1 = new List<double> { -1, 0, -1 / Math.Sqrt(2) };
             var anchor2 = new List<double> { 1, 0, -1 / Math.Sqrt(2) };

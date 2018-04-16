@@ -7,12 +7,12 @@ namespace GeneratePoints.Polygons
     {
         public Hexagon()
         {
-            Settings.CameraZoom = 2.2;
-            Settings.AnchorRadius = 0.025;
-            Settings.FrameCount = 10;
-            Settings.RotateCamera = false;
-            Settings.AnchorTransmit = 0.7;
-            Settings.DataPointRadius = 0.005;
+            Settings.Render.CameraZoom = 2.2;
+            Settings.Render.AnchorRadius = 0.025;
+            Settings.Calculation.FrameCount = 10;
+            Settings.Render.RotateCamera = false;
+            Settings.Render.AnchorTransmit = 0.7;
+            Settings.Render.DataPointRadius = 0.005;
             ShapeName = "Hexagon";
             Vertices = 6;
             var anchors = CalculateVertices();
