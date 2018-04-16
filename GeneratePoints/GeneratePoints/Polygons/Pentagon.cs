@@ -7,11 +7,11 @@ namespace GeneratePoints.Polygons
     {
         public Pentagon()
         {
-            Settings.CameraZoom = 2.2;
-            Settings.AnchorRadius = 0.025;
-            Settings.FrameCount = 10;
-            Settings.RotateCamera = false;       
-            Settings.DataPointRadius = 0.0005;
+            Settings.Render.CameraZoom = 2.2;
+            Settings.Render.AnchorRadius = 0.025;
+            Settings.Calculation.FrameCount = 10;
+            Settings.Render.RotateCamera = false;       
+            Settings.Render.DataPointRadius = 0.0005;
             ShapeName = "Pentagon";
             Vertices = 5;
             var anchors = CalculateVertices();

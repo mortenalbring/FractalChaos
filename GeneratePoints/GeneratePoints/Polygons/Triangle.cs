@@ -8,9 +8,9 @@ namespace GeneratePoints.Polygons
     {
         public Triangle()
         {
-            Settings.CameraZoom = 2.5;
-            Settings.AnchorRadius = 0.015;
-            Settings.FrameCount = 10;
+            Settings.Render.CameraZoom = 2.5;
+            Settings.Render.AnchorRadius = 0.015;
+            Settings.Calculation.FrameCount = 10;
             ShapeName = "triangle";
             var anchors = new List<List<double>>();
             var anchor1 = new List<double> { -1, -1, 0 };

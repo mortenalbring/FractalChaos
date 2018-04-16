@@ -44,6 +44,9 @@
   <ItemGroup>
     <Compile Include="AnchorPoint.cs" />
     <Compile Include="BarnsleyFern.cs" />
+    <Compile Include="CalculationMethods\NoRepeatNearest.cs" />
+    <Compile Include="CalculationMethods\NoRepeat.cs" />
+    <Compile Include="CalculationMethods\VaryAngle.cs" />
     <Compile Include="Models\Polygon.cs" />
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Polygons\Hexagon.cs" />
@@ -54,6 +57,10 @@
     <Compile Include="Polyhedra\Cube.cs" />
     <Compile Include="Polyhedra\Ico.cs" />
     <Compile Include="Polyhedra\Octahedron.cs" />
+    <Compile Include="Posts\Barns.cs" />
+    <Compile Include="Posts\Polygons.cs" />
+    <Compile Include="Posts\Polyhedra.cs" />
+    <Compile Include="PovRay.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Shape.cs" />

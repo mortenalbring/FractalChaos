@@ -6,9 +6,9 @@ namespace GeneratePoints.Polygons
     {
         public Square()
         {
-            Settings.CameraZoom = 3.5;
-            Settings.AnchorRadius = 0.015;
-            Settings.FrameCount = 10;
+            Settings.Render.CameraZoom = 3.5;
+            Settings.Render.AnchorRadius = 0.015;
+            Settings.Calculation.FrameCount = 10;
             ShapeName = "Square";
             Vertices = 4;
             var anchors = CalculateVertices();

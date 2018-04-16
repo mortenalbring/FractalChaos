@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Collections.Generic;
 using GeneratePoints.Models;
 
-namespace GeneratePoints.Shapes3d
+namespace GeneratePoints.Polyhedra
 {
 
     public class Octahedron : Shape
     {
         public Octahedron()
         {
-            Settings.DataPointRadius = 0.002;
-            Settings.MaxDataPoints = 10000000;
-            Settings.FrameCount = 4000;
-            Settings.CameraZoom = 2.2;
-            Settings.Overwrite = false;
+            Settings.Render.DataPointRadius = 0.002;
+            Settings.Calculation.MaxDataPoints = 10000000;
+            Settings.Calculation.FrameCount = 4000;
+            Settings.Render.CameraZoom = 2.2;
+            Settings.Calculation.Overwrite = false;
             ShapeName = "octahedron";
             var anchors = new List<List<double>>();
             var anchor1 = new List<double> {-1, 0, 0};

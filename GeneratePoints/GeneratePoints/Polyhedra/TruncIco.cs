@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using GeneratePoints.Models;
 
-namespace GeneratePoints.Shapes3d
+namespace GeneratePoints.Polyhedra
 {
     public class TruncIco : Shape
     {
         public TruncIco()
         {
             ShapeName = "truncico";
-            Settings.AnchorRadius = 0.15;
-            Settings.DataPointRadius = 0.005;
+            Settings.Render.AnchorRadius = 0.15;
+            Settings.Render.DataPointRadius = 0.005;
 
-            Settings.CameraZoom = 5;
-            Settings.AnchorTransmit = 1;
-            Settings.Ratio = 0.3;
+            Settings.Render.CameraZoom = 5;
+            Settings.Render.AnchorTransmit = 1;
+            Settings.Calculation.Ratio = 0.3;
 
             var phi = (1 + Math.Sqrt(5)) / 2;
             var anchors = new List<List<double>>
