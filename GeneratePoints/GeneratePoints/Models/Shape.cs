@@ -151,7 +151,7 @@ namespace GeneratePoints.Models
         /// <summary>
         /// Starts the normal render
         /// </summary>
-        public virtual void StartRender(string dirname)
+        public virtual string StartRender(string dirname)
         {
             var dataPointsFilename = Utility.GetDatapointsFilename(ShapeName, Settings);
             var anchorsFilename = GetAnchorsFilename();
@@ -162,7 +162,9 @@ namespace GeneratePoints.Models
             var dataFiles = new List<string>();
             dataFiles.Add(dataPointsFilename);
             var povFile = PovRay.PreparePovRayFilesWithIni(Settings,dataFiles, anchorsFilename, dirname);
-            Console.WriteLine("Written " + povFile);           
+            Console.WriteLine("Written " + povFile);
+
+            return dataPointsFilename;
         }
 
         /// <summary>
@@ -182,11 +184,48 @@ namespace GeneratePoints.Models
             var povFile = PovRay.PreparePovRayFilesWithIni(Settings,dataFiles, anchorsFilename, dirname);
             Console.WriteLine("Written " + povFile);
         }
+        public virtual void StartRenderNoRepeatNearest(string dirname)
+        {
+            var dataPointsFilename = Utility.GetDatapointsFilename(ShapeName, Settings);
+            var anchorsFilename = GetAnchorsFilename();
 
-       
+            Utility.CreateDirectory(dirname, Settings.Calculation.Overwrite);
+            WriteAnchorsFile(dirname);
+            NoRepeatNearest.WriteDataPointsNoRepeatAnchor(Settings, AnchorPoints, dirname, dataPointsFilename);
+            var dataFiles = new List<string>();
+            dataFiles.Add(dataPointsFilename);
+            var povFile = PovRay.PreparePovRayFilesWithIni(Settings, dataFiles, anchorsFilename, dirname);
+            Console.WriteLine("Written " + povFile);
+        }
+
+        public virtual void StartRenderVaryRatio(string dirname, double minR, double maxR)
+        {
+            var anchorsFilename = GetAnchorsFilename();
+
+            Utility.CreateDirectory(dirname, Settings.Calculation.Overwrite);
+            WriteAnchorsFile(dirname);
+            var dataFiles = new List<string>();
+
+            for (int i = 0; i < Settings.Calculation.FrameCount; i++)
+            {
+                var step = (i / (double)Settings.Calculation.FrameCount);
+
+                var r = (maxR * step) + minR;
+                Settings.Calculation.Ratio = r;
+                //var file = StartRender(dirname);
+                var file = WriteDataPoints(dirname);
+                dataFiles.Add(file);
+            }
+            var povFile = PovRay.PreparePovRayFilesWithIni(Settings, dataFiles, anchorsFilename, dirname);
+            Console.WriteLine("Written " + povFile);
 
 
-       
+        }
+
+
+
+
+
         /// <summary>
         /// Renders and also rotates about a point 
         /// </summary>

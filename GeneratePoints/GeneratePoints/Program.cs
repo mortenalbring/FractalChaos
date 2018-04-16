@@ -1,4 +1,6 @@
-﻿namespace GeneratePoints
+﻿using GeneratePoints.Posts;
+
+namespace GeneratePoints
 {
     /// <summary>
     /// This program generates the data points and POV-Ray files for rendering the chaos game for various different shapes
@@ -12,10 +14,11 @@
     {
         static void Main(string[] args)
         {
-           // Posts.SquarePost();           
-           // Posts.TriangleNoRepeat();
-           //Posts.HexagonPost();
-            Posts.CubeNoRepeat();
+            // Posts.SquarePost();           
+            // Posts.TriangleNoRepeat();
+            //Posts.HexagonPost();
+            // Posts.HexagonVaryRatio();
+            Barns.BarnsleyFarn();
         }
     }
 }

@@ -43,7 +43,7 @@ namespace GeneratePoints
             sw.Start();
 
             var cWriteCount = 0;
-            var outputfilename = ShapeName + "_c" + currentFrame + "_p" + Settings.Calculation.MaxDataPoints + "-datapoints.txt";
+            var outputfilename = dirname + "/" + ShapeName + "_c" + currentFrame + "_p" + Settings.Calculation.MaxDataPoints + "-datapoints.txt";
 
             if (!Settings.Calculation.Overwrite)
             {
@@ -67,7 +67,7 @@ namespace GeneratePoints
             var max = 0.08;
             var steps = (max - min) / (double)Settings.Calculation.FrameCount;
             var bval = min + (steps * currentFrame);
-            b[2] = bval;
+            //b[2] = bval;
 
             for (int i = 0; i < Settings.Calculation.MaxDataPoints; i++)
             {
@@ -122,6 +122,7 @@ namespace GeneratePoints
 
         public void StartRenderProgressive(string dirname)
         {
+            Utility.CreateDirectory(dirname, Settings.Calculation.Overwrite);
             var anchorsFilename = WriteAnchorsFile(dirname);
             var dataFiles = new List<string>();
             for (var i = 0; i < Settings.Calculation.FrameCount; i++)

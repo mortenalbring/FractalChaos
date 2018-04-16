@@ -25,7 +25,11 @@ namespace GeneratePoints
             var basedir = dirsplit[0] + "\\" + dirsplit[1];
             const string nocamFile = "fc-nocam.pov";
             var nocamPath = Path.Combine(basedir, nocamFile);
-            var compiledFilename = datapointsFilenames.First() + ".pov";
+            var withoutPath = datapointsFilenames.Select(file => Path.GetFileName(file)).ToList();
+            anchorsFilename = Path.GetFileName(anchorsFilename);
+
+            datapointsFilenames = withoutPath;
+            var compiledFilename = Path.GetFileName(datapointsFilenames.First()) + ".pov";
 
             var compiledFile = Path.Combine(newDir, compiledFilename);
             if (File.Exists(compiledFile))
