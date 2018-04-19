@@ -24,7 +24,7 @@ namespace GeneratePoints
             var dirsplit = directory.Split('\\');
             var basedir = dirsplit[0] + "\\" + dirsplit[1];
             const string nocamFile = "fc-nocam.pov";
-            var nocamPath = Path.Combine(basedir, nocamFile);
+            var nocamPath = Path.Combine(directory, nocamFile);
             var withoutPath = datapointsFilenames.Select(file => Path.GetFileName(file)).ToList();
             anchorsFilename = Path.GetFileName(anchorsFilename);
 
@@ -47,6 +47,7 @@ namespace GeneratePoints
                 if (index < datapointsFilenames.Count - 1)
                     fileNameStr = fileNameStr + ",";
             }
+
             fileNameStr = fileNameStr + "}";
 
             var myClockVar = "#declare Start = 0;\r\n#declare End = " + (settings.Calculation.FrameCount - 1) +
@@ -72,14 +73,16 @@ namespace GeneratePoints
             var clock = 0;
             var cameraString =
                 "\n\n\ncamera {\t\r\n\tlocation <sin(2*pi*" + clock + ")*" + settings.Render.CameraZoom + "," +
-                settings.Render.CameraYOffset + ", cos(2*pi*" + clock + ")*" + settings.Render.CameraZoom + ">\t\t \r\n\tlook_at <" +
+                settings.Render.CameraYOffset + ", cos(2*pi*" + clock + ")*" + settings.Render.CameraZoom +
+                ">\t\t \r\n\tlook_at <" +
                 settings.Render.LookAt[0] + "," + settings.Render.LookAt[1] + "," + settings.Render.LookAt[2] +
                 ">       \t\r\n\trotate <0,0,0>\r\n}\r\n";
 
             if (settings.Render.RotateCamera)
                 cameraString =
                     "\n\n\ncamera {\t\r\n\tlocation <sin(2*pi*clock)*" + settings.Render.CameraZoom + "," +
-                    settings.Render.CameraYOffset + ", cos(2*pi*clock)*" + settings.Render.CameraZoom + ">\t\t  \r\n\tlook_at <" +
+                    settings.Render.CameraYOffset + ", cos(2*pi*clock)*" + settings.Render.CameraZoom +
+                    ">\t\t  \r\n\tlook_at <" +
                     settings.Render.LookAt[0] + "," + settings.Render.LookAt[1] + "," + settings.Render.LookAt[2] +
                     ">       \t\r\n\trotate <0,0,0>\r\n}\r\n";
 

@@ -3,7 +3,6 @@ using GeneratePoints.Models;
 
 namespace GeneratePoints.Polyhedra
 {
-
     public class Cube : Shape
     {
         public Cube()
@@ -11,14 +10,14 @@ namespace GeneratePoints.Polyhedra
             Settings.Render.CameraZoom = 5;
             ShapeName = "cube";
             var anchors = new List<List<double>>();
-            var anchor1 = new List<double> { -1, -1, -1 };
-            var anchor2 = new List<double> { 1, -1, -1 };
-            var anchor3 = new List<double> { -1, 1, -1 };
-            var anchor4 = new List<double> { 1, 1, -1 };
-            var anchor5 = new List<double> { -1, 1, 1 };
-            var anchor6 = new List<double> { 1, 1, 1 };
-            var anchor7 = new List<double> { 1, -1, 1 };
-            var anchor8 = new List<double> { -1, -1, 1 };
+            var anchor1 = new List<double> {-1, -1, -1};
+            var anchor2 = new List<double> {1, -1, -1};
+            var anchor3 = new List<double> {-1, 1, -1};
+            var anchor4 = new List<double> {1, 1, -1};
+            var anchor5 = new List<double> {-1, 1, 1};
+            var anchor6 = new List<double> {1, 1, 1};
+            var anchor7 = new List<double> {1, -1, 1};
+            var anchor8 = new List<double> {-1, -1, 1};
 
 
             anchors.Add(anchor1);
@@ -32,6 +31,4 @@ namespace GeneratePoints.Polyhedra
             AnchorPoints = MakeAnchorPoints(anchors);
         }
     }
-
-
 }

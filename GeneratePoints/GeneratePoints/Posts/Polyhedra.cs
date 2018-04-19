@@ -1,10 +1,19 @@
 ﻿using System;
+using GeneratePoints.CalculationMethods;
 using GeneratePoints.Polyhedra;
 
 namespace GeneratePoints.Posts
 {
-    class Polyhedra
-    {       
+    internal class Polyhedra
+    {
+        public static void TetraPost()
+        {
+            var t = new Tetrahedron();
+            t.Settings.Calculation.MaxDataPoints = 1000000;
+            t.Settings.Calculation.FrameCount = 10;
+            t.StartRender("tetraAnimPost");
+        }
+
         public static void TetraRotate()
         {
             var t = new Tetrahedron();
@@ -19,15 +28,7 @@ namespace GeneratePoints.Posts
             t.Settings.Calculation.Overwrite = false;
             t.Settings.Calculation.AngleMin = 0;
             t.Settings.Calculation.AngleMax = 2 * Math.PI;
-            t.StartRender("tetraRotatePost", CalculationMethods.CalculationMethod.WithAngle);
-        }
-
-        public static void TetraPost()
-        {
-            var t = new Tetrahedron();
-            t.Settings.Calculation.MaxDataPoints = 1000000;
-            t.Settings.Calculation.FrameCount = 10;
-            t.StartRender("tetraAnimPost");
+            t.StartRender("tetraRotatePost", CalculationMethod.WithAngle);
         }
     }
 }

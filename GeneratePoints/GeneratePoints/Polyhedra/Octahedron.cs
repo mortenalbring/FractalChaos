@@ -3,7 +3,6 @@ using GeneratePoints.Models;
 
 namespace GeneratePoints.Polyhedra
 {
-
     public class Octahedron : Shape
     {
         public Octahedron()
@@ -31,17 +30,5 @@ namespace GeneratePoints.Polyhedra
 
             AnchorPoints = MakeAnchorPoints(anchors);
         }
-     
-
-       
-
-        
-
-
-        
-
-
     }
 }
-
-

@@ -1,52 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using GeneratePoints.CalculationMethods;
 using GeneratePoints.Models;
 using GeneratePoints.Polygons;
-using GeneratePoints.Polyhedra;
 
 namespace GeneratePoints.Posts
 {
-    class Polygons
+    internal class Polygons
     {
-
-        public static void TriangleRotateSmall()
+        public static void CirclePost()
         {
-            var t = new Triangle();
-            t.Settings.Render.CameraZoom = 3;
-            t.Settings.Render.LookAt[1] = 0.4;
-            t.Settings.Calculation.MaxDataPoints = 10;
-            t.Settings.Render.DataPointRadius = 0.02;
-            t.Settings.Calculation.FrameCount = 10;
-            t.Settings.Render.RotateCamera = false;
-            t.Settings.Render.RenderProgressively = true;
-            t.Settings.Render.TransparentBackground = false;
-            t.Settings.Calculation.Overwrite = true;
-            t.Settings.Render.AnchorTransmit = 0.1;
-            t.Settings.Calculation.Angle = 2 * Math.PI;
-            t.StartRender("triangleRotatePostSmall", CalculationMethods.CalculationMethod.WithAngle);
-
-            //t.RenderWithAngle("triangleRotatePostSmall", (2 * Math.PI));
+            var p = new Polygon(10000);
+            p.StartRender("circlePost1");
         }
 
-        public static void TriangleRotate()
+        public static void HexagonPost()
         {
-            var t = new Triangle();
-            t.Settings.Render.CameraZoom = 3;
-            t.Settings.Render.LookAt[1] = 0.4;
-            t.Settings.Calculation.MaxDataPoints = 100000;
-            t.Settings.Render.DataPointRadius = 0.002;
-            t.Settings.Calculation.FrameCount = 500;
-            t.Settings.Render.RotateCamera = false;
-            t.Settings.Render.RenderProgressively = false;
-            t.Settings.Render.TransparentBackground = false;
-            t.Settings.Calculation.Overwrite = true;
-            t.Settings.Calculation.AngleMin = 0;
-            t.Settings.Calculation.AngleMax = 2 * Math.PI;
-            t.StartRender("triangleRotatePostSmall", CalculationMethods.CalculationMethod.WithAngle);
+            var h = new Hexagon();
+            h.Settings.Calculation.MaxDataPoints = 10000000;
+            h.Settings.Calculation.Overwrite = true;
+            h.Settings.Render.DataPointRadius = 0.001;
+            h.Settings.Calculation.FrameCount = 1;
+            h.Settings.Render.RotateCamera = false;
+            h.Settings.Render.RenderProgressively = false;
+            //  h.StartRender("hexagonPost");
+            h.StartRender("hexagonNoRepeat", CalculationMethod.NoRepeat);
+            //  h.RenderProgressively("Hexagon2");
         }
 
 
@@ -61,24 +39,9 @@ namespace GeneratePoints.Posts
             t.Settings.Calculation.Overwrite = true;
             t.Settings.Calculation.AngleMin = 0;
             t.Settings.Calculation.AngleMax = 2 * Math.PI;
-            t.StartRender("triangleRotatePostSmall", CalculationMethods.CalculationMethod.WithAngle);            
+            t.StartRender("triangleRotatePostSmall", CalculationMethod.WithAngle);
         }
-      
-        public static void PentagoneVaryRatio()
-        {
-            var test = new Pentagon();
-            test.Settings.Calculation.FrameCount = 1;
-            test.Settings.Calculation.MaxDataPoints = 1000000;
-            test.Settings.Render.DataPointRadius = 0.001;
-            test.Settings.Render.RotateCamera = false;
-            test.Settings.Render.RenderProgressively = false;
-            test.Settings.Calculation.Overwrite = true;
-            test.Settings.Calculation.FrameCount = 10;
-            test.Settings.Calculation.RatioMin = 0.5;
-            test.Settings.Calculation.RatioMax = 2.5;
-            test.StartRender("pentagonVaryRatioG2", CalculationMethods.CalculationMethod.VaryRatio);            
 
-        }
         public static void HexagonVaryRatio()
         {
             var test = new Hexagon();
@@ -91,14 +54,7 @@ namespace GeneratePoints.Posts
             test.Settings.Calculation.FrameCount = 10;
             test.Settings.Calculation.RatioMin = 0;
             test.Settings.Calculation.RatioMax = 0.5;
-            test.StartRender("pentagonVaryRatioG2", CalculationMethods.CalculationMethod.VaryRatio);
-        }
-
-
-        public static void CirclePost()
-        {
-            var p = new Polygon(10000);
-            p.StartRender("circlePost1");
+            test.StartRender("pentagonVaryRatioG2", CalculationMethod.VaryRatio);
         }
 
         public static void NonagonPost()
@@ -106,18 +62,7 @@ namespace GeneratePoints.Posts
             var p = new Polygon(9);
             p.StartRender("nonagonPost1");
         }
-        public static void SeptagonPost()
-        {
 
-            var p = new Polygon(7);
-            p.Settings.Calculation.MaxDataPoints = 10000000;
-            p.Settings.Calculation.Overwrite = true;
-            p.Settings.Render.DataPointRadius = 0.0005;
-            p.ShapeName = "Septagon";
-            p.Settings.Calculation.FrameCount = 10;
-            p.StartRender("septagonPost1");
-
-        }
         public static void OcatgonPost()
         {
             var p = new Polygon(8);
@@ -128,21 +73,34 @@ namespace GeneratePoints.Posts
             p.Settings.Calculation.FrameCount = 10;
             p.Settings.Render.DataPointRadius = 0.0005;
             p.StartRender("octagonpost1");
-
         }
 
-        public static void HexagonPost()
+        public static void PentagoneVaryRatio()
         {
-            var h = new Hexagon();
-            h.Settings.Calculation.MaxDataPoints = 10000000;
-            h.Settings.Calculation.Overwrite = true;
-            h.Settings.Render.DataPointRadius = 0.001;
-            h.Settings.Calculation.FrameCount = 1;
-            h.Settings.Render.RotateCamera = false;
-            h.Settings.Render.RenderProgressively = false;
-            //  h.StartRender("hexagonPost");
-            h.StartRender("hexagonNoRepeat",CalculationMethods.CalculationMethod.NoRepeat);
-            //  h.RenderProgressively("Hexagon2");
+            var test = new Pentagon();
+            test.Settings.Calculation.FrameCount = 1;
+            test.Settings.Calculation.MaxDataPoints = 1000000;
+            test.Settings.Render.DataPointRadius = 0.001;
+            test.Settings.Render.RotateCamera = false;
+            test.Settings.Render.RenderProgressively = false;
+            test.Settings.Calculation.Overwrite = true;
+            test.Settings.Calculation.FrameCount = 10;
+            test.Settings.Calculation.RatioMin = 0.5;
+            test.Settings.Calculation.RatioMax = 2.5;
+            test.StartRender("pentagonVaryRatioG2", CalculationMethod.VaryRatio);
+        }
+
+        public static void PentagonNoRepeat()
+        {
+            var s = new Pentagon();
+            s.Settings.Render.RotateCamera = false;
+            s.Settings.Calculation.MaxDataPoints = 10000000;
+            s.Settings.Calculation.FrameCount = 100;
+            s.Settings.Render.AnchorRadius = 0.04;
+            s.Settings.Render.DataPointRadius = 0.003;
+            s.Settings.Render.CameraZoom = 2.2;
+            s.Settings.Calculation.Overwrite = true;
+            s.StartRender("pentagonPostNoRepeat", CalculationMethod.NoRepeat);
         }
 
         public static void PentagonPost()
@@ -154,8 +112,6 @@ namespace GeneratePoints.Posts
             p.Settings.Render.RenderProgressively = false;
             p.Settings.Calculation.FrameCount = 600;
             p.StartRender("pentagonPost");
-
-
         }
 
         public static void PentagonPostNearest()
@@ -165,8 +121,49 @@ namespace GeneratePoints.Posts
             p.Settings.Calculation.Overwrite = true;
             p.Settings.Render.DataPointRadius = 0.0005;
             p.Settings.Calculation.FrameCount = 10;
-            p.StartRender("pentagonPostNearest",CalculationMethods.CalculationMethod.NoRepeatNearest);
+            p.StartRender("pentagonPostNearest", CalculationMethod.NoRepeatNearest);
+        }
 
+        public static void SeptagonPost()
+        {
+            var p = new Polygon(7);
+            p.Settings.Calculation.MaxDataPoints = 10000000;
+            p.Settings.Calculation.Overwrite = true;
+            p.Settings.Render.DataPointRadius = 0.0005;
+            p.ShapeName = "Septagon";
+            p.Settings.Calculation.FrameCount = 10;
+            p.StartRender("septagonPost1");
+        }
+
+
+        public static void SquareNoRepeat()
+        {
+            var s = new Square();
+            s.Settings.Render.RotateCamera = false;
+            s.Settings.Calculation.MaxDataPoints = 100000;
+            s.Settings.Calculation.FrameCount = 100;
+            s.Settings.Render.AnchorRadius = 0.04;
+            s.Settings.Render.DataPointRadius = 0.003;
+            s.Settings.Render.CameraZoom = 2.2;
+            s.Settings.Calculation.Overwrite = true;
+            s.StartRender("squarePostNoRepeat", CalculationMethod.NoRepeat);
+        }
+
+        public static void SquarePost()
+        {
+            var s = new Square();
+            s.Settings.Render.RotateCamera = false;
+            s.Settings.Calculation.MaxDataPoints = 10000000;
+            s.Settings.Calculation.FrameCount = 100;
+            s.Settings.Render.AnchorRadius = 0.04;
+            s.Settings.Render.DataPointRadius = 0.001;
+            s.Settings.Render.LookAt[1] = 0;
+            s.Settings.Render.CameraZoom = 2;
+            s.Settings.Calculation.Overwrite = true;
+            s.Settings.Render.TransparentBackground = false;
+            s.Settings.Render.RenderProgressively = false;
+            //  s.StartRender("squarepost");
+            s.StartRender("squarePostNoRepeat2", CalculationMethod.NoRepeat);
         }
 
         public static void TrianglePost()
@@ -192,6 +189,7 @@ namespace GeneratePoints.Posts
             triangle.Settings.Render.CameraZoom = 2.2;
             triangle.StartRender("triangePost2");
         }
+
         public static void TrianglePost3()
         {
             var triangle = new Triangle();
@@ -204,48 +202,40 @@ namespace GeneratePoints.Posts
             triangle.StartRender("triangePost3");
         }
 
-        public static void SquarePost()
+        public static void TriangleRotate()
         {
-            var s = new Square();
-            s.Settings.Render.RotateCamera = false;
-            s.Settings.Calculation.MaxDataPoints = 10000000;
-            s.Settings.Calculation.FrameCount = 100;
-            s.Settings.Render.AnchorRadius = 0.04;
-            s.Settings.Render.DataPointRadius = 0.001;
-            s.Settings.Render.LookAt[1] = 0;
-            s.Settings.Render.CameraZoom = 2;
-            s.Settings.Calculation.Overwrite = true;
-            s.Settings.Render.TransparentBackground = false;
-            s.Settings.Render.RenderProgressively = false;
-            //  s.StartRender("squarepost");
-            s.StartRender("squarePostNoRepeat2",CalculationMethods.CalculationMethod.NoRepeat);
+            var t = new Triangle();
+            t.Settings.Render.CameraZoom = 3;
+            t.Settings.Render.LookAt[1] = 0.4;
+            t.Settings.Calculation.MaxDataPoints = 100000;
+            t.Settings.Render.DataPointRadius = 0.002;
+            t.Settings.Calculation.FrameCount = 500;
+            t.Settings.Render.RotateCamera = false;
+            t.Settings.Render.RenderProgressively = false;
+            t.Settings.Render.TransparentBackground = false;
+            t.Settings.Calculation.Overwrite = true;
+            t.Settings.Calculation.AngleMin = 0;
+            t.Settings.Calculation.AngleMax = 2 * Math.PI;
+            t.StartRender("triangleRotatePostSmall", CalculationMethod.WithAngle);
+        }
 
-        }
- 
-  
-        public static void SquareNoRepeat()
+        public static void TriangleRotateSmall()
         {
-            var s = new Square();
-            s.Settings.Render.RotateCamera = false;
-            s.Settings.Calculation.MaxDataPoints = 100000;
-            s.Settings.Calculation.FrameCount = 100;
-            s.Settings.Render.AnchorRadius = 0.04;
-            s.Settings.Render.DataPointRadius = 0.003;
-            s.Settings.Render.CameraZoom = 2.2;
-            s.Settings.Calculation.Overwrite = true;
-            s.StartRender("squarePostNoRepeat",CalculationMethods.CalculationMethod.NoRepeat);
-        }
-        public static void PentagonNoRepeat()
-        {
-            var s = new Pentagon();
-            s.Settings.Render.RotateCamera = false;
-            s.Settings.Calculation.MaxDataPoints = 10000000;
-            s.Settings.Calculation.FrameCount = 100;
-            s.Settings.Render.AnchorRadius = 0.04;
-            s.Settings.Render.DataPointRadius = 0.003;
-            s.Settings.Render.CameraZoom = 2.2;
-            s.Settings.Calculation.Overwrite = true;
-            s.StartRender("pentagonPostNoRepeat", CalculationMethods.CalculationMethod.NoRepeat);            
+            var t = new Triangle();
+            t.Settings.Render.CameraZoom = 3;
+            t.Settings.Render.LookAt[1] = 0.4;
+            t.Settings.Calculation.MaxDataPoints = 10;
+            t.Settings.Render.DataPointRadius = 0.02;
+            t.Settings.Calculation.FrameCount = 10;
+            t.Settings.Render.RotateCamera = false;
+            t.Settings.Render.RenderProgressively = true;
+            t.Settings.Render.TransparentBackground = false;
+            t.Settings.Calculation.Overwrite = true;
+            t.Settings.Render.AnchorTransmit = 0.1;
+            t.Settings.Calculation.Angle = 2 * Math.PI;
+            t.StartRender("triangleRotatePostSmall", CalculationMethod.WithAngle);
+
+            //t.RenderWithAngle("triangleRotatePostSmall", (2 * Math.PI));
         }
     }
 }

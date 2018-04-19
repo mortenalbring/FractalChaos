@@ -16,6 +16,4 @@ namespace GeneratePoints.Polygons
             AnchorPoints = MakeAnchorPoints(anchors);
         }
     }
-
-
 }
