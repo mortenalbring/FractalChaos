@@ -48,7 +48,9 @@
     <Compile Include="CalculationMethods\NoRepeatNearest.cs" />
     <Compile Include="CalculationMethods\NoRepeat.cs" />
     <Compile Include="CalculationMethods\VaryAngle.cs" />
+    <Compile Include="Models\CalculationSettings.cs" />
     <Compile Include="Models\Polygon.cs" />
+    <Compile Include="Models\RenderSettings.cs" />
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Polygons\Hexagon.cs" />
     <Compile Include="Polygons\Septagon.cs" />

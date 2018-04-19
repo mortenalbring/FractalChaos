@@ -2,10 +2,10 @@
 {
     public enum CalculationMethod
     {
-       Normal,
+        Normal,
         NoRepeat,
         NoRepeatNearest,
         VaryRatio,
-        WithAngle,        
+        WithAngle
     }
 }
