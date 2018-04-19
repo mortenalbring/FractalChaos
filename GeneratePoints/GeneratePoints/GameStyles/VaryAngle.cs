@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using GeneratePoints.Models;
 
-namespace GeneratePoints.CalculationMethods
+namespace GeneratePoints.GameStyles
 {
     public class VaryAngle
     {

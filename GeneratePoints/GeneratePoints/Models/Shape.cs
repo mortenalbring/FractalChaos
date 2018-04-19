@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using GeneratePoints.CalculationMethods;
+using GeneratePoints.GameStyles;
 
 namespace GeneratePoints.Models
 {
@@ -79,32 +79,32 @@ namespace GeneratePoints.Models
 
         public virtual string StartRender(string dirname)
         {
-            return StartRender(dirname, CalculationMethod.Normal);
+            return StartRender(dirname, GameStyle.Normal);
         }
 
         public virtual string StartRender()
         {
-            return StartRender(ShapeName, CalculationMethod.Normal);
+            return StartRender(ShapeName, GameStyle.Normal);
         }
 
-        public virtual string StartRender(CalculationMethod method)
+        public virtual string StartRender(GameStyle gameStyle)
         {
-            return StartRender(ShapeName, method);
+            return StartRender(ShapeName, gameStyle);
         }
 
-        public virtual string StartRender(string dirname, CalculationMethod method)
+        public virtual string StartRender(string dirname, GameStyle gameStyle)
         {
-            switch (method)
+            switch (gameStyle)
             {
-                case CalculationMethod.Normal:
+                case GameStyle.Normal:
                     return StartRenderNormal(dirname);
-                case CalculationMethod.NoRepeat:
+                case GameStyle.NoRepeat:
                     return StartRenderNoRepeat(dirname);
-                case CalculationMethod.NoRepeatNearest:
+                case GameStyle.NoRepeatNearest:
                     return StartRenderNoRepeatNearest(dirname);
-                case CalculationMethod.VaryRatio:
+                case GameStyle.VaryRatio:
                     return StartRenderVaryRatio(dirname);
-                case CalculationMethod.WithAngle:
+                case GameStyle.WithAngle:
                     return StartRenderWithAngle(dirname);
             }
 
@@ -221,6 +221,7 @@ namespace GeneratePoints.Models
             var outputAnchors = ShapeName + "-anchors.txt";
             return outputAnchors;
         }
+
 
         /// <summary>
         ///     Renders but adds constraint that the previous anchor will never be chosen as the next anchor

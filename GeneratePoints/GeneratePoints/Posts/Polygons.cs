@@ -1,5 +1,5 @@
 ﻿using System;
-using GeneratePoints.CalculationMethods;
+using GeneratePoints.GameStyles;
 using GeneratePoints.Models;
 using GeneratePoints.Polygons;
 
@@ -23,7 +23,7 @@ namespace GeneratePoints.Posts
             h.Settings.Render.RotateCamera = false;
             h.Settings.Render.RenderProgressively = false;
             //  h.StartRender("hexagonPost");
-            h.StartRender("hexagonNoRepeat", CalculationMethod.NoRepeat);
+            h.StartRender("hexagonNoRepeat", GameStyle.NoRepeat);
             //  h.RenderProgressively("Hexagon2");
         }
 
@@ -39,7 +39,7 @@ namespace GeneratePoints.Posts
             t.Settings.Calculation.Overwrite = true;
             t.Settings.Calculation.AngleMin = 0;
             t.Settings.Calculation.AngleMax = 2 * Math.PI;
-            t.StartRender("triangleRotatePostSmall", CalculationMethod.WithAngle);
+            t.StartRender("triangleRotatePostSmall", GameStyle.WithAngle);
         }
 
         public static void HexagonVaryRatio()
@@ -54,7 +54,7 @@ namespace GeneratePoints.Posts
             test.Settings.Calculation.FrameCount = 10;
             test.Settings.Calculation.RatioMin = 0;
             test.Settings.Calculation.RatioMax = 0.5;
-            test.StartRender("pentagonVaryRatioG2", CalculationMethod.VaryRatio);
+            test.StartRender("pentagonVaryRatioG2", GameStyle.VaryRatio);
         }
 
         public static void NonagonPost()
@@ -87,7 +87,7 @@ namespace GeneratePoints.Posts
             test.Settings.Calculation.FrameCount = 10;
             test.Settings.Calculation.RatioMin = 0.5;
             test.Settings.Calculation.RatioMax = 2.5;
-            test.StartRender("pentagonVaryRatioG2", CalculationMethod.VaryRatio);
+            test.StartRender("pentagonVaryRatioG2", GameStyle.VaryRatio);
         }
 
         public static void PentagonNoRepeat()
@@ -100,7 +100,7 @@ namespace GeneratePoints.Posts
             s.Settings.Render.DataPointRadius = 0.003;
             s.Settings.Render.CameraZoom = 2.2;
             s.Settings.Calculation.Overwrite = true;
-            s.StartRender("pentagonPostNoRepeat", CalculationMethod.NoRepeat);
+            s.StartRender("pentagonPostNoRepeat", GameStyle.NoRepeat);
         }
 
         public static void PentagonPost()
@@ -121,7 +121,7 @@ namespace GeneratePoints.Posts
             p.Settings.Calculation.Overwrite = true;
             p.Settings.Render.DataPointRadius = 0.0005;
             p.Settings.Calculation.FrameCount = 10;
-            p.StartRender("pentagonPostNearest", CalculationMethod.NoRepeatNearest);
+            p.StartRender("pentagonPostNearest", GameStyle.NoRepeatNearest);
         }
 
         public static void SeptagonPost()
@@ -146,7 +146,7 @@ namespace GeneratePoints.Posts
             s.Settings.Render.DataPointRadius = 0.003;
             s.Settings.Render.CameraZoom = 2.2;
             s.Settings.Calculation.Overwrite = true;
-            s.StartRender("squarePostNoRepeat", CalculationMethod.NoRepeat);
+            s.StartRender("squarePostNoRepeat", GameStyle.NoRepeat);
         }
 
         public static void SquarePost()
@@ -163,7 +163,7 @@ namespace GeneratePoints.Posts
             s.Settings.Render.TransparentBackground = false;
             s.Settings.Render.RenderProgressively = false;
             //  s.StartRender("squarepost");
-            s.StartRender("squarePostNoRepeat2", CalculationMethod.NoRepeat);
+            s.StartRender("squarePostNoRepeat2", GameStyle.NoRepeat);
         }
 
         public static void TrianglePost()
@@ -216,7 +216,7 @@ namespace GeneratePoints.Posts
             t.Settings.Calculation.Overwrite = true;
             t.Settings.Calculation.AngleMin = 0;
             t.Settings.Calculation.AngleMax = 2 * Math.PI;
-            t.StartRender("triangleRotatePostSmall", CalculationMethod.WithAngle);
+            t.StartRender("triangleRotatePostSmall", GameStyle.WithAngle);
         }
 
         public static void TriangleRotateSmall()
@@ -233,7 +233,7 @@ namespace GeneratePoints.Posts
             t.Settings.Calculation.Overwrite = true;
             t.Settings.Render.AnchorTransmit = 0.1;
             t.Settings.Calculation.Angle = 2 * Math.PI;
-            t.StartRender("triangleRotatePostSmall", CalculationMethod.WithAngle);
+            t.StartRender("triangleRotatePostSmall", GameStyle.WithAngle);
 
             //t.RenderWithAngle("triangleRotatePostSmall", (2 * Math.PI));
         }

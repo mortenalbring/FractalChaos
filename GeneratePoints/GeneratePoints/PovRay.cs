@@ -19,8 +19,8 @@ namespace GeneratePoints
             var newDir = Path.Combine(directory, dirName);
 
             if (!Directory.Exists(newDir))
-                Directory.CreateDirectory(newDir);            
-            
+                Directory.CreateDirectory(newDir);
+
             const string nocamFile = "fc-scene-layout.pov";
             var nocamPath = Path.Combine(directory, nocamFile);
             var withoutPath = datapointsFilenames.Select(file => Path.GetFileName(file)).ToList();

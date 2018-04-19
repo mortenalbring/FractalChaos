@@ -1,5 +1,5 @@
 ﻿using System;
-using GeneratePoints.CalculationMethods;
+using GeneratePoints.GameStyles;
 using GeneratePoints.Polyhedra;
 
 namespace GeneratePoints.Posts
@@ -28,7 +28,7 @@ namespace GeneratePoints.Posts
             t.Settings.Calculation.Overwrite = false;
             t.Settings.Calculation.AngleMin = 0;
             t.Settings.Calculation.AngleMax = 2 * Math.PI;
-            t.StartRender("tetraRotatePost", CalculationMethod.WithAngle);
+            t.StartRender("tetraRotatePost", GameStyle.WithAngle);
         }
     }
 }

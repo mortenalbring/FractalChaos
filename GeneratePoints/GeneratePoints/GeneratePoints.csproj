@@ -44,10 +44,10 @@
   <ItemGroup>
     <Compile Include="AnchorPoint.cs" />
     <Compile Include="BarnsleyFern.cs" />
-    <Compile Include="CalculationMethods\CalculationMethod.cs" />
-    <Compile Include="CalculationMethods\NoRepeatNearest.cs" />
-    <Compile Include="CalculationMethods\NoRepeat.cs" />
-    <Compile Include="CalculationMethods\VaryAngle.cs" />
+    <Compile Include="GameStyles\GameStyle.cs" />
+    <Compile Include="GameStyles\NoRepeatNearest.cs" />
+    <Compile Include="GameStyles\NoRepeat.cs" />
+    <Compile Include="GameStyles\VaryAngle.cs" />
     <Compile Include="Models\CalculationSettings.cs" />
     <Compile Include="Models\Polygon.cs" />
     <Compile Include="Models\RenderSettings.cs" />
@@ -73,7 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="fc-nocam.pov">
+    <None Include="fc-scene-layout.pov">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

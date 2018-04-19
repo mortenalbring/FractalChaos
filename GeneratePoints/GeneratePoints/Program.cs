@@ -1,5 +1,4 @@
 ﻿using GeneratePoints.Models;
-using GeneratePoints.Posts;
 
 namespace GeneratePoints
 {
@@ -15,14 +14,7 @@ namespace GeneratePoints
     {
         private static void Main(string[] args)
         {
-            // Posts.SquarePost();           
-            // Posts.TriangleNoRepeat();
-            //Posts.HexagonPost();
-            // Posts.HexagonVaryRatio();
-          
             var p = new Polygon(3);
-            p.Settings.Calculation.MaxDataPoints = 10;
-            p.Settings.Calculation.Overwrite = true;
             p.StartRender();
         }
     }

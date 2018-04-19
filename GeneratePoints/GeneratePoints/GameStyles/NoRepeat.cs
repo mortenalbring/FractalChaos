@@ -4,8 +4,13 @@ using System.Diagnostics;
 using System.IO;
 using GeneratePoints.Models;
 
-namespace GeneratePoints.CalculationMethods
+namespace GeneratePoints.GameStyles
 {
+    /// <summary>
+    ///     This is a variant of the chaos game with the added constraint the randomly chosen anchor point cannot be the same
+    ///     as the previously chosen anchor point. Playing this variant with the pentagon produces an especially beautiful
+    ///     image.
+    /// </summary>
     public class NoRepeat
     {
         public static string WriteDataPointsNoRepeatAnchor(Settings settings, List<AnchorPoint> anchorPoints,

@@ -4,8 +4,12 @@ using System.Diagnostics;
 using System.IO;
 using GeneratePoints.Models;
 
-namespace GeneratePoints.CalculationMethods
+namespace GeneratePoints.GameStyles
 {
+    /// <summary>
+    ///     This variant of the chaos game has the added constraint that the randomly chosen anchor point cannot be either of
+    ///     the two anchor points closest to the previous. But it can be the same one.
+    /// </summary>
     public class NoRepeatNearest
     {
         public static string WriteDataPointsNoRepeatAnchor(Settings settings, List<AnchorPoint> anchorPoints,
