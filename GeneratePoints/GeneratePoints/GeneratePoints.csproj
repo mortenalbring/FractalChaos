@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="AnchorPoint.cs" />
     <Compile Include="BarnsleyFern.cs" />
+    <Compile Include="CalculationMethods\CalculationMethod.cs" />
     <Compile Include="CalculationMethods\NoRepeatNearest.cs" />
     <Compile Include="CalculationMethods\NoRepeat.cs" />
     <Compile Include="CalculationMethods\VaryAngle.cs" />
