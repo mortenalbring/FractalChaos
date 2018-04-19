@@ -19,11 +19,9 @@ namespace GeneratePoints
             var newDir = Path.Combine(directory, dirName);
 
             if (!Directory.Exists(newDir))
-                Directory.CreateDirectory(newDir);
-
-            var dirsplit = directory.Split('\\');
-            var basedir = dirsplit[0] + "\\" + dirsplit[1];
-            const string nocamFile = "fc-nocam.pov";
+                Directory.CreateDirectory(newDir);            
+            
+            const string nocamFile = "fc-scene-layout.pov";
             var nocamPath = Path.Combine(directory, nocamFile);
             var withoutPath = datapointsFilenames.Select(file => Path.GetFileName(file)).ToList();
             anchorsFilename = Path.GetFileName(anchorsFilename);
@@ -86,15 +84,17 @@ namespace GeneratePoints
                     settings.Render.LookAt[0] + "," + settings.Render.LookAt[1] + "," + settings.Render.LookAt[2] +
                     ">       \t\r\n\trotate <0,0,0>\r\n}\r\n";
 
-            var variableStrings = new List<string>();
-            variableStrings.Add(myClockVar);
-            variableStrings.Add(filenameVar);
-            variableStrings.Add(pointsFileVar);
-            variableStrings.Add(anchorsFileVar);
-            variableStrings.Add(anchorRadiusVar);
-            variableStrings.Add(datapointRadius);
-            variableStrings.Add(pointStop);
-            variableStrings.Add(anchorTransmit);
+            var variableStrings = new List<string>
+            {
+                myClockVar,
+                filenameVar,
+                pointsFileVar,
+                anchorsFileVar,
+                anchorRadiusVar,
+                datapointRadius,
+                pointStop,
+                anchorTransmit
+            };
             if (!settings.Render.TransparentBackground)
                 variableStrings.Add(background);
 
@@ -115,11 +115,13 @@ namespace GeneratePoints
         {
             var iniFile = povFilename + ".ini";
 
-            var lines = new List<string>();
-            lines.Add("Input_File_Name=" + povFilename + "\n");
-            lines.Add("Output_File_Name=" + povFilename + "\r\n");
-            lines.Add("Initial_Frame=1");
-            lines.Add("Final_Frame=" + settings.Calculation.FrameCount);
+            var lines = new List<string>
+            {
+                "Input_File_Name=" + povFilename + "\n",
+                "Output_File_Name=" + povFilename + "\r\n",
+                "Initial_Frame=1",
+                "Final_Frame=" + settings.Calculation.FrameCount
+            };
             var iniPath = dirname + "/" + iniFile;
             File.WriteAllLines(iniPath, lines);
         }

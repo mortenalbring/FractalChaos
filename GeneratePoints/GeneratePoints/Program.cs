@@ -19,8 +19,7 @@ namespace GeneratePoints
             // Posts.TriangleNoRepeat();
             //Posts.HexagonPost();
             // Posts.HexagonVaryRatio();
-        //    Barns.BarnsleyFarn();
-
+          
             var p = new Polygon(3);
             p.Settings.Calculation.MaxDataPoints = 10;
             p.Settings.Calculation.Overwrite = true;

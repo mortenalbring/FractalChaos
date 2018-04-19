@@ -22,7 +22,7 @@
         /// <summary>
         ///     The maximum number of data points for the calculation
         /// </summary>
-        public int MaxDataPoints = 10000000;
+        public int MaxDataPoints = 1000;
 
         /// <summary>
         ///     Whether to overwrite existing files or not.
