@@ -146,12 +146,44 @@ namespace GeneratePoints.Models
             return outputfilename;
         }
 
-        
+        public virtual string StartRender(string dirname)
+        {
+            return StartRender(dirname, CalculationMethod.Normal);
+        }
+        public virtual string StartRender()
+        {
+            return StartRender(this.ShapeName,CalculationMethod.Normal);
+        }
+
+        public virtual string StartRender(CalculationMethod method)
+        {
+            return StartRender(this.ShapeName, method);
+        }
+
+        public virtual string StartRender(string dirname, CalculationMethod method)
+        {
+            switch (method)
+            {
+                case CalculationMethod.Normal:
+                    return StartRenderNormal(dirname);
+                case CalculationMethod.NoRepeat:
+                    return StartRenderNoRepeat(dirname);
+                case CalculationMethod.NoRepeatNearest:
+                    return StartRenderNoRepeatNearest(dirname);
+                case CalculationMethod.VaryRatio:
+                    return StartRenderVaryRatio(dirname);
+                case CalculationMethod.WithAngle:
+                    return StartRenderWithAngle(dirname);
+            }
+
+
+            return StartRenderNormal(dirname);
+        }
 
         /// <summary>
         /// Starts the normal render
         /// </summary>
-        public virtual string StartRender(string dirname)
+        private string StartRenderNormal(string dirname)
         {
             var dataPointsFilename = Utility.GetDatapointsFilename(ShapeName, Settings);
             var anchorsFilename = GetAnchorsFilename();
@@ -171,7 +203,7 @@ namespace GeneratePoints.Models
         /// Renders but adds constraint that the previous anchor will never be chosen as the next anchor
         /// </summary>
         /// <param name="dirname"></param>
-        public virtual void StartRenderNoRepeat(string dirname)
+        private string StartRenderNoRepeat(string dirname)
         {
             var dataPointsFilename = Utility.GetDatapointsFilename(ShapeName, Settings);
             var anchorsFilename = GetAnchorsFilename();
@@ -183,8 +215,9 @@ namespace GeneratePoints.Models
             dataFiles.Add(dataPointsFilename);
             var povFile = PovRay.PreparePovRayFilesWithIni(Settings,dataFiles, anchorsFilename, dirname);
             Console.WriteLine("Written " + povFile);
+            return dataPointsFilename;
         }
-        public virtual void StartRenderNoRepeatNearest(string dirname)
+        private string StartRenderNoRepeatNearest(string dirname)
         {
             var dataPointsFilename = Utility.GetDatapointsFilename(ShapeName, Settings);
             var anchorsFilename = GetAnchorsFilename();
@@ -196,15 +229,19 @@ namespace GeneratePoints.Models
             dataFiles.Add(dataPointsFilename);
             var povFile = PovRay.PreparePovRayFilesWithIni(Settings, dataFiles, anchorsFilename, dirname);
             Console.WriteLine("Written " + povFile);
+            return dataPointsFilename;
         }
 
-        public virtual void StartRenderVaryRatio(string dirname, double minR, double maxR)
+        private string StartRenderVaryRatio(string dirname)
         {
             var anchorsFilename = GetAnchorsFilename();
 
             Utility.CreateDirectory(dirname, Settings.Calculation.Overwrite);
             WriteAnchorsFile(dirname);
             var dataFiles = new List<string>();
+
+            var minR = Settings.Calculation.RatioMin;
+            var maxR = Settings.Calculation.RatioMax;
 
             for (int i = 0; i < Settings.Calculation.FrameCount; i++)
             {
@@ -218,35 +255,24 @@ namespace GeneratePoints.Models
             }
             var povFile = PovRay.PreparePovRayFilesWithIni(Settings, dataFiles, anchorsFilename, dirname);
             Console.WriteLine("Written " + povFile);
-
+            return povFile;
 
         }
 
-
-
-
-
-        /// <summary>
-        /// Renders and also rotates about a point 
-        /// </summary>
-        /// <param name="dirname">Directory name</param>
-        /// <param name="angle">Angle to rotate about</param>
-        public void RenderWithAngle(string dirname, double angle)
-        {
-            RenderWithAngle(dirname,angle,angle);
-        }
 
         
 
-        public void RenderWithAngle(string dirname, double minAngle, double maxAngle)
+        private string StartRenderWithAngle(string dirname)
         {
             Utility.CreateDirectory(dirname, Settings.Calculation.Overwrite);
             var anchorsFilename = GetAnchorsFilename();
             WriteAnchorsFile(dirname);
 
-            var datapointFiles = VaryAngle.WriteDataPointsVaryAngle(ShapeName,Settings,AnchorPoints,dirname, minAngle, maxAngle);
+            var datapointFiles = VaryAngle.WriteDataPointsVaryAngle(ShapeName,Settings,AnchorPoints,dirname);
 
-            PovRay.PreparePovRayFilesWithIni(Settings,datapointFiles, anchorsFilename, dirname);
+            var povFile = PovRay.PreparePovRayFilesWithIni(Settings,datapointFiles, anchorsFilename, dirname);
+
+            return povFile;
 
         }
 

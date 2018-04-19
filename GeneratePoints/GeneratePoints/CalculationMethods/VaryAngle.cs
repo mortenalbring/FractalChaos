@@ -8,8 +8,18 @@ namespace GeneratePoints.CalculationMethods
 {
     public class VaryAngle
     {
-        public static List<string> WriteDataPointsVaryAngle(string shapeName,Settings settings, List<AnchorPoint> anchorPoints, string dirname, double minAngle, double maxAngle)
+        public static List<string> WriteDataPointsVaryAngle(string shapeName,Settings settings, List<AnchorPoint> anchorPoints, string dirname)
         {
+
+            var minAngle = settings.Calculation.AngleMin;
+            var maxAngle = settings.Calculation.AngleMax;
+            
+            if (minAngle == 0 && maxAngle == 0 && settings.Calculation.Angle != 0)
+            {
+                minAngle = settings.Calculation.Angle;
+                maxAngle = settings.Calculation.Angle;
+            }
+
             var rnd = new Random();
 
 

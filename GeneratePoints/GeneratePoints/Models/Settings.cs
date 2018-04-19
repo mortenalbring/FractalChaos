@@ -43,6 +43,24 @@ namespace GeneratePoints.Models
         ///     How far to move along the line towards the anchor
         /// </summary>
         public double Ratio = 0.5;
+
+        /// <summary>
+        /// Minimum value for ratio if rendering with variable ratio
+        /// </summary>
+        public double RatioMin = 0.5;
+
+        /// <summary>
+        /// Maximum value for ratio if rendering with variable ratio
+        /// </summary>
+        public double RatioMax = 0.5;
+
+        /// <summary>
+        /// Angle to rotate about, if calculation method is set to Rotate
+        /// </summary>
+        public double Angle = 0;
+    
+        public double AngleMin = 0;
+        public double AngleMax = 0;
     }
 
     /// <summary>

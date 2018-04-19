@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GeneratePoints.Polygons;
 using GeneratePoints.Polyhedra;
 
 namespace GeneratePoints.Posts
 {
     class Polyhedra
-    {
-       
+    {       
         public static void TetraRotate()
         {
             var t = new Tetrahedron();
@@ -23,7 +17,9 @@ namespace GeneratePoints.Posts
             t.Settings.Render.RenderProgressively = false;
             t.Settings.Render.TransparentBackground = false;
             t.Settings.Calculation.Overwrite = false;
-            t.RenderWithAngle("tetraRotatePost", 0, (2 * Math.PI));
+            t.Settings.Calculation.AngleMin = 0;
+            t.Settings.Calculation.AngleMax = 2 * Math.PI;
+            t.StartRender("tetraRotatePost", CalculationMethods.CalculationMethod.WithAngle);
         }
 
         public static void TetraPost()

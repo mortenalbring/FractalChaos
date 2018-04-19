@@ -1,4 +1,5 @@
-﻿using GeneratePoints.Posts;
+﻿using GeneratePoints.Models;
+using GeneratePoints.Posts;
 
 namespace GeneratePoints
 {
@@ -19,6 +20,10 @@ namespace GeneratePoints
             //Posts.HexagonPost();
             // Posts.HexagonVaryRatio();
             Barns.BarnsleyFarn();
+
+            var p = new Polygon(3);
+            p.StartRender();
+
         }
     }
 }
