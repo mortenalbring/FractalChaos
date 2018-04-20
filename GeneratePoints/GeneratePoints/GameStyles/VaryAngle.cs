@@ -6,6 +6,9 @@ using GeneratePoints.Models;
 
 namespace GeneratePoints.GameStyles
 {
+    /// <summary>
+    /// This is a variant of the chaos game that selects an anchor point as normal, but if one specific anchor point is chosen then it moves towards it and also rotates about a specified angle
+    /// </summary>
     public class VaryAngle
     {
         public static List<string> WriteDataPointsVaryAngle(string shapeName, Settings settings,
