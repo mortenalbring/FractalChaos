@@ -1,16 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GeneratePoints.Polygons;
+using GeneratePoints.GameStyles;
 using GeneratePoints.Polyhedra;
 
 namespace GeneratePoints.Posts
 {
-    class Polyhedra
+    internal class Polyhedra
     {
-       
+        public static void TetraPost()
+        {
+            var t = new Tetrahedron();
+            t.Settings.Calculation.MaxDataPoints = 1000000;
+            t.Settings.Calculation.FrameCount = 10;
+            t.StartRender("tetraAnimPost");
+        }
+
         public static void TetraRotate()
         {
             var t = new Tetrahedron();
@@ -23,15 +26,9 @@ namespace GeneratePoints.Posts
             t.Settings.Render.RenderProgressively = false;
             t.Settings.Render.TransparentBackground = false;
             t.Settings.Calculation.Overwrite = false;
-            t.RenderWithAngle("tetraRotatePost", 0, (2 * Math.PI));
-        }
-
-        public static void TetraPost()
-        {
-            var t = new Tetrahedron();
-            t.Settings.Calculation.MaxDataPoints = 1000000;
-            t.Settings.Calculation.FrameCount = 10;
-            t.StartRender("tetraAnimPost");
+            t.Settings.Calculation.AngleMin = 0;
+            t.Settings.Calculation.AngleMax = 2 * Math.PI;
+            t.StartRender("tetraRotatePost", GameStyle.WithAngle);
         }
     }
 }

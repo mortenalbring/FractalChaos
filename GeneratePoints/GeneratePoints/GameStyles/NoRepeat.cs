@@ -4,11 +4,17 @@ using System.Diagnostics;
 using System.IO;
 using GeneratePoints.Models;
 
-namespace GeneratePoints.CalculationMethods
+namespace GeneratePoints.GameStyles
 {
-    public class NoRepeatNearest
+    /// <summary>
+    ///     This is a variant of the chaos game with the added constraint the randomly chosen anchor point cannot be the same
+    ///     as the previously chosen anchor point. Playing this variant with the pentagon produces an especially beautiful
+    ///     image.
+    /// </summary>
+    public class NoRepeat
     {
-        public static string WriteDataPointsNoRepeatAnchor(Settings settings, List<AnchorPoint> anchorPoints, string dirname, string dataPointsFileName)
+        public static string WriteDataPointsNoRepeatAnchor(Settings settings, List<AnchorPoint> anchorPoints,
+            string dirname, string dataPointsFileName)
         {
             var rnd = new Random();
             var output = "";
@@ -25,12 +31,8 @@ namespace GeneratePoints.CalculationMethods
             outputfilename = dirname + "/" + outputfilename;
 
             if (!settings.Calculation.Overwrite)
-            {
                 if (File.Exists(outputfilename))
-                {
                     return outputfilename;
-                }
-            }
 
             File.Delete(outputfilename);
             var sw = new Stopwatch();
@@ -38,20 +40,12 @@ namespace GeneratePoints.CalculationMethods
             var cWriteCount = 0;
             var previousVal = 0;
 
-            for (int i = 0; i < settings.Calculation.MaxDataPoints; i++)
+            for (var i = 0; i < settings.Calculation.MaxDataPoints; i++)
             {
                 var val = rnd.Next(0, anchorPoints.Count);
-                var disallowed = GetDisallowed(previousVal, anchorPoints.Count);
-
-                
-
-                if (disallowed.Contains(val))
-                {
-                    while (disallowed.Contains(val))
-                    {
+                if (val == previousVal)
+                    while (val == previousVal)
                         val = rnd.Next(0, anchorPoints.Count);
-                    }
-                }
                 previousVal = val;
 
                 xPoint = (xPoint + anchorPoints[val].X) * settings.Calculation.Ratio;
@@ -76,41 +70,17 @@ namespace GeneratePoints.CalculationMethods
                     output = "";
                     cWriteCount = 0;
 
-                    double timePerElem = sw.Elapsed.TotalSeconds / (i + 1);
+                    var timePerElem = sw.Elapsed.TotalSeconds / (i + 1);
                     var elemsRemaining = settings.Calculation.MaxDataPoints - i;
                     var minsRemaining = (elemsRemaining * timePerElem / 60).ToString("N");
 
-                    Console.WriteLine("Writing points\t" + i + "\t" + settings.Calculation.MaxDataPoints + "\t" + minsRemaining + " mins remaining");
+                    Console.WriteLine("Writing points\t" + i + "\t" + settings.Calculation.MaxDataPoints + "\t" +
+                                      minsRemaining + " mins remaining");
                 }
-
             }
+
             File.AppendAllText(outputfilename, output);
             return outputfilename;
         }
-
-        private static List<int> GetDisallowed(int previous, int anchorPointCount)
-        {
-            var output = new List<int>();
-
-            if (previous == 0)
-            {
-                output.Add(1);
-                output.Add(anchorPointCount);
-                return output;
-            }
-            if (previous == anchorPointCount)
-            {
-                output.Add(anchorPointCount-1);
-                output.Add(0);
-                return output;
-            }
-
-            output.Add(previous+1);
-            output.Add(previous - 1);
-
-            return output;
-        }
     }
-
-    
 }

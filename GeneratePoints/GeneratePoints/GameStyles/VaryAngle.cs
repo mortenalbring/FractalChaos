@@ -4,12 +4,25 @@ using System.Diagnostics;
 using System.IO;
 using GeneratePoints.Models;
 
-namespace GeneratePoints.CalculationMethods
+namespace GeneratePoints.GameStyles
 {
+    /// <summary>
+    /// This is a variant of the chaos game that selects an anchor point as normal, but if one specific anchor point is chosen then it moves towards it and also rotates about a specified angle
+    /// </summary>
     public class VaryAngle
     {
-        public static List<string> WriteDataPointsVaryAngle(string shapeName,Settings settings, List<AnchorPoint> anchorPoints, string dirname, double minAngle, double maxAngle)
+        public static List<string> WriteDataPointsVaryAngle(string shapeName, Settings settings,
+            List<AnchorPoint> anchorPoints, string dirname)
         {
+            var minAngle = settings.Calculation.AngleMin;
+            var maxAngle = settings.Calculation.AngleMax;
+
+            if (minAngle == 0 && maxAngle == 0 && settings.Calculation.Angle != 0)
+            {
+                minAngle = settings.Calculation.Angle;
+                maxAngle = settings.Calculation.Angle;
+            }
+
             var rnd = new Random();
 
 
@@ -20,10 +33,10 @@ namespace GeneratePoints.CalculationMethods
 
             var angleSteps = (maxAngle - minAngle) / settings.Calculation.FrameCount;
             var datapointFiles = new List<string>();
-            for (int fIndex = 0; fIndex <= settings.Calculation.FrameCount; fIndex++)
+            for (var fIndex = 0; fIndex <= settings.Calculation.FrameCount; fIndex++)
             {
-                var angle = minAngle + (angleSteps * fIndex);
-                var dataPointsFilename = Utility.GetDatapointsFilename(shapeName,settings, "_a" + angle);
+                var angle = minAngle + angleSteps * fIndex;
+                var dataPointsFilename = Utility.GetDatapointsFilename(shapeName, settings, "_a" + angle);
                 var dataPointsLocation = dirname + "/" + dataPointsFilename;
 
                 if (File.Exists(dataPointsLocation))
@@ -32,6 +45,7 @@ namespace GeneratePoints.CalculationMethods
 
                     continue;
                 }
+
                 var output = "";
 
                 var xPoint = 0.0;
@@ -42,13 +56,13 @@ namespace GeneratePoints.CalculationMethods
                 var gPoint = 0.0;
                 var bPoint = 0.0;
 
-                for (int i = 0; i < settings.Calculation.MaxDataPoints; i++)
+                for (var i = 0; i < settings.Calculation.MaxDataPoints; i++)
                 {
                     var val = rnd.Next(0, anchorPoints.Count);
 
                     zPoint = (zPoint + anchorPoints[val].Z) * settings.Calculation.Ratio;
 
-                    if (val == (anchorPoints.Count - 1))
+                    if (val == anchorPoints.Count - 1)
                     {
                         var cx = anchorPoints[val].X;
                         var cy = anchorPoints[val].Y;
@@ -60,10 +74,10 @@ namespace GeneratePoints.CalculationMethods
                         yPoint = yPoint - cy;
 
 
-                        var xnew = (xPoint * c) - (yPoint * s);
-                        var ynew = (xPoint * s) + (yPoint * c);
-                        xPoint = (cx + xnew);
-                        yPoint = (cy + ynew);
+                        var xnew = xPoint * c - yPoint * s;
+                        var ynew = xPoint * s + yPoint * c;
+                        xPoint = cx + xnew;
+                        yPoint = cy + ynew;
                         xPoint = (xPoint + anchorPoints[val].X) * settings.Calculation.Ratio;
                         yPoint = (yPoint + anchorPoints[val].Y) * settings.Calculation.Ratio;
                     }
@@ -73,10 +87,7 @@ namespace GeneratePoints.CalculationMethods
                         yPoint = (yPoint + anchorPoints[val].Y) * settings.Calculation.Ratio;
                     }
 
-                    if (xPoint > xmax)
-                    {
-                        xmax = xPoint;
-                    }
+                    if (xPoint > xmax) xmax = xPoint;
 
                     rPoint = (rPoint + anchorPoints[val].R) * 0.5;
                     gPoint = (gPoint + anchorPoints[val].G) * 0.5;
@@ -96,10 +107,11 @@ namespace GeneratePoints.CalculationMethods
                     }
                 }
 
-                double timePerElem = sw.Elapsed.TotalSeconds / (fIndex + 1);
+                var timePerElem = sw.Elapsed.TotalSeconds / (fIndex + 1);
                 var elemsRemaining = settings.Calculation.FrameCount - fIndex;
                 var minsRemaining = (elemsRemaining * timePerElem / 60).ToString("N");
-                Console.WriteLine("Writing points\t" + fIndex + "\t" + settings.Calculation.FrameCount + "\t" + minsRemaining +
+                Console.WriteLine("Writing points\t" + fIndex + "\t" + settings.Calculation.FrameCount + "\t" +
+                                  minsRemaining +
                                   " mins remaining");
                 datapointFiles.Add(dataPointsFilename);
 
@@ -107,6 +119,7 @@ namespace GeneratePoints.CalculationMethods
                 Debug.WriteLine(xmax);
                 File.AppendAllText(dataPointsLocation, output);
             }
+
             return datapointFiles;
         }
     }

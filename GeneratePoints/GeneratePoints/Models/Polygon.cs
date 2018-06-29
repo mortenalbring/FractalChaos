@@ -5,12 +5,12 @@ namespace GeneratePoints.Models
 {
     public class Polygon : Shape
     {
-        public int Vertices = 0;
+        public int Vertices;
 
         public Polygon()
         {
-            
         }
+
         public Polygon(int vertices)
         {
             Vertices = vertices;
@@ -22,14 +22,14 @@ namespace GeneratePoints.Models
         public List<List<double>> CalculateVertices()
         {
             var anchors = new List<List<double>>();
-          
+
             var angle = 2 * Math.PI / Vertices;
 
-            for (int i = 0; i < Vertices; i++)
+            for (var i = 0; i < Vertices; i++)
             {
                 var x = Math.Sin(i * angle);
                 var y = Math.Cos(i * angle);
-                var anchor = new List<double> { x, y, 0 };
+                var anchor = new List<double> {x, y, 0};
                 anchors.Add(anchor);
             }
 

@@ -2,7 +2,6 @@
 
 namespace GeneratePoints.Polygons
 {
-
     public class Hexagon : Polygon
     {
         public Hexagon()
@@ -20,6 +19,4 @@ namespace GeneratePoints.Polygons
             AnchorPoints = MakeAnchorPoints(anchors);
         }
     }
-
-
 }

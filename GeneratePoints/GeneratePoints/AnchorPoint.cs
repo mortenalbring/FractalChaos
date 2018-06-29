@@ -1,7 +1,7 @@
 namespace GeneratePoints
 {
     public class AnchorPoint
-    {
+    {               
         public double X;
         public double Y;
         public double Z;

@@ -2,7 +2,7 @@
 
 namespace GeneratePoints.Polygons
 {
-    public class Septagon : Polygon 
+    public class Septagon : Polygon
     {
         public Septagon()
         {
@@ -12,13 +12,11 @@ namespace GeneratePoints.Polygons
             Settings.Render.RotateCamera = false;
             Settings.Render.AnchorTransmit = 0.7;
             Settings.Render.DataPointRadius = 0.001;
-            ShapeName = "Septagon";            
+            ShapeName = "Septagon";
             Vertices = 7;
             var anchors = CalculateVertices();
 
             AnchorPoints = MakeAnchorPoints(anchors);
         }
     }
-
-
 }

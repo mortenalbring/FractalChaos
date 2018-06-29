@@ -23,26 +23,23 @@ namespace GeneratePoints.Polyhedra
                 new List<double> {0, -1, 3 * phi},
                 new List<double> {0, 1, -3 * phi},
                 new List<double> {0, -1, -3 * phi},
-                new List<double> {1, (2 + phi), 2 * phi},
-                new List<double> {1, (2 + phi), -2 * phi},
+                new List<double> {1, 2 + phi, 2 * phi},
+                new List<double> {1, 2 + phi, -2 * phi},
                 new List<double> {1, -1 * (2 + phi), 2 * phi},
                 new List<double> {1, -1 * (2 + phi), -2 * phi},
-                new List<double> {-1, (2 + phi), 2 * phi},
-                new List<double> {-1, (2 + phi), -2 * phi},
+                new List<double> {-1, 2 + phi, 2 * phi},
+                new List<double> {-1, 2 + phi, -2 * phi},
                 new List<double> {-1, -1 * (2 + phi), 2 * phi},
                 new List<double> {-1, -1 * (2 + phi), -2 * phi},
-                new List<double> {2, (1 + 2 * phi), phi},
-                new List<double> {2, (1 + 2 * phi), -1 * phi},
+                new List<double> {2, 1 + 2 * phi, phi},
+                new List<double> {2, 1 + 2 * phi, -1 * phi},
                 new List<double> {2, -1 * (1 + 2 * phi), phi},
                 new List<double> {2, -1 * (1 + 2 * phi), -1 * phi},
-                new List<double> {-2, (1 + 2 * phi), phi},
-                new List<double> {-2, (1 + 2 * phi), -1 * phi},
+                new List<double> {-2, 1 + 2 * phi, phi},
+                new List<double> {-2, 1 + 2 * phi, -1 * phi},
                 new List<double> {-2, -1 * (1 + 2 * phi), phi},
                 new List<double> {-2, -1 * (1 + 2 * phi), -1 * phi}
             };
-
-
-
 
 
             AnchorPoints = MakeAnchorPoints(anchors);
