@@ -9,10 +9,43 @@ namespace GeneratePoints.Posts
         public static void TetraPost()
         {
             var t = new Tetrahedron();
-            t.Settings.Calculation.MaxDataPoints = 1000000;
+            //t.Settings.Calculation.MaxDataPoints = 1000000;
+            t.Settings.Calculation.MaxDataPoints = 10000000;
             t.Settings.Calculation.FrameCount = 10;
-            t.StartRender("tetraAnimPost");
+            t.StartRender("tetraAnimPost2");
         }
+
+        public static void TetraPostNoRepeat()
+        {
+            var t = new Tetrahedron();
+            //t.Settings.Calculation.MaxDataPoints = 1000000;
+            t.Settings.Calculation.MaxDataPoints = 10000000;
+            t.Settings.Calculation.FrameCount = 10;
+            t.Settings.Render.TransparentBackground = false;            
+            t.StartRender("tetraAnimPostNoRepeat2",GameStyle.NoRepeat);
+        }
+
+        public static void CubePost()
+        {
+
+            var c = new Cube();
+            c.Settings.Calculation.MaxDataPoints = 10000000;
+            c.Settings.Calculation.FrameCount = 10;
+            c.Settings.Render.TransparentBackground = true;
+            c.StartRender("cubePost1");
+        }
+        public static void CubePost2()
+        {
+
+            var c = new Cube();
+            c.Settings.Calculation.MaxDataPoints = 10000000;
+            c.Settings.Calculation.FrameCount = 10;
+            c.Settings.Render.TransparentBackground = true;
+            c.Settings.Render.RotateCamera = true;
+            
+            c.StartRender("cubePost2NoRepeat",GameStyle.NoRepeat);
+        }
+
 
         public static void TetraRotate()
         {
