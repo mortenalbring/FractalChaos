@@ -15,7 +15,11 @@ namespace GeneratePoints
         private static void Main(string[] args)
         {
             var p = new Polygon(3);
-            p.StartRender();
+            //p.StartRender();
+
+            //Posts.Polyhedra.CubePost2();
+
+            Posts.Polyhedra.TetraPostNoRepeat();
         }
     }
 }
