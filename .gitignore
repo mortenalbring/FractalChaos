@@ -7,3 +7,5 @@ GeneratePoints/GeneratePoints/bin/
 GeneratePoints/GeneratePoints/bin/Debug/
 *.mp4
 *.gif
+GeneratePoints/.idea/.idea.GeneratePoints/.idea/*
+GeneratePoints/.idea/.idea.GeneratePoints/riderModule.iml
