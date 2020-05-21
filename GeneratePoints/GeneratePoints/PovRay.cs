@@ -14,12 +14,17 @@ namespace GeneratePoints
         {
             var path = Assembly.GetExecutingAssembly().Location;
             var directory = Path.GetDirectoryName(path);
-            if (directory == null) return "";
+            if (directory == null)
+            {
+                return "";
+            }
 
             var newDir = Path.Combine(directory, dirName);
 
             if (!Directory.Exists(newDir))
+            {
                 Directory.CreateDirectory(newDir);
+            }
 
             const string nocamFile = "fc-scene-layout.pov";
             var nocamPath = Path.Combine(directory, nocamFile);
@@ -31,7 +36,9 @@ namespace GeneratePoints
 
             var compiledFile = Path.Combine(newDir, compiledFilename);
             if (File.Exists(compiledFile))
+            {
                 File.Delete(compiledFile);
+            }
 
 
             var noCamText = File.ReadAllText(nocamPath);
@@ -43,7 +50,9 @@ namespace GeneratePoints
                 var file = datapointsFilenames[index];
                 fileNameStr = fileNameStr + "\"" + file + "\"";
                 if (index < datapointsFilenames.Count - 1)
+                {
                     fileNameStr = fileNameStr + ",";
+                }
             }
 
             fileNameStr = fileNameStr + "}";
@@ -56,14 +65,18 @@ namespace GeneratePoints
 
             var pointsFileVar = "#declare strDatapointsFile = FileNames[MyClock]; \r\n";
             if (datapointsFilenames.Count == 1)
+            {
                 pointsFileVar = "#declare strDatapointsFile = FileNames[0]; \r\n";
+            }
 
             var anchorsFileVar = "#declare strAnchorsFile = \"" + anchorsFilename + "\"; \r\n";
             var anchorRadiusVar = "#declare nAnchorRadius = " + settings.Render.AnchorRadius + "; \r\n";
             var datapointRadius = "#declare nDataPointRadius = " + settings.Render.DataPointRadius + "; \r\n";
             var pointStop = "#declare nPointStop = " + settings.Calculation.MaxDataPoints + "; \r\n";
             if (settings.Render.RenderProgressively)
+            {
                 pointStop = "#declare nPointStop = " + settings.Calculation.MaxDataPoints + "*clock; \r\n";
+            }
 
             var anchorTransmit = "#declare nAnchorTransmit = " + settings.Render.AnchorTransmit + "; \r\n";
 
@@ -77,12 +90,14 @@ namespace GeneratePoints
                 ">       \t\r\n\trotate <0,0,0>\r\n}\r\n";
 
             if (settings.Render.RotateCamera)
+            {
                 cameraString =
                     "\n\n\ncamera {\t\r\n\tlocation <sin(2*pi*clock)*" + settings.Render.CameraZoom + "," +
                     settings.Render.CameraYOffset + ", cos(2*pi*clock)*" + settings.Render.CameraZoom +
                     ">\t\t  \r\n\tlook_at <" +
                     settings.Render.LookAt[0] + "," + settings.Render.LookAt[1] + "," + settings.Render.LookAt[2] +
                     ">       \t\r\n\trotate <0,0,0>\r\n}\r\n";
+            }
 
             var variableStrings = new List<string>
             {
@@ -96,7 +111,9 @@ namespace GeneratePoints
                 anchorTransmit
             };
             if (!settings.Render.TransparentBackground)
+            {
                 variableStrings.Add(background);
+            }
 
             variableStrings.Add(cameraString);
 

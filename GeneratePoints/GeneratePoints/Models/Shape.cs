@@ -122,8 +122,12 @@ namespace GeneratePoints.Models
             var outputAnchors = ShapeName + "-anchors.txt";
             outputAnchors = dirname + "/" + outputAnchors;
             if (!Settings.Calculation.Overwrite)
+            {
                 if (File.Exists(outputAnchors))
+                {
                     return outputAnchors;
+                }
+            }
 
             var outputAnchorStr = "";
 
@@ -138,7 +142,10 @@ namespace GeneratePoints.Models
                 outputAnchorStr = outputAnchorStr + "<" + t.R + "," + t.G + "," + t.B + ">,";
             }
 
-            if (File.Exists(outputAnchors)) File.Delete(outputAnchors);
+            if (File.Exists(outputAnchors))
+            {
+                File.Delete(outputAnchors);
+            }
 
             File.AppendAllText(outputAnchors, outputAnchorStr);
             return outputAnchors;
@@ -168,8 +175,12 @@ namespace GeneratePoints.Models
             outputfilename = dirname + "/" + outputfilename;
 
             if (!Settings.Calculation.Overwrite)
+            {
                 if (File.Exists(outputfilename))
+                {
                     return outputfilename;
+                }
+            }
 
             File.Delete(outputfilename);
             var sw = new Stopwatch();

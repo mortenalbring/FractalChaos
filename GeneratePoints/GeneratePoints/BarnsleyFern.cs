@@ -61,8 +61,13 @@ namespace GeneratePoints
                                  Settings.Calculation.MaxDataPoints + "-datapoints.txt";
 
             if (!Settings.Calculation.Overwrite)
+            {
                 if (File.Exists(outputfilename))
+                {
                     return outputfilename;
+                }
+            }
+
             File.Delete(outputfilename);
             double yShift = -5;
             var rnd = new Random(42);
@@ -85,13 +90,22 @@ namespace GeneratePoints
                 var val = rnd.Next(0, 100);
                 int n;
                 if (val == 1)
+                {
                     n = 0;
+                }
                 else if (val < 85)
+                {
                     n = 1;
+                }
                 else if (val < 93)
+                {
                     n = 2;
+                }
                 else
+                {
                     n = 3;
+                }
+
                 xPoint = a[n] * xPoint + b[n] * yPoint;
                 yPoint = c[n] * xPoint + d[n] * yPoint + f[n];
 

@@ -7,7 +7,8 @@ using GeneratePoints.Models;
 namespace GeneratePoints.GameStyles
 {
     /// <summary>
-    /// This is a variant of the chaos game that selects an anchor point as normal, but if one specific anchor point is chosen then it moves towards it and also rotates about a specified angle
+    ///     This is a variant of the chaos game that selects an anchor point as normal, but if one specific anchor point is
+    ///     chosen then it moves towards it and also rotates about a specified angle
     /// </summary>
     public class VaryAngle
     {
@@ -87,7 +88,10 @@ namespace GeneratePoints.GameStyles
                         yPoint = (yPoint + anchorPoints[val].Y) * settings.Calculation.Ratio;
                     }
 
-                    if (xPoint > xmax) xmax = xPoint;
+                    if (xPoint > xmax)
+                    {
+                        xmax = xPoint;
+                    }
 
                     rPoint = (rPoint + anchorPoints[val].R) * 0.5;
                     gPoint = (gPoint + anchorPoints[val].G) * 0.5;

@@ -14,7 +14,9 @@ namespace GeneratePoints
             var path = Assembly.GetExecutingAssembly().Location;
             var directory = Path.GetDirectoryName(path);
             if (directory == null)
+            {
                 throw new Exception("No root directory found");
+            }
 
             var newDir = Path.Combine(directory, dirName);
 
@@ -25,7 +27,10 @@ namespace GeneratePoints
             else
             {
                 if (!overwrite)
+                {
                     return;
+                }
+
                 var di = new DirectoryInfo(newDir);
                 foreach (var file in di.GetFiles())
                     file.Delete();
@@ -47,7 +52,9 @@ namespace GeneratePoints
             {
                 var png = povfile.Replace(".pov", ".png");
                 if (!File.Exists(png))
+                {
                     unrunfiles.Add(povfile);
+                }
             }
 
 

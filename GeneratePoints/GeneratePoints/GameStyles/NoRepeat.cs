@@ -31,8 +31,12 @@ namespace GeneratePoints.GameStyles
             outputfilename = dirname + "/" + outputfilename;
 
             if (!settings.Calculation.Overwrite)
+            {
                 if (File.Exists(outputfilename))
+                {
                     return outputfilename;
+                }
+            }
 
             File.Delete(outputfilename);
             var sw = new Stopwatch();
@@ -44,8 +48,11 @@ namespace GeneratePoints.GameStyles
             {
                 var val = rnd.Next(0, anchorPoints.Count);
                 if (val == previousVal)
+                {
                     while (val == previousVal)
                         val = rnd.Next(0, anchorPoints.Count);
+                }
+
                 previousVal = val;
 
                 xPoint = (xPoint + anchorPoints[val].X) * settings.Calculation.Ratio;

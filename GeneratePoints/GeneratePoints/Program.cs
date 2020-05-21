@@ -1,6 +1,5 @@
 ﻿using System;
 using GeneratePoints.Models;
-using GeneratePoints.Polyhedra;
 
 namespace GeneratePoints
 {
@@ -18,8 +17,6 @@ namespace GeneratePoints
         {
             try
             {
-
-
                 var p = new Polygon(3);
                 //p.StartRender();
 
@@ -31,7 +28,6 @@ namespace GeneratePoints
             }
             catch (Exception ex)
             {
-                
                 Console.WriteLine("Problem");
             }
         }
