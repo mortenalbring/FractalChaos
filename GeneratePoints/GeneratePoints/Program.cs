@@ -1,4 +1,6 @@
-﻿using GeneratePoints.Models;
+﻿using System;
+using GeneratePoints.Models;
+using GeneratePoints.Polyhedra;
 
 namespace GeneratePoints
 {
@@ -14,12 +16,24 @@ namespace GeneratePoints
     {
         private static void Main(string[] args)
         {
-            var p = new Polygon(3);
-            //p.StartRender();
+            try
+            {
 
-            //Posts.Polyhedra.CubePost2();
 
-            Posts.Polyhedra.TetraPostNoRepeat();
+                var p = new Polygon(3);
+                //p.StartRender();
+
+                //Posts.Polyhedra.CubePost2();
+
+                //Posts.Polyhedra.TetraPostNoRepeat();
+
+                Posts.Polyhedra.OctoPost();
+            }
+            catch (Exception ex)
+            {
+                
+                Console.WriteLine("Problem");
+            }
         }
     }
 }

@@ -10,9 +10,17 @@ namespace GeneratePoints.Posts
         {
             var t = new Tetrahedron();
             //t.Settings.Calculation.MaxDataPoints = 1000000;
-            t.Settings.Calculation.MaxDataPoints = 10000000;
+            t.Settings.Calculation.MaxDataPoints = 1000000;
             t.Settings.Calculation.FrameCount = 10;
             t.StartRender("tetraAnimPost2");
+        }
+        public static void OctoPost()
+        {
+            var t = new Octahedron();
+            //t.Settings.Calculation.MaxDataPoints = 1000000;
+            t.Settings.Calculation.MaxDataPoints = 1000;
+            t.Settings.Calculation.FrameCount = 10;
+            t.StartRender("octoAnimPost2");
         }
 
         public static void TetraPostNoRepeat()
