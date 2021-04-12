@@ -1,5 +1,6 @@
 ﻿using System;
 using GeneratePoints.Models;
+using GeneratePoints.Posts;
 
 namespace GeneratePoints
 {
@@ -20,15 +21,20 @@ namespace GeneratePoints
                 var p = new Polygon(3);
                 //p.StartRender();
 
-                //Posts.Polyhedra.CubePost2();
+                // Posts.Polyhedra.CubePost2();
 
                 //Posts.Polyhedra.TetraPostNoRepeat();
+                Posts.Polyhedra.TetraPostTest();
 
-                Posts.Polyhedra.OctoPost();
+                //Posts.Polyhedra.OctoPostNoRepeat();
+                
+               // Barns.BarnsleyFarn();
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Problem");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
     }

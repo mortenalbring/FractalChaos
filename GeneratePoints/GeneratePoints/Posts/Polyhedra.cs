@@ -6,22 +6,42 @@ namespace GeneratePoints.Posts
 {
     internal class Polyhedra
     {
+        public static void TetraPostTest()
+        {
+            var t = new Tetrahedron();
+            //t.Settings.Calculation.MaxDataPoints = 1000000;
+            t.Settings.Calculation.MaxDataPoints = 100000;
+            t.Settings.Calculation.FrameCount = 100;
+            t.Settings.Render.RenderProgressively = false;
+            t.Settings.Render.RotateCamera = true;
+           // t.Settings.Calculation.Overwrite = true;
+
+            t.StartRender("dualTetraPost5");
+        }
+        
         public static void TetraPost()
         {
             var t = new Tetrahedron();
             //t.Settings.Calculation.MaxDataPoints = 1000000;
             t.Settings.Calculation.MaxDataPoints = 1000000;
             t.Settings.Calculation.FrameCount = 10;
-            t.StartRender("tetraAnimPost2");
+            t.Settings.Render.RenderProgressively = false;
+            t.Settings.Render.RotateCamera = true;
+            t.Settings.Render.AnchorTransmit = 0;
+            
+            t.StartRender("tetraAnimPostNoRepeatNearest",GameStyle.NoRepeatNearest);
         }
 
         public static void OctoPost()
         {
             var t = new Octahedron();
             //t.Settings.Calculation.MaxDataPoints = 1000000;
-            t.Settings.Calculation.MaxDataPoints = 1000;
+            t.Settings.Calculation.MaxDataPoints = 1000000;
             t.Settings.Calculation.FrameCount = 10;
-            t.StartRender("octoAnimPost2");
+            t.Settings.Render.AnchorTransmit = 0.8;
+            t.Settings.Render.RenderProgressively = false;
+            
+            t.StartRender("octoAnimPost3");
         }
 
         public static void TetraPostNoRepeat()
@@ -31,7 +51,23 @@ namespace GeneratePoints.Posts
             t.Settings.Calculation.MaxDataPoints = 10000000;
             t.Settings.Calculation.FrameCount = 10;
             t.Settings.Render.TransparentBackground = false;
-            t.StartRender("tetraAnimPostNoRepeat2", GameStyle.NoRepeat);
+            t.Settings.Render.RenderProgressively = false;
+            t.Settings.Render.RotateCamera = true;
+            t.StartRender("tetraAnimPostNoRepeat3", GameStyle.NoRepeat);
+        }
+        
+        public static void OctoPostNoRepeat()
+        {
+            var t = new Octahedron();
+            //t.Settings.Calculation.MaxDataPoints = 1000000;
+            t.Settings.Calculation.MaxDataPoints = 10000000;
+            t.Settings.Calculation.FrameCount = 10;
+            t.Settings.Render.AnchorTransmit = 0.0;
+            t.Settings.Render.RenderProgressively = false;
+            t.Settings.Render.TransparentBackground = true;
+            
+            t.StartRender("ocanimPost3NoRepeat", GameStyle.NoRepeat);
+            //t.StartRender("octoAnimPost3");
         }
 
         public static void CubePost()
