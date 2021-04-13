@@ -24,9 +24,9 @@ namespace GeneratePoints
                 // Posts.Polyhedra.CubePost2();
 
                 //Posts.Polyhedra.TetraPostNoRepeat();
-                Posts.Polyhedra.TetraPostTest();
+                //Posts.Polyhedra.TetraPostTest();
 
-                //Posts.Polyhedra.OctoPostNoRepeat();
+                Posts.Polyhedra.OctoPostNoRepeat();
                 
                // Barns.BarnsleyFarn();
             }

@@ -10,11 +10,12 @@ namespace GeneratePoints.Posts
         {
             var t = new Tetrahedron();
             //t.Settings.Calculation.MaxDataPoints = 1000000;
-            t.Settings.Calculation.MaxDataPoints = 100000;
+            t.Settings.Calculation.MaxDataPoints = 1000000;
             t.Settings.Calculation.FrameCount = 100;
-            t.Settings.Render.RenderProgressively = false;
+            t.Settings.Render.RenderProgressively = true;
             t.Settings.Render.RotateCamera = true;
-           // t.Settings.Calculation.Overwrite = true;
+            t.Settings.Calculation.Overwrite = true;
+            t.Settings.Render.AnchorRadius = 0.0010;
 
             t.StartRender("dualTetraPost5");
         }
@@ -36,12 +37,15 @@ namespace GeneratePoints.Posts
         {
             var t = new Octahedron();
             //t.Settings.Calculation.MaxDataPoints = 1000000;
-            t.Settings.Calculation.MaxDataPoints = 1000000;
+            t.Settings.Calculation.MaxDataPoints = 10000000;
             t.Settings.Calculation.FrameCount = 10;
             t.Settings.Render.AnchorTransmit = 0.8;
-            t.Settings.Render.RenderProgressively = false;
+            t.Settings.Render.AnchorRadius = 0.0010;
+            t.Settings.Render.DataPointRadius = 0.0005;
+            t.Settings.Render.RotateCamera = true;
+            t.Settings.Render.RenderProgressively = true;
             
-            t.StartRender("octoAnimPost3");
+            t.StartRender("octoAnimPost2021");
         }
 
         public static void TetraPostNoRepeat()
@@ -65,8 +69,8 @@ namespace GeneratePoints.Posts
             t.Settings.Render.AnchorTransmit = 0.0;
             t.Settings.Render.RenderProgressively = false;
             t.Settings.Render.TransparentBackground = true;
-            
-            t.StartRender("ocanimPost3NoRepeat", GameStyle.NoRepeat);
+            t.Settings.Render.DataPointRadius = 0.0005;
+            t.StartRender("ocanimPost3NoRepeat2021", GameStyle.NoRepeat);
             //t.StartRender("octoAnimPost3");
         }
 
