@@ -75,6 +75,44 @@ namespace GeneratePoints
             }
         }
 
+        public static void EstimateCalcTime(string dirName, string searchPattern)
+        {
+            var di = new DirectoryInfo(dirName);
+            var files = di.GetFiles(searchPattern).OrderBy(e => e.CreationTime);
+
+            var output = new Dictionary<string,double>(); 
+            DateTime previousCreate = DateTime.MinValue;
+            var i = 0;
+            foreach (var f in files)
+            {
+                if (i == 0)
+                {
+                    previousCreate = f.CreationTime;
+                }
+                else
+                {
+                    var createTime = f.CreationTime;
+                    TimeSpan tsSpan = createTime - previousCreate;
+
+                    var substr = f.FullName.Substring(f.FullName.Length - 7).Replace(".png","");
+                    output.Add(substr,tsSpan.TotalMilliseconds);
+                    previousCreate = createTime;
+                }
+
+                i++;
+
+            }
+
+            foreach (var o in output)
+            {
+                Console.WriteLine(o.Key + "\t" + o.Value);
+            }
+            
+            var xx = 42;
+
+
+        }
+        
         public static string GetDatapointsFilename(string shapeName, Settings settings, string append = "")
         {
 

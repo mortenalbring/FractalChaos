@@ -151,6 +151,32 @@ open
             
             
         }
+
+        public static string PreparePovRayFilesWithIniNew(Settings settings, List<string> datapointsFilenames,
+            string anchorsFilename,
+            string dirName)
+        {
+            var path = Assembly.GetExecutingAssembly().Location;
+            var directory = Path.GetDirectoryName(path);
+            if (directory == null)
+            {
+                return "";
+            }
+
+            var newDir = Path.Combine(directory, dirName);
+
+            if (!Directory.Exists(newDir))
+            {
+                Directory.CreateDirectory(newDir);
+            }
+
+
+            var povContent = $@"
+
+";
+
+        }
+        
         public static string PreparePovRayFilesWithIni(Settings settings, List<string> datapointsFilenames,
             string anchorsFilename,
             string dirName)
