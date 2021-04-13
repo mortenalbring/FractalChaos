@@ -268,7 +268,7 @@ open
 
                     if (shouldSkip)
                     {
-                        continue;
+                      //  continue;
                     }
                     
 //pigment {{ gradient x color_map {{ [0 color rgb <{a.R},{a.G},{a.B}>] [1 color rgb <{o.R},{o.G},{o.B}>] }} }}
@@ -282,7 +282,16 @@ interior{{I_Glass}}
 }}                                  
 ";
 
-                    povAnchorCylinders += cylinderStr;
+                    var cylinderLight = $@"light_source{{ <{a.X},{a.Y},{a.Z}> color rgb <{a.R},{a.G},{a.B}>
+              cylinder
+              point_at<{o.X}, {o.Y}, {o.Z}>
+              radius 20
+              tightness 100
+              falloff 40
+              
+            }}";
+
+                    povAnchorCylinders += cylinderLight + cylinderStr;
                     
                     donePoints.Add(new KeyValuePair<AnchorPoint, AnchorPoint>(a,o));
                 }

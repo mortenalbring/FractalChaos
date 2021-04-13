@@ -10,14 +10,14 @@ namespace GeneratePoints.Posts
         {
             var t = new Tetrahedron();
             //t.Settings.Calculation.MaxDataPoints = 1000000;
-            t.Settings.Calculation.MaxDataPoints = 10000;
+            t.Settings.Calculation.MaxDataPoints = 1000000;
             t.Settings.Calculation.FrameCount = 100;
             t.Settings.Render.RenderProgressively = true;
             t.Settings.Render.RotateCamera = true;
             t.Settings.Calculation.Overwrite = true;
             t.Settings.Render.AnchorRadius = 0.0010;
 
-            t.StartRender("dualTetraPost6");
+            t.StartRender("tetraPost7");
         }
         
         public static void TetraPost()
