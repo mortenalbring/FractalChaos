@@ -278,7 +278,7 @@ namespace GeneratePoints.Models
             WriteAnchorsFile(dirname);
             WriteDataPoints(dirname);
             var dataFiles = new List<string> {dataPointsFilename};
-            var povFile = PovRay.PreparePovRayFilesWithIniAndAnchorOutline(Settings, dataFiles, anchorsFilename, this.AnchorPoints, dirname);
+            var povFile = PovRay.PreparePovRayFilesWithIniNew(Settings, dataFiles, anchorsFilename, this.AnchorPoints, dirname);
             Console.WriteLine("Written " + povFile);
 
             return dataPointsFilename;

@@ -152,8 +152,8 @@ open
             
         }
 
-        public static string PreparePovRayFilesWithIniNew(Settings settings, List<string> datapointsFilenames,
-            string anchorsFilename,
+        public static string PreparePovRayFilesWithIniNew(Settings settings, List<string> datapointsFilenames, 
+            string anchorsFilename, List<AnchorPoint> anchorPoints,
             string dirName)
         {
             var path = Assembly.GetExecutingAssembly().Location;
@@ -169,12 +169,160 @@ open
             {
                 Directory.CreateDirectory(newDir);
             }
+            anchorsFilename = Path.GetFileName(anchorsFilename);
+            var withoutPath = datapointsFilenames.Select(file => Path.GetFileName(file)).ToList();
+            datapointsFilenames = withoutPath;
+            var compiledFilename = Path.GetFileName(datapointsFilenames.First()) + ".pov";
+            var compiledFile = Path.Combine(newDir, compiledFilename);
+            if (File.Exists(compiledFile))
+            {
+                File.Delete(compiledFile);
+            }
+            
+            var fileNameStr = "{";
+            for (var index = 0; index < datapointsFilenames.Count; index++)
+            {
+                var file = datapointsFilenames[index];
+                fileNameStr = fileNameStr + "\"" + file + "\"";
+                if (index < datapointsFilenames.Count - 1)
+                {
+                    fileNameStr = fileNameStr + ",";
+                }
+            }
+
+            fileNameStr = fileNameStr + "}";
 
 
-            var povContent = $@"
+            var cylinderDatas = $@"
+#declare pp = pp + 1;
+     #read (dataPointsFile,Vector1,Vector2)         
+     
+      
+      cylinder {{
+       prevVector,
+       Vector1,
+       nDataPointRadius
+       pigment {{ rgb Vector2 }}
+      }}
+                              
+#declare prevVector = Vector1;                              
+      
+  #end
+";
+            
 
+            //For if there are multiple data point files
+            var povVarFilesIndex = "MyClock";
+            if (datapointsFilenames.Count == 1)
+            {
+                povVarFilesIndex = "0";
+            }
+
+            var povVarNPointStop = settings.Calculation.MaxDataPoints.ToString();
+            if (settings.Render.RenderProgressively)
+            {
+                povVarNPointStop = settings.Calculation.MaxDataPoints.ToString() + "*clock";
+            }
+
+            var povVarCameraLocationX = settings.Render.CameraZoom.ToString();
+            var povVarCameraLocationY = settings.Render.CameraYOffset;
+            var povVarCameraLocationZ = settings.Render.CameraZoom.ToString();
+            if (settings.Render.RotateCamera)
+            {
+                povVarCameraLocationX = $"sin(2*pi*clock)*{settings.Render.CameraZoom}";
+                povVarCameraLocationZ = $"cos(2*pi*clock)*{settings.Render.CameraZoom}";
+            }
+
+            var povCameraLocation = $"<{povVarCameraLocationX},{povVarCameraLocationY},{povVarCameraLocationZ}>";
+            var lookAt = $"<{settings.Render.LookAt[0]},{settings.Render.LookAt[1]},{settings.Render.LookAt[2]}>";
+
+            var povAnchorCylinders = "";
+            foreach (var a in anchorPoints)
+            {
+                foreach (var o in anchorPoints)
+                {
+                    if (a.X == o.X && a.Y == o.Y && a.Z == o.Z)
+                    {
+                        continue;
+                    }
+                    var cylinderStr = $@"cylinder {{
+ <{a.X},{a.Y},{a.Z}>,
+ <{o.X},{o.Y},{o.Z}>,
+ 0.0005
+open
+ pigment {{ rgb <{a.R},{a.G},{a.B}> transmit 0.9 }}
+}}                                  
 ";
 
+                    povAnchorCylinders += cylinderStr;
+                }
+            }
+            
+            var povContent = $@"
+#include ""math.inc""
+#declare Start = 0;
+#declare End = {(settings.Calculation.FrameCount - 1)};
+#declare MyClock = Start+(End-Start)*clock;
+
+#declare FileNames = array[{datapointsFilenames.Count}] {fileNameStr};
+
+#declare strDatapointsFile = FileNames[{povVarFilesIndex}]; 
+
+#declare strAnchorsFile = ""{anchorsFilename}""; 
+
+#declare nAnchorRadius = {settings.Render.AnchorRadius}; 
+
+#declare nDataPointRadius = {settings.Render.DataPointRadius}; 
+
+#declare nPointStop = {povVarNPointStop}; 
+
+#declare nAnchorTransmit = {settings.Render.AnchorTransmit}; 
+
+camera {{	
+	location {povCameraLocation}		  
+	look_at {lookAt}       	
+	rotate <0,0,0>
+}}
+
+{povAnchorCylinders}
+
+#fopen anchorsFile strAnchorsFile read
+
+#while (defined(anchorsFile))
+     #read (anchorsFile,Vector1,Vector2)
+   
+    light_source {{
+      0*x                  
+      color rgb Vector2    
+      translate Vector1
+    }}      
+          
+#end
+
+#fopen dataPointsFile strDatapointsFile read
+#declare pp = 0;
+
+#while (defined(dataPointsFile) & pp < nPointStop)  
+#declare pp = pp + 1;
+     #read (dataPointsFile,Vector1,Vector2)         
+     
+     sphere {{ Vector1, nDataPointRadius
+      texture {{ pigment{{ rgb Vector2}} }} }}
+  #end
+
+                            
+
+#fclose dataPointsFile    
+#fclose anchorsFile
+";
+
+            
+
+
+            File.WriteAllText(compiledFile, povContent);
+
+            WritePovrayIniFile(settings, dirName, compiledFilename);
+            return compiledFilename;
         }
         
         public static string PreparePovRayFilesWithIni(Settings settings, List<string> datapointsFilenames,
