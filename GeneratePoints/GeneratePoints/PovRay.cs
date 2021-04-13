@@ -109,10 +109,11 @@ namespace GeneratePoints
                         continue;
                     }
                     var cylinderStr = $@"cylinder {{
- <{a.X},{a.Y},{a.Z}>
- <{o.X},{o.Y},{o.Z}>
- 0.1
- pigment {{ rgb <0.5,0.5,0.5> }}
+ <{a.X},{a.Y},{a.Z}>,
+ <{o.X},{o.Y},{o.Z}>,
+ 0.0005
+open
+ pigment {{ rgb <{a.R},{a.G},{a.B}> transmit 0.9 }}
 }}                                  
 ";
 
