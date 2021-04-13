@@ -237,6 +237,13 @@ open
             var lookAt = $"<{settings.Render.LookAt[0]},{settings.Render.LookAt[1]},{settings.Render.LookAt[2]}>";
 
             var povAnchorCylinders = "";
+
+            var cylinderRadius = 0.005;
+            var cylinderTransmit = 0.9;
+            var cylinderAmbient = 0.9;
+            var cylinderDiffuse = 0.9;
+
+            var donePoints = new List<KeyValuePair<AnchorPoint, AnchorPoint>>();
             foreach (var a in anchorPoints)
             {
                 foreach (var o in anchorPoints)
@@ -245,21 +252,46 @@ open
                     {
                         continue;
                     }
+
+                    var shouldSkip = false;
+                    foreach (var d in donePoints)
+                    {
+                        if ((d.Key.X == a.X) && (d.Key.Y == a.Y) && (d.Key.Z == a.Z) && (d.Value.X == o.X) && (d.Value.Y == o.Y) && (d.Value.Z == o.Z))
+                        {
+                            shouldSkip = true;
+                        }
+                        if ((d.Key.X == o.X) && (d.Key.Y == o.Y) && (d.Key.Z == o.Z) && (d.Value.X == a.X) && (d.Value.Y == a.Y) && (d.Value.Z == a.Z))
+                        {
+                            shouldSkip = true;
+                        }
+                    }
+
+                    if (shouldSkip)
+                    {
+                        continue;
+                    }
+                    
+//pigment {{ gradient x color_map {{ [0 color rgb <{a.R},{a.G},{a.B}>] [1 color rgb <{o.R},{o.G},{o.B}>] }} }}
+//pigment {{ rgb <{a.R},{a.G},{a.B}> transmit nAnchorCylTransmit }} finish {{ ambient nAnchorCylAmbient diffuse nAnchorCylDiffuse }}
                     var cylinderStr = $@"cylinder {{
  <{a.X},{a.Y},{a.Z}>,
- <{o.X},{o.Y},{o.Z}>,
- 0.0005
+ <{o.X},{o.Y},{o.Z}> nAnchorCylRadius 
 open
- pigment {{ rgb <{a.R},{a.G},{a.B}> transmit 0.9 }}
+ texture{{T_Glass1}}
+interior{{I_Glass}}
 }}                                  
 ";
 
                     povAnchorCylinders += cylinderStr;
+                    
+                    donePoints.Add(new KeyValuePair<AnchorPoint, AnchorPoint>(a,o));
                 }
             }
             
             var povContent = $@"
 #include ""math.inc""
+#include ""textures.inc""
+#include ""glass.inc""
 #declare Start = 0;
 #declare End = {(settings.Calculation.FrameCount - 1)};
 #declare MyClock = Start+(End-Start)*clock;
@@ -273,6 +305,11 @@ open
 #declare nAnchorRadius = {settings.Render.AnchorRadius}; 
 
 #declare nDataPointRadius = {settings.Render.DataPointRadius}; 
+
+#declare nAnchorCylRadius = {cylinderRadius};
+#declare nAnchorCylTransmit = {cylinderTransmit};
+#declare nAnchorCylAmbient = {cylinderAmbient};
+#declare nAnchorCylDiffuse = {cylinderDiffuse};
 
 #declare nPointStop = {povVarNPointStop}; 
 
