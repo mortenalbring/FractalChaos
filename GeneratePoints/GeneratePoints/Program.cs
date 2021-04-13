@@ -26,7 +26,10 @@ namespace GeneratePoints
                 //Posts.Polyhedra.TetraPostNoRepeat();
                 //Posts.Polyhedra.TetraPostTest();
 
-                Posts.Polyhedra.OctoPostNoRepeat();
+                var dirName = "D:\\Files\\Dropbox\\Coding projects\\FractalChaos\\GeneratePoints\\GeneratePoints\\bin\\Debug\\dualTetraPost5\\zoominto";
+                var searchPattern = "*.png";
+                Utility.EstimateCalcTime(dirName, searchPattern);
+              // Posts.Polyhedra.OctoPostNoRepeat();
                 
                // Barns.BarnsleyFarn();
             }
