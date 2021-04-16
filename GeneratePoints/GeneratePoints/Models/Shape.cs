@@ -113,12 +113,77 @@ namespace GeneratePoints.Models
         }
 
 
+        public string WriteAnchorsDottedFile(string dirname)
+        {
+            var outputAnchors = ShapeName + "-anchors.txt";
+            outputAnchors = dirname + "/" + outputAnchors;
+            if (!Settings.Calculation.Overwrite)
+            {
+                if (File.Exists(outputAnchors))
+                {
+                    return outputAnchors;
+                }
+            }
+            var outputAnchorStr = "";
+            
+            foreach (var a in AnchorPoints)
+            {
+                foreach (var o in AnchorPoints)
+                {
+                    if (a.X == o.X && a.Y == o.Y && a.Z == o.Z)
+                    {
+                        continue;
+                    }
+
+
+                    var startX = a.X;
+                    var endX = o.X;
+
+                    var ancCount = 1000;
+                    
+                    var diffX = (o.X - a.X) / ancCount;
+                    var diffY = (o.Y - a.Y) / ancCount;
+                    var diffZ = (o.Z - a.Z) / ancCount;
+                    
+                    var diffR = (o.R - a.R) / ancCount;
+                    var diffG = (o.G - a.G) / ancCount;
+                    var diffB = (o.B - a.B) / ancCount;
+
+                    for (int i = 0; i < ancCount; i++)
+                    {
+                        var xVal = a.X + diffX * i;
+                        var yVal = a.Y + diffY * i;
+                        var zVal = a.Z + diffZ * i;
+
+                        var rVal = a.R + diffR * i;
+                        var gVal = a.G + diffG * i;
+                        var bVal = a.B + diffB * i;
+
+                        
+                        outputAnchorStr += $"<{xVal},{yVal},{zVal}>,<{rVal},{gVal},{bVal}>,";
+
+                    }
+                    
+                }
+            }
+            
+            if (File.Exists(outputAnchors))
+            {
+                File.Delete(outputAnchors);
+            }
+
+            File.AppendAllText(outputAnchors, outputAnchorStr);
+            return outputAnchors;
+        }
+        
         /// <summary>
         ///     Writes the file for the anchor points of the shape
         /// </summary>
         /// <returns>Path to the anchors</returns>
         public virtual string WriteAnchorsFile(string dirname)
         {
+            return WriteAnchorsDottedFile(dirname);
+            
             var outputAnchors = ShapeName + "-anchors.txt";
             outputAnchors = dirname + "/" + outputAnchors;
             if (!Settings.Calculation.Overwrite)

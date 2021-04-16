@@ -242,12 +242,42 @@ open
             var cylinderTransmit = 0.9;
             var cylinderAmbient = 0.9;
             var cylinderDiffuse = 0.9;
-
+            var cylinderFilter = 0.0;
+            
             var donePoints = new List<KeyValuePair<AnchorPoint, AnchorPoint>>();
+            var anchVecPoints = "";
             foreach (var a in anchorPoints)
             {
                 foreach (var o in anchorPoints)
                 {
+                    var startX = a.X;
+                    var endX = o.X;
+
+                    var ancCount = 10;
+                    
+                    var diffX = (o.X - a.X) / ancCount;
+                    var diffY = (o.Y - a.Y) / ancCount;
+                    var diffZ = (o.Z - a.Z) / ancCount;
+                    
+                    var diffR = (o.R - a.R) / ancCount;
+                    var diffG = (o.G - a.G) / ancCount;
+                    var diffB = (o.B - a.B) / ancCount;
+
+                    for (int i = 0; i < ancCount; i++)
+                    {
+                        var xVal = a.X + diffX * i;
+                        var yVal = a.Y + diffY * i;
+                        var zVal = a.Z + diffZ * i;
+
+                        var rVal = a.R + diffR * i;
+                        var gVal = a.G + diffG * i;
+                        var bVal = a.B + diffB * i;
+
+                        
+                        anchVecPoints += $"<{xVal},{yVal},{zVal}>,<{rVal},{gVal},{bVal}>,";
+
+                    }
+                    
                     if (a.X == o.X && a.Y == o.Y && a.Z == o.Z)
                     {
                         continue;
@@ -274,11 +304,18 @@ open
 //pigment {{ gradient x color_map {{ [0 color rgb <{a.R},{a.G},{a.B}>] [1 color rgb <{o.R},{o.G},{o.B}>] }} }}
 //pigment {{ rgb <{a.R},{a.G},{a.B}> transmit nAnchorCylTransmit }} finish {{ ambient nAnchorCylAmbient diffuse nAnchorCylDiffuse }}
                     var cylinderStr = $@"cylinder {{
- <{a.X},{a.Y},{a.Z}>,
- <{o.X},{o.Y},{o.Z}> nAnchorCylRadius 
+ <{a.X},{a.Y},{a.Z}>, 
+ <{o.X},{o.Y},{o.Z}>, nAnchorCylRadius 
 open
- texture{{T_Glass1}}
-interior{{I_Glass}}
+pigment {{ rgb <{a.R},{a.G},{a.B}> transmit nAnchorCylTransmit }} finish {{ ambient nAnchorCylAmbient diffuse nAnchorCylDiffuse }}
+}}                                  
+";
+                    
+                    var coneStr = $@"cone {{
+ <{a.X},{a.Y},{a.Z}>, nAnchorCylRadius
+ <{o.X},{o.Y},{o.Z}>, 0 
+open
+pigment {{ rgb <{a.R},{a.G},{a.B}> transmit nAnchorCylTransmit filter nAnchorCylFilter }} finish {{ ambient nAnchorCylAmbient diffuse nAnchorCylDiffuse }}
 }}                                  
 ";
 
@@ -291,11 +328,14 @@ interior{{I_Glass}}
               
             }}";
 
-                    povAnchorCylinders += cylinderLight + cylinderStr;
+                    //povAnchorCylinders += cylinderLight + cylinderStr;
+                    povAnchorCylinders += coneStr + cylinderLight;
                     
                     donePoints.Add(new KeyValuePair<AnchorPoint, AnchorPoint>(a,o));
                 }
             }
+            
+            File.WriteAllText("anchorCylPointsTest.txt",anchVecPoints);
             
             var povContent = $@"
 #include ""math.inc""
@@ -317,6 +357,7 @@ interior{{I_Glass}}
 
 #declare nAnchorCylRadius = {cylinderRadius};
 #declare nAnchorCylTransmit = {cylinderTransmit};
+#declare nAnchorCylFilter = {cylinderFilter};
 #declare nAnchorCylAmbient = {cylinderAmbient};
 #declare nAnchorCylDiffuse = {cylinderDiffuse};
 
