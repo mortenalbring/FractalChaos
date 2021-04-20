@@ -6,6 +6,7 @@ namespace GeneratePoints.Posts
 {
     internal class Polyhedra
     {
+        private const string RootDirectory = "D:\\Files\\Projects\\ChaosFractals";
         public static void TetraPostTest()
         {
             var t = new Tetrahedron();
@@ -19,7 +20,7 @@ namespace GeneratePoints.Posts
 
             // t.Settings.Calculation.AngleMin = 0;
             // t.Settings.Calculation.AngleMax = Math.PI;
-            t.StartRender("tetraPost9", GameStyle.Normal);
+            t.StartRender(RootDirectory, "tetraPost9", GameStyle.Normal);
         }
         
         public static void TetraPost()
@@ -32,7 +33,7 @@ namespace GeneratePoints.Posts
             t.Settings.Render.RotateCamera = true;
             t.Settings.Render.AnchorTransmit = 0;
             
-            t.StartRender("tetraAnimPostNoRepeatNearest",GameStyle.NoRepeatNearest);
+            t.StartRender(RootDirectory,"tetraAnimPostNoRepeatNearest",GameStyle.NoRepeatNearest);
         }
 
         public static void OctoPost()
@@ -47,7 +48,7 @@ namespace GeneratePoints.Posts
             t.Settings.Render.RotateCamera = true;
             t.Settings.Render.RenderProgressively = true;
             
-            t.StartRender("octoAnimPost2021");
+            t.StartRender(RootDirectory,"octoAnimPost2021", GameStyle.Normal);
         }
 
         public static void TetraPostNoRepeat()
@@ -59,7 +60,7 @@ namespace GeneratePoints.Posts
             t.Settings.Render.TransparentBackground = false;
             t.Settings.Render.RenderProgressively = false;
             t.Settings.Render.RotateCamera = true;
-            t.StartRender("tetraAnimPostNoRepeat3", GameStyle.NoRepeat);
+            t.StartRender(RootDirectory, "tetraAnimPostNoRepeat3", GameStyle.NoRepeat);
         }
         
         public static void OctoPostNoRepeat()
@@ -72,7 +73,7 @@ namespace GeneratePoints.Posts
             t.Settings.Render.RenderProgressively = false;
             t.Settings.Render.TransparentBackground = true;
             t.Settings.Render.DataPointRadius = 0.0005;
-            t.StartRender("ocanimPost3NoRepeat2021", GameStyle.NoRepeat);
+            t.StartRender(RootDirectory,"ocanimPost3NoRepeat2021", GameStyle.NoRepeat);
             //t.StartRender("octoAnimPost3");
         }
 
@@ -93,7 +94,7 @@ namespace GeneratePoints.Posts
             c.Settings.Render.TransparentBackground = true;
             c.Settings.Render.RotateCamera = true;
 
-            c.StartRender("cubePost2NoRepeat", GameStyle.NoRepeat);
+            c.StartRender(RootDirectory,"cubePost2NoRepeat", GameStyle.NoRepeat);
         }
 
 
@@ -111,7 +112,7 @@ namespace GeneratePoints.Posts
             t.Settings.Calculation.Overwrite = false;
             t.Settings.Calculation.AngleMin = 0;
             t.Settings.Calculation.AngleMax = 2 * Math.PI;
-            t.StartRender("tetraRotatePost", GameStyle.WithAngle);
+            t.StartRender(RootDirectory,"tetraRotatePost", GameStyle.WithAngle);
         }
     }
 }

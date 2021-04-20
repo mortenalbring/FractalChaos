@@ -77,39 +77,40 @@ namespace GeneratePoints.Models
             return output;
         }
 
-        public virtual string StartRender(string dirname)
+        public virtual string StartRender(string rootDir, string dirname)
         {
-            return StartRender(dirname, GameStyle.Normal);
+            return StartRender(rootDir,dirname, GameStyle.Normal);
         }
 
-        public virtual string StartRender()
+        public virtual string StartRender(string rootDir)
         {
-            return StartRender(ShapeName, GameStyle.Normal);
+            return StartRender(rootDir,ShapeName, GameStyle.Normal);
         }
 
-        public virtual string StartRender(GameStyle gameStyle)
+        public virtual string StartRender(string rootDir,GameStyle gameStyle)
         {
-            return StartRender(ShapeName, gameStyle);
+            return StartRender(rootDir,ShapeName, gameStyle);
         }
 
-        public virtual string StartRender(string dirname, GameStyle gameStyle)
+        public virtual string StartRender(string rootDir, string subDirectoryName, GameStyle gameStyle)
         {
+            var fullDir = Path.Combine(rootDir, subDirectoryName);
+            
             switch (gameStyle)
             {
                 case GameStyle.Normal:
-                    return StartRenderNormal(dirname);
+                    return StartRenderNormal(fullDir);
                 case GameStyle.NoRepeat:
-                    return StartRenderNoRepeat(dirname);
+                    return StartRenderNoRepeat(fullDir);
                 case GameStyle.NoRepeatNearest:
-                    return StartRenderNoRepeatNearest(dirname);
+                    return StartRenderNoRepeatNearest(fullDir);
                 case GameStyle.VaryRatio:
-                    return StartRenderVaryRatio(dirname);
+                    return StartRenderVaryRatio(fullDir);
                 case GameStyle.WithAngle:
-                    return StartRenderWithAngle(dirname);
+                    return StartRenderWithAngle(fullDir);
             }
-
-
-            return StartRenderNormal(dirname);
+            
+            return StartRenderNormal(fullDir);
         }
 
 
