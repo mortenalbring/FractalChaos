@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using GeneratePoints.GameStyles;
@@ -114,17 +115,8 @@ namespace GeneratePoints.Models
         }
 
 
-        public string WriteAnchorsDottedFile(string dirname)
+        public string MakeAnchorEdgePoints()
         {
-            var outputAnchors = ShapeName + "-anchors.txt";
-            outputAnchors = dirname + "/" + outputAnchors;
-            if (!Settings.Calculation.Overwrite)
-            {
-                if (File.Exists(outputAnchors))
-                {
-                    return outputAnchors;
-                }
-            }
             var outputAnchorStr = "";
             
             foreach (var a in AnchorPoints)
@@ -167,34 +159,13 @@ namespace GeneratePoints.Models
                     
                 }
             }
-            
-            if (File.Exists(outputAnchors))
-            {
-                File.Delete(outputAnchors);
-            }
-
-            File.AppendAllText(outputAnchors, outputAnchorStr);
-            return outputAnchors;
+       
+            return outputAnchorStr;
         }
-        
-        /// <summary>
-        ///     Writes the file for the anchor points of the shape
-        /// </summary>
-        /// <returns>Path to the anchors</returns>
-        public virtual string WriteAnchorsFile(string dirname)
-        {
-            return WriteAnchorsDottedFile(dirname);
-            
-            var outputAnchors = ShapeName + "-anchors.txt";
-            outputAnchors = dirname + "/" + outputAnchors;
-            if (!Settings.Calculation.Overwrite)
-            {
-                if (File.Exists(outputAnchors))
-                {
-                    return outputAnchors;
-                }
-            }
 
+
+        private string MakeAnchorVertexPoints()
+        {
             var outputAnchorStr = "";
 
             foreach (var t in AnchorPoints)
@@ -208,13 +179,46 @@ namespace GeneratePoints.Models
                 outputAnchorStr = outputAnchorStr + "<" + t.R + "," + t.G + "," + t.B + ">,";
             }
 
-            if (File.Exists(outputAnchors))
+            return outputAnchorStr;
+        }
+        
+        /// <summary>
+        ///     Writes the file for the anchor points of the shape
+        /// </summary>
+        /// <returns>Path to the anchors</returns>
+        protected string WriteAnchorsFile(string dirname)
+        {
+            var anchorOutputFile = ShapeName + "-anchors.txt";
+            anchorOutputFile = Path.Combine(dirname, anchorOutputFile);
+            if (!Settings.Calculation.Overwrite)
             {
-                File.Delete(outputAnchors);
+                if (File.Exists(anchorOutputFile))
+                {
+                    return anchorOutputFile;
+                }
+            }
+            
+            var outputAnchorStr = "";
+            
+            switch (this.Settings.Render.AnchorStyle)
+            {
+                case AnchorStyle.EdgePoints:
+                    outputAnchorStr = MakeAnchorEdgePoints();
+                    break;
+                case AnchorStyle.VertexPoint:
+                    outputAnchorStr = MakeAnchorVertexPoints();
+                    break;
+                default:
+                    throw new InvalidEnumArgumentException();
+            }
+            
+            if (File.Exists(anchorOutputFile))
+            {
+                File.Delete(anchorOutputFile);
             }
 
-            File.AppendAllText(outputAnchors, outputAnchorStr);
-            return outputAnchors;
+            File.AppendAllText(anchorOutputFile, outputAnchorStr);
+            return anchorOutputFile;
         }
 
         /// <summary>

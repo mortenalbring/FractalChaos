@@ -53,5 +53,13 @@ namespace GeneratePoints.Models
         ///     Whether to include a white background or not in the scene
         /// </summary>
         public bool TransparentBackground = true;
+
+        public AnchorStyle AnchorStyle = AnchorStyle.VertexPoint;
+    }
+
+    public enum AnchorStyle
+    {
+        VertexPoint,
+        EdgePoints,
     }
 }

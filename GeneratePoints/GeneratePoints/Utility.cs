@@ -115,10 +115,7 @@ namespace GeneratePoints
         
         public static string GetDatapointsFilename(string shapeName, Settings settings, string append = "")
         {
-
-            var dataPointFileNameStyle = settings.Calculation.MaxDataPoints.ToString("e2");
-            var outputfilename = shapeName + "_r" + settings.Calculation.Ratio + "_p" +
-                                 dataPointFileNameStyle + append + "-datapoints.txt";
+            var outputfilename = $"{shapeName}{settings.Calculation.MaxDataPoints:e2}{append}-dp.txt";
             return outputfilename;
         }
 

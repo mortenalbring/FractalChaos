@@ -1,5 +1,6 @@
 ﻿using System;
 using GeneratePoints.GameStyles;
+using GeneratePoints.Models;
 using GeneratePoints.Polyhedra;
 
 namespace GeneratePoints.Posts
@@ -17,7 +18,8 @@ namespace GeneratePoints.Posts
             t.Settings.Render.RotateCamera = false;
             t.Settings.Calculation.Overwrite = true;
             t.Settings.Render.AnchorRadius = 0.0010;
-
+            t.Settings.Render.AnchorStyle = AnchorStyle.EdgePoints;
+            
             // t.Settings.Calculation.AngleMin = 0;
             // t.Settings.Calculation.AngleMax = Math.PI;
             t.StartRender(RootDirectory, "tetraPost9", GameStyle.Normal);
