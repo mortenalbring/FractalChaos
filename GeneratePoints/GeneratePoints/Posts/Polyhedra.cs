@@ -10,7 +10,7 @@ namespace GeneratePoints.Posts
         {
             var t = new Tetrahedron();
             //t.Settings.Calculation.MaxDataPoints = 1000000;
-            t.Settings.Calculation.MaxDataPoints = 10000;
+            t.Settings.Calculation.MaxDataPoints = 1000000;
             t.Settings.Calculation.FrameCount = 100;
             t.Settings.Render.RenderProgressively = false;
             t.Settings.Render.RotateCamera = false;
@@ -19,7 +19,7 @@ namespace GeneratePoints.Posts
 
             // t.Settings.Calculation.AngleMin = 0;
             // t.Settings.Calculation.AngleMax = Math.PI;
-            t.StartRender("tetraPost8", GameStyle.Normal);
+            t.StartRender("tetraPost9", GameStyle.Normal);
         }
         
         public static void TetraPost()

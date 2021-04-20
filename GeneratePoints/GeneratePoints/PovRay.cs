@@ -244,99 +244,6 @@ open
             var cylinderDiffuse = 0.9;
             var cylinderFilter = 0.0;
             
-            var donePoints = new List<KeyValuePair<AnchorPoint, AnchorPoint>>();
-            var anchVecPoints = "";
-            foreach (var a in anchorPoints)
-            {
-                foreach (var o in anchorPoints)
-                {
-                    var startX = a.X;
-                    var endX = o.X;
-
-                    var ancCount = 10;
-                    
-                    var diffX = (o.X - a.X) / ancCount;
-                    var diffY = (o.Y - a.Y) / ancCount;
-                    var diffZ = (o.Z - a.Z) / ancCount;
-                    
-                    var diffR = (o.R - a.R) / ancCount;
-                    var diffG = (o.G - a.G) / ancCount;
-                    var diffB = (o.B - a.B) / ancCount;
-
-                    for (int i = 0; i < ancCount; i++)
-                    {
-                        var xVal = a.X + diffX * i;
-                        var yVal = a.Y + diffY * i;
-                        var zVal = a.Z + diffZ * i;
-
-                        var rVal = a.R + diffR * i;
-                        var gVal = a.G + diffG * i;
-                        var bVal = a.B + diffB * i;
-
-                        
-                        anchVecPoints += $"<{xVal},{yVal},{zVal}>,<{rVal},{gVal},{bVal}>,";
-
-                    }
-                    
-                    if (a.X == o.X && a.Y == o.Y && a.Z == o.Z)
-                    {
-                        continue;
-                    }
-
-                    var shouldSkip = false;
-                    foreach (var d in donePoints)
-                    {
-                        if ((d.Key.X == a.X) && (d.Key.Y == a.Y) && (d.Key.Z == a.Z) && (d.Value.X == o.X) && (d.Value.Y == o.Y) && (d.Value.Z == o.Z))
-                        {
-                            shouldSkip = true;
-                        }
-                        if ((d.Key.X == o.X) && (d.Key.Y == o.Y) && (d.Key.Z == o.Z) && (d.Value.X == a.X) && (d.Value.Y == a.Y) && (d.Value.Z == a.Z))
-                        {
-                            shouldSkip = true;
-                        }
-                    }
-
-                    if (shouldSkip)
-                    {
-                      //  continue;
-                    }
-                    
-//pigment {{ gradient x color_map {{ [0 color rgb <{a.R},{a.G},{a.B}>] [1 color rgb <{o.R},{o.G},{o.B}>] }} }}
-//pigment {{ rgb <{a.R},{a.G},{a.B}> transmit nAnchorCylTransmit }} finish {{ ambient nAnchorCylAmbient diffuse nAnchorCylDiffuse }}
-                    var cylinderStr = $@"cylinder {{
- <{a.X},{a.Y},{a.Z}>, 
- <{o.X},{o.Y},{o.Z}>, nAnchorCylRadius 
-open
-pigment {{ rgb <{a.R},{a.G},{a.B}> transmit nAnchorCylTransmit }} finish {{ ambient nAnchorCylAmbient diffuse nAnchorCylDiffuse }}
-}}                                  
-";
-                    
-                    var coneStr = $@"cone {{
- <{a.X},{a.Y},{a.Z}>, nAnchorCylRadius
- <{o.X},{o.Y},{o.Z}>, 0 
-open
-pigment {{ rgb <{a.R},{a.G},{a.B}> transmit nAnchorCylTransmit filter nAnchorCylFilter }} finish {{ ambient nAnchorCylAmbient diffuse nAnchorCylDiffuse }}
-}}                                  
-";
-
-                    var cylinderLight = $@"light_source{{ <{a.X},{a.Y},{a.Z}> color rgb <{a.R},{a.G},{a.B}>
-              cylinder
-              point_at<{o.X}, {o.Y}, {o.Z}>
-              radius 20
-              tightness 100
-              falloff 40
-              
-            }}";
-
-                    //povAnchorCylinders += cylinderLight + cylinderStr;
-                    povAnchorCylinders += coneStr + cylinderLight;
-                    
-                    donePoints.Add(new KeyValuePair<AnchorPoint, AnchorPoint>(a,o));
-                }
-            }
-            
-            File.WriteAllText("anchorCylPointsTest.txt",anchVecPoints);
-            
             var povContent = $@"
 #include ""math.inc""
 #include ""textures.inc""
@@ -376,14 +283,15 @@ camera {{
 #fopen anchorsFile strAnchorsFile read
 
 #while (defined(anchorsFile))
-     #read (anchorsFile,Vector1,Vector2)
+     #read (anchorsFile,Vector1,Vector2,Vector3,Vector4)
    
-    light_source {{
-      0*x                  
-      color rgb Vector2    
-      translate Vector1
-    }}      
-          
+    
+    cylinder {{ Vector1,Vector3, 0.001
+           texture {{ pigment {{ color rgb Vector2 filter 1}}                   
+                     finish  {{ phong 0.5 reflection{{ 0.50 metallic 0.50}} }} 
+                   }}
+         }}
+
 #end
 
 #fopen dataPointsFile strDatapointsFile read
