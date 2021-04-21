@@ -5,6 +5,22 @@
     /// </summary>
     public class CalculationSettings
     {
+        public override string ToString()
+        {
+            var str = $@"
+Angle : {this.Angle},
+Angle Min : {this.AngleMin},
+Angle Max : {this.AngleMax},
+Frame Count : {this.FrameCount},
+Max Data Points : {this.MaxDataPoints},
+Overwrite : {this.Overwrite},
+Ratio : {this.Ratio},
+Ratio Min : {this.RatioMin},
+Ratio Max : {this.RatioMax},
+";
+            return str;
+        }
+
         /// <summary>
         ///     Angle to rotate about, if calculation method is set to Rotate
         /// </summary>

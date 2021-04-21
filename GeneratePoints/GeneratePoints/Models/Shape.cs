@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using GeneratePoints.GameStyles;
 
 namespace GeneratePoints.Models
@@ -93,10 +94,21 @@ namespace GeneratePoints.Models
             return StartRender(rootDir,ShapeName, gameStyle);
         }
 
+        private void WriteSettingsFile(string fullDir)
+        {
+            var settingsFilename = this.ShapeName + ".settings";
+            var settingsStr = this.Settings.Calculation.ToString();
+            var settingsPath = Path.Combine(fullDir, settingsFilename);
+            if (File.Exists(settingsPath))
+            {
+                File.Delete(settingsPath);
+            }
+            File.WriteAllText(settingsPath, settingsStr);
+        }
         public virtual string StartRender(string rootDir, string subDirectoryName, GameStyle gameStyle)
         {
             var fullDir = Path.Combine(rootDir, subDirectoryName);
-            
+           
             switch (gameStyle)
             {
                 case GameStyle.Normal:
@@ -110,7 +122,7 @@ namespace GeneratePoints.Models
                 case GameStyle.WithAngle:
                     return StartRenderWithAngle(fullDir);
             }
-            
+
             return StartRenderNormal(fullDir);
         }
 
@@ -132,7 +144,7 @@ namespace GeneratePoints.Models
                     var startX = a.X;
                     var endX = o.X;
 
-                    var ancCount = 1000;
+                    var ancCount = 200;
                     
                     var diffX = (o.X - a.X) / ancCount;
                     var diffY = (o.Y - a.Y) / ancCount;
@@ -335,7 +347,7 @@ namespace GeneratePoints.Models
             Console.WriteLine("Written " + povFile);
             return dataPointsFilename;
         }
-
+        
         /// <summary>
         ///     Starts the normal render
         /// </summary>
@@ -348,9 +360,10 @@ namespace GeneratePoints.Models
             WriteAnchorsFile(dirname);
             WriteDataPoints(dirname);
             var dataFiles = new List<string> {dataPointsFilename};
-            var povFile = PovRay.PreparePovRayFilesWithIniNew(Settings, dataFiles, anchorsFilename, this.AnchorPoints, dirname);
+            var povFile = PovRay.PreparePovRayFilesWithIniNew(this,Settings, dataFiles, anchorsFilename, dirname);
             Console.WriteLine("Written " + povFile);
 
+            WriteSettingsFile(dirname);
             return dataPointsFilename;
         }
 

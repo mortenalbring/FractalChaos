@@ -42,15 +42,16 @@ namespace GeneratePoints.Posts
         {
             var t = new Octahedron();
             //t.Settings.Calculation.MaxDataPoints = 1000000;
-            t.Settings.Calculation.MaxDataPoints = 10000000;
+            t.Settings.Calculation.MaxDataPoints = 20000000;
             t.Settings.Calculation.FrameCount = 10;
             t.Settings.Render.AnchorTransmit = 0.8;
-            t.Settings.Render.AnchorRadius = 0.0010;
+            t.Settings.Render.AnchorRadius = 0.005;
             t.Settings.Render.DataPointRadius = 0.0005;
             t.Settings.Render.RotateCamera = true;
             t.Settings.Render.RenderProgressively = true;
-            
-            t.StartRender(RootDirectory,"octoAnimPost2021", GameStyle.Normal);
+            t.Settings.Calculation.Overwrite = true;
+            t.Settings.Render.AnchorStyle = AnchorStyle.EdgePoints;
+            t.StartRender(RootDirectory,"octoAnimPost2021v3", GameStyle.Normal);
         }
 
         public static void TetraPostNoRepeat()

@@ -55,8 +55,9 @@ namespace GeneratePoints.Models
         public bool TransparentBackground = true;
 
         public AnchorStyle AnchorStyle = AnchorStyle.VertexPoint;
+        
     }
-
+    
     public enum AnchorStyle
     {
         VertexPoint,

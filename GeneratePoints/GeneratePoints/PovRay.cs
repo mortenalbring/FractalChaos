@@ -152,8 +152,8 @@ open
             
         }
 
-        public static string PreparePovRayFilesWithIniNew(Settings settings, List<string> datapointsFilenames, 
-            string anchorsFilename, List<AnchorPoint> anchorPoints,
+        public static string PreparePovRayFilesWithIniNew(Shape shape, Settings settings, List<string> datapointsFilenames, 
+            string anchorsFilename,
             string dirName)
         {
             var path = Assembly.GetExecutingAssembly().Location;
@@ -189,8 +189,19 @@ open
                     fileNameStr = fileNameStr + ",";
                 }
             }
-
             fileNameStr = fileNameStr + "}";
+            
+            var lightsStr = "";
+            foreach (var a in shape.AnchorPoints)
+            {
+                var lightStr = $@"light_source {{
+  0*x          
+  color rgb <{a.R},{a.G},{a.B}>
+  translate <{a.X},{a.Y},{a.Z}>
+}}
+";
+                lightsStr += lightStr;
+            }
 
 
             var cylinderDatas = $@"
@@ -235,9 +246,7 @@ open
 
             var povCameraLocation = $"<{povVarCameraLocationX},{povVarCameraLocationY},{povVarCameraLocationZ}>";
             var lookAt = $"<{settings.Render.LookAt[0]},{settings.Render.LookAt[1]},{settings.Render.LookAt[2]}>";
-
-            var povAnchorCylinders = "";
-
+            
             var cylinderRadius = 0.005;
             var cylinderTransmit = 0.9;
             var cylinderAmbient = 0.9;
@@ -278,20 +287,16 @@ camera {{
 	rotate <0,0,0>
 }}
 
-{povAnchorCylinders}
+{lightsStr}
 
 #fopen anchorsFile strAnchorsFile read
 
 #while (defined(anchorsFile))
-     #read (anchorsFile,Vector1,Vector2,Vector3,Vector4)
+     #read (anchorsFile,Vector1,Vector2)
    
+        sphere {{ Vector1, nAnchorRadius
+      texture {{ pigment{{ rgb Vector2 filter nAnchorCylFilter }} }} }}
     
-    cylinder {{ Vector1,Vector3, 0.001
-           texture {{ pigment {{ color rgb Vector2 filter 1}}                   
-                     finish  {{ phong 0.5 reflection{{ 0.50 metallic 0.50}} }} 
-                   }}
-         }}
-
 #end
 
 #fopen dataPointsFile strDatapointsFile read
@@ -440,7 +445,7 @@ camera {{
             return compiledFilename;
         }
 
-        public static void WritePovrayIniFile(Settings settings, string dirname, string povFilename)
+        private static void WritePovrayIniFile(Settings settings, string dirname, string povFilename)
         {
             var iniFile = povFilename + ".ini";
 
