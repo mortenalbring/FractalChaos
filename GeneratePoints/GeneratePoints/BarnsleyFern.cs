@@ -30,7 +30,7 @@ namespace GeneratePoints
         public void StartRenderProgressive(string dirname)
         {
             Utility.CreateDirectory(dirname, Settings.Calculation.Overwrite);
-            var anchorsFilename = WriteAnchorsFile(dirname);
+            WriteAnchorsFile(dirname);
             var dataFiles = new List<string>();
             for (var i = 0; i < Settings.Calculation.FrameCount; i++)
             {
@@ -38,7 +38,7 @@ namespace GeneratePoints
                 dataFiles.Add(datapointsFilename);
             }
 
-            var povFilename = PovRay.PreparePovRayFilesWithIni(Settings, dataFiles, anchorsFilename, dirname);
+            var povFilename = PovRay.PreparePovRayFilesWithIni(Settings, dataFiles, this.AnchorEdgePointsFile, dirname);
             Console.WriteLine(povFilename);
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using GeneratePoints.GameStyles;
 using GeneratePoints.Models;
 using GeneratePoints.Polyhedra;
@@ -12,7 +13,7 @@ namespace GeneratePoints.Posts
         {
             var t = new Tetrahedron();
             //t.Settings.Calculation.MaxDataPoints = 1000000;
-            t.Settings.Calculation.MaxDataPoints = 1000000;
+            t.Settings.Calculation.MaxDataPoints = 10000;
             t.Settings.Calculation.FrameCount = 100;
             t.Settings.Render.RenderProgressively = false;
             t.Settings.Render.RotateCamera = false;
@@ -22,7 +23,7 @@ namespace GeneratePoints.Posts
             
             // t.Settings.Calculation.AngleMin = 0;
             // t.Settings.Calculation.AngleMax = Math.PI;
-            t.StartRender(RootDirectory, "tetraPost9", GameStyle.Normal);
+            t.StartRender(RootDirectory, "tetraPost11", GameStyle.Normal);
         }
         
         public static void TetraPost()
@@ -38,6 +39,63 @@ namespace GeneratePoints.Posts
             t.StartRender(RootDirectory,"tetraAnimPostNoRepeatNearest",GameStyle.NoRepeatNearest);
         }
 
+        public static void CustomShape()
+        {
+            var s = new Shape();
+            s.ShapeName = "M";
+            s.AnchorPoints = new List<AnchorPoint>
+            {
+                new AnchorPoint
+                {
+                    X = -1,
+                    Y = -1,
+                    Z = 0,
+                    R = 1,
+                    G = 0,
+                    B = 0
+                },
+                new AnchorPoint
+                {
+                    X = -1,
+                    Y = 1,
+                    Z = 0,
+                    R = 0,
+                    G = 1,
+                    B = 0
+                },
+                new AnchorPoint
+                {
+                    X = 1,
+                    Y = 1,
+                    Z = 0,
+                    R = 0,
+                    G = 0,
+                    B = 1
+                },
+                new AnchorPoint
+                {
+                    X = 1,
+                    Y = -1,
+                    Z = 0,
+                    R = 0,
+                    G = 1,
+                    B = 1
+                },
+                new AnchorPoint
+                {
+                    X = 0,
+                    Y = 0.5,
+                    Z = 0,
+                    R = 1,
+                    G = 1,
+                    B = 0
+                },
+            };
+
+            
+
+
+        }
         public static void OctoPost()
         {
             var t = new Octahedron();

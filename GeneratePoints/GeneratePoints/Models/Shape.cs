@@ -194,43 +194,33 @@ namespace GeneratePoints.Models
             return outputAnchorStr;
         }
         
+        public string AnchorEdgePointsFile { get; set; }
+        public string AnchorVertexPointsFile { get; set; }
+        
         /// <summary>
         ///     Writes the file for the anchor points of the shape
         /// </summary>
         /// <returns>Path to the anchors</returns>
-        protected string WriteAnchorsFile(string dirname)
+        protected void WriteAnchorsFile(string dirname)
         {
-            var anchorOutputFile = ShapeName + "-anchors.txt";
-            anchorOutputFile = Path.Combine(dirname, anchorOutputFile);
-            if (!Settings.Calculation.Overwrite)
+            var anchorEdgePointsStr = MakeAnchorEdgePoints();
+            var anchorVertexPointsStr = MakeAnchorVertexPoints();
+            var anchorEdgePointsFile = Path.Combine(dirname,ShapeName + "-anchors-edges.txt");
+            var anchorVertexPointsFile = Path.Combine(dirname,ShapeName + "-anchors-vertices.txt");
+            if (File.Exists(anchorEdgePointsFile))
             {
-                if (File.Exists(anchorOutputFile))
-                {
-                    return anchorOutputFile;
-                }
+                File.Delete(anchorEdgePointsFile);
             }
+            File.AppendAllText(anchorEdgePointsFile, anchorEdgePointsStr);
             
-            var outputAnchorStr = "";
-            
-            switch (this.Settings.Render.AnchorStyle)
+            if (File.Exists(anchorVertexPointsFile))
             {
-                case AnchorStyle.EdgePoints:
-                    outputAnchorStr = MakeAnchorEdgePoints();
-                    break;
-                case AnchorStyle.VertexPoint:
-                    outputAnchorStr = MakeAnchorVertexPoints();
-                    break;
-                default:
-                    throw new InvalidEnumArgumentException();
+                File.Delete(anchorVertexPointsFile);
             }
-            
-            if (File.Exists(anchorOutputFile))
-            {
-                File.Delete(anchorOutputFile);
-            }
+            File.AppendAllText(anchorVertexPointsFile, anchorVertexPointsStr);
 
-            File.AppendAllText(anchorOutputFile, outputAnchorStr);
-            return anchorOutputFile;
+            AnchorVertexPointsFile = anchorVertexPointsFile;
+            AnchorEdgePointsFile = anchorEdgePointsFile;
         }
 
         /// <summary>
@@ -269,6 +259,11 @@ namespace GeneratePoints.Models
             sw.Start();
             var cWriteCount = 0;
 
+            var xPoints = new List<double>();
+            var yPoints = new List<double>();
+            var zPoints = new List<double>();
+
+            var skippedPoints = 0;
             for (var i = 0; i < Settings.Calculation.MaxDataPoints; i++)
             {
                 var val = rnd.Next(0, AnchorPoints.Count);
@@ -280,8 +275,8 @@ namespace GeneratePoints.Models
                 rPoint = (rPoint + AnchorPoints[val].R) * Settings.Calculation.Ratio;
                 gPoint = (gPoint + AnchorPoints[val].G) * Settings.Calculation.Ratio;
                 bPoint = (bPoint + AnchorPoints[val].B) * Settings.Calculation.Ratio;
-
-
+                
+           
                 var outputstr = "<" + xPoint + "," + yPoint + "," + zPoint + ">";
                 output = output + outputstr + ",";
 
@@ -308,7 +303,6 @@ namespace GeneratePoints.Models
             return outputfilename;
         }
 
-
         private string GetAnchorsFilename()
         {
             var outputAnchors = ShapeName + "-anchors.txt";
@@ -323,13 +317,12 @@ namespace GeneratePoints.Models
         private string StartRenderNoRepeat(string dirname)
         {
             var dataPointsFilename = Utility.GetDatapointsFilename(ShapeName, Settings);
-            var anchorsFilename = GetAnchorsFilename();
 
             Utility.CreateDirectory(dirname, Settings.Calculation.Overwrite);
             WriteAnchorsFile(dirname);
             NoRepeat.WriteDataPointsNoRepeatAnchor(Settings, AnchorPoints, dirname, dataPointsFilename);
             var dataFiles = new List<string> {dataPointsFilename};
-            var povFile = PovRay.PreparePovRayFilesWithIni(Settings, dataFiles, anchorsFilename, dirname);
+            var povFile = PovRay.PreparePovRayFilesWithIni(Settings, dataFiles, this.AnchorVertexPointsFile, dirname);
             Console.WriteLine("Written " + povFile);
             return dataPointsFilename;
         }
@@ -337,13 +330,12 @@ namespace GeneratePoints.Models
         private string StartRenderNoRepeatNearest(string dirname)
         {
             var dataPointsFilename = Utility.GetDatapointsFilename(ShapeName, Settings);
-            var anchorsFilename = GetAnchorsFilename();
 
             Utility.CreateDirectory(dirname, Settings.Calculation.Overwrite);
             WriteAnchorsFile(dirname);
             NoRepeatNearest.WriteDataPointsNoRepeatAnchor(Settings, AnchorPoints, dirname, dataPointsFilename);
             var dataFiles = new List<string> {dataPointsFilename};
-            var povFile = PovRay.PreparePovRayFilesWithIni(Settings, dataFiles, anchorsFilename, dirname);
+            var povFile = PovRay.PreparePovRayFilesWithIni(Settings, dataFiles, this.AnchorVertexPointsFile, dirname);
             Console.WriteLine("Written " + povFile);
             return dataPointsFilename;
         }
@@ -354,13 +346,12 @@ namespace GeneratePoints.Models
         private string StartRenderNormal(string dirname)
         {
             var dataPointsFilename = Utility.GetDatapointsFilename(ShapeName, Settings);
-            var anchorsFilename = GetAnchorsFilename();
 
             Utility.CreateDirectory(dirname, Settings.Calculation.Overwrite);
             WriteAnchorsFile(dirname);
             WriteDataPoints(dirname);
             var dataFiles = new List<string> {dataPointsFilename};
-            var povFile = PovRay.PreparePovRayFilesWithIniNew(this,Settings, dataFiles, anchorsFilename, dirname);
+            var povFile = PovRay.PreparePovRayFilesWithIniNew(this,Settings, dataFiles, this.AnchorEdgePointsFile, dirname);
             Console.WriteLine("Written " + povFile);
 
             WriteSettingsFile(dirname);
@@ -369,8 +360,6 @@ namespace GeneratePoints.Models
 
         private string StartRenderVaryRatio(string dirname)
         {
-            var anchorsFilename = GetAnchorsFilename();
-
             Utility.CreateDirectory(dirname, Settings.Calculation.Overwrite);
             WriteAnchorsFile(dirname);
             var dataFiles = new List<string>();
@@ -389,7 +378,7 @@ namespace GeneratePoints.Models
                 dataFiles.Add(file);
             }
 
-            var povFile = PovRay.PreparePovRayFilesWithIni(Settings, dataFiles, anchorsFilename, dirname);
+            var povFile = PovRay.PreparePovRayFilesWithIni(Settings, dataFiles, this.AnchorVertexPointsFile, dirname);
             Console.WriteLine("Written " + povFile);
             return povFile;
         }
@@ -398,12 +387,11 @@ namespace GeneratePoints.Models
         private string StartRenderWithAngle(string dirname)
         {
             Utility.CreateDirectory(dirname, Settings.Calculation.Overwrite);
-            var anchorsFilename = GetAnchorsFilename();
             WriteAnchorsFile(dirname);
 
             var datapointFiles = VaryAngle.WriteDataPointsVaryAngle(ShapeName, Settings, AnchorPoints, dirname);
 
-            var povFile = PovRay.PreparePovRayFilesWithIni(Settings, datapointFiles, anchorsFilename, dirname);
+            var povFile = PovRay.PreparePovRayFilesWithIni(Settings, datapointFiles, this.AnchorEdgePointsFile, dirname);
 
             return povFile;
         }

@@ -1,5 +1,7 @@
 ﻿using System;
+using GeneratePoints.GameStyles;
 using GeneratePoints.Models;
+using GeneratePoints.Polyhedra;
 using GeneratePoints.Posts;
 
 namespace GeneratePoints
@@ -14,6 +16,7 @@ namespace GeneratePoints
     /// </summary>
     public class Program
     {
+        private const string RootDirectory = "D:\\Files\\Projects\\ChaosFractals";
         private static void Main(string[] args)
         {
             try
@@ -24,15 +27,17 @@ namespace GeneratePoints
                 // Posts.Polyhedra.CubePost2();
 
                 //Posts.Polyhedra.TetraPostNoRepeat();
-              //  Posts.Polyhedra.TetraPostTest();
-                Posts.Polyhedra.OctoPost();
+                Posts.Polyhedra.TetraPostTest();
+                //Posts.Polyhedra.OctoPost();
 
+                
+             
                 //var dirName = "D:\\Files\\Dropbox\\Coding projects\\FractalChaos\\GeneratePoints\\GeneratePoints\\bin\\Debug\\dualTetraPost5\\zoominto";
                 //var searchPattern = "*.png";
                 //Utility.EstimateCalcTime(dirName, searchPattern);
-              // Posts.Polyhedra.OctoPostNoRepeat();
-                
-               // Barns.BarnsleyFarn();
+                // Posts.Polyhedra.OctoPostNoRepeat();
+
+                // Barns.BarnsleyFarn();
             }
             catch (Exception ex)
             {

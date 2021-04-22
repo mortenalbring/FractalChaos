@@ -191,35 +191,8 @@ open
             }
             fileNameStr = fileNameStr + "}";
             
-            var lightsStr = "";
-            foreach (var a in shape.AnchorPoints)
-            {
-                var lightStr = $@"light_source {{
-  0*x          
-  color rgb <{a.R},{a.G},{a.B}>
-  translate <{a.X},{a.Y},{a.Z}>
-}}
-";
-                lightsStr += lightStr;
-            }
 
 
-            var cylinderDatas = $@"
-#declare pp = pp + 1;
-     #read (dataPointsFile,Vector1,Vector2)         
-     
-      
-      cylinder {{
-       prevVector,
-       Vector1,
-       nDataPointRadius
-       pigment {{ rgb Vector2 }}
-      }}
-                              
-#declare prevVector = Vector1;                              
-      
-  #end
-";
             
 
             //For if there are multiple data point files
@@ -265,17 +238,23 @@ open
 
 #declare strDatapointsFile = FileNames[{povVarFilesIndex}]; 
 
-#declare strAnchorsFile = ""{anchorsFilename}""; 
+#declare strAnchorsEdgesFile = ""{Path.GetFileName(shape.AnchorEdgePointsFile)}""; 
+#declare strAnchorsVertexFile = ""{Path.GetFileName(shape.AnchorVertexPointsFile)}"";
 
-#declare nAnchorRadius = {settings.Render.AnchorRadius}; 
 
 #declare nDataPointRadius = {settings.Render.DataPointRadius}; 
 
-#declare nAnchorCylRadius = {cylinderRadius};
+
 #declare nAnchorCylTransmit = {cylinderTransmit};
-#declare nAnchorCylFilter = {cylinderFilter};
+
 #declare nAnchorCylAmbient = {cylinderAmbient};
 #declare nAnchorCylDiffuse = {cylinderDiffuse};
+
+#declare nAnchorVertRadius = {cylinderRadius};
+#declare nAnchorVertFilter = {cylinderFilter};
+
+#declare nAnchorEdgeRadius = {settings.Render.AnchorRadius}; 
+#declare nAnchorEdgeFilter = {cylinderFilter};
 
 #declare nPointStop = {povVarNPointStop}; 
 
@@ -287,17 +266,25 @@ camera {{
 	rotate <0,0,0>
 }}
 
-{lightsStr}
+#fopen anchorsFile1 strAnchorsVertexFile read
 
-#fopen anchorsFile strAnchorsFile read
-
-#while (defined(anchorsFile))
-     #read (anchorsFile,Vector1,Vector2)
+#while (defined(anchorsFile1))
+     #read (anchorsFile1,Vector1,Vector2)
    
-        sphere {{ Vector1, nAnchorRadius
-      texture {{ pigment{{ rgb Vector2 filter nAnchorCylFilter }} }} }}
+        sphere {{ Vector1, nAnchorVertRadius
+      texture {{ pigment{{ rgb Vector2 filter nAnchorVertFilter }} }} }}
     
 #end
+
+#fopen anchorsFile2 strAnchorsEdgesFile read
+#while (defined(anchorsFile2))
+     #read (anchorsFile2,Vector1,Vector2)
+   
+        sphere {{ Vector1, nAnchorEdgeRadius
+      texture {{ pigment{{ rgb Vector2 filter nAnchorEdgeFilter }} }} }}
+    
+#end
+
 
 #fopen dataPointsFile strDatapointsFile read
 #declare pp = 0;
@@ -313,7 +300,8 @@ camera {{
                             
 
 #fclose dataPointsFile    
-#fclose anchorsFile
+#fclose anchorsFile1
+#fclose anchorsFile2
 ";
 
             

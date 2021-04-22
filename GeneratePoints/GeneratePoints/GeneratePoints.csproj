@@ -58,6 +58,7 @@
     <Compile Include="Polygons\Square.cs" />
     <Compile Include="Polygons\Triangle.cs" />
     <Compile Include="Polyhedra\Cube.cs" />
+    <Compile Include="Polyhedra\CustomShape.cs" />
     <Compile Include="Polyhedra\DualTetrahedron.cs" />
     <Compile Include="Polyhedra\Ico.cs" />
     <Compile Include="Polyhedra\Octahedron.cs" />
