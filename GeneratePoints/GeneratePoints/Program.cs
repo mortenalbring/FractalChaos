@@ -27,7 +27,9 @@ namespace GeneratePoints
                 // Posts.Polyhedra.CubePost2();
 
                 //Posts.Polyhedra.TetraPostNoRepeat();
-                Posts.Polyhedra.TetraPostTest();
+                //Posts.Polyhedra.TetraPostTest();
+                //Posts.Polyhedra.DoDecaTest();
+                Posts.Polyhedra.PentagonTest();
                 //Posts.Polyhedra.OctoPost();
 
                 

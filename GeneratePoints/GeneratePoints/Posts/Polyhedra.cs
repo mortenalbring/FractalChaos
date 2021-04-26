@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using GeneratePoints.GameStyles;
 using GeneratePoints.Models;
+using GeneratePoints.Polygons;
 using GeneratePoints.Polyhedra;
 
 namespace GeneratePoints.Posts
@@ -9,11 +10,36 @@ namespace GeneratePoints.Posts
     internal class Polyhedra
     {
         private const string RootDirectory = "D:\\Files\\Projects\\ChaosFractals";
+
+        public static void PentagonTest()
+        {
+            var t = new Pentagon();
+            t.Settings.Calculation.MaxDataPoints = 10000000;
+            t.Settings.Calculation.FrameCount = 10;
+            t.Settings.Render.RenderProgressively = false;
+            t.Settings.Render.RotateCamera = false;
+            t.Settings.Calculation.Overwrite = true;
+            t.Settings.Render.AnchorRadius = 0.0010;
+            t.Settings.Render.AnchorStyle = AnchorStyle.EdgePoints;
+            t.StartRender(RootDirectory, "penta2", GameStyle.Normal);
+        }
+        public static void DoDecaTest()
+        {
+         var t = new Dodecahedron();
+         t.Settings.Calculation.MaxDataPoints = 10000000;
+         t.Settings.Calculation.FrameCount = 10;
+         t.Settings.Render.RenderProgressively = false;
+         t.Settings.Render.RotateCamera = false;
+         t.Settings.Calculation.Overwrite = true;
+         t.Settings.Render.AnchorRadius = 0.0010;
+         t.Settings.Render.AnchorStyle = AnchorStyle.EdgePoints;
+         t.StartRender(RootDirectory, "dodeca1", GameStyle.WithAngle);
+        }
         public static void TetraPostTest()
         {
             var t = new Tetrahedron();
             //t.Settings.Calculation.MaxDataPoints = 1000000;
-            t.Settings.Calculation.MaxDataPoints = 10000;
+            t.Settings.Calculation.MaxDataPoints = 10000000;
             t.Settings.Calculation.FrameCount = 100;
             t.Settings.Render.RenderProgressively = false;
             t.Settings.Render.RotateCamera = false;
@@ -23,7 +49,7 @@ namespace GeneratePoints.Posts
             
             // t.Settings.Calculation.AngleMin = 0;
             // t.Settings.Calculation.AngleMax = Math.PI;
-            t.StartRender(RootDirectory, "tetraPost11", GameStyle.Normal);
+            t.StartRender(RootDirectory, "tetraPost16", GameStyle.Normal);
         }
         
         public static void TetraPost()

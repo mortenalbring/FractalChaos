@@ -243,14 +243,16 @@ open
 
 
 #declare nDataPointRadius = {settings.Render.DataPointRadius}; 
+ 
+#declare nDataPointPhong = 1.0;
+#declare nDataPointPhongSize = 0.25;
+#declare nDataPointAmbient = 0.25;
+#declare nDataPointDiffuse = 0.25;
+#declare nDataPointReflection = 0.25;
+#declare nDataPointSpecular = 0.25;
+#declare nDataPointRoughness = 0.25;
 
-
-#declare nAnchorCylTransmit = {cylinderTransmit};
-
-#declare nAnchorCylAmbient = {cylinderAmbient};
-#declare nAnchorCylDiffuse = {cylinderDiffuse};
-
-#declare nAnchorVertRadius = {cylinderRadius};
+#declare nAnchorVertRadius = {settings.Render.AnchorRadius};
 #declare nAnchorVertFilter = {cylinderFilter};
 
 #declare nAnchorEdgeRadius = {settings.Render.AnchorRadius}; 
@@ -271,9 +273,22 @@ camera {{
 #while (defined(anchorsFile1))
      #read (anchorsFile1,Vector1,Vector2)
    
-        sphere {{ Vector1, nAnchorVertRadius
-      texture {{ pigment{{ rgb Vector2 filter nAnchorVertFilter }} }} }}
-    
+light_source {{
+  Vector1          
+  color rgb Vector2  
+        fade_distance 1
+    fade_power 5
+}}     
+     
+light_source {{
+  Vector1
+  color rgb Vector2
+  spotlight                 
+  point_at <0, 0, 0>      
+  radius 1                
+  tightness 10            
+  falloff 1               
+}}
 #end
 
 #fopen anchorsFile2 strAnchorsEdgesFile read
@@ -285,6 +300,8 @@ camera {{
     
 #end
 
+#fclose anchorsFile1
+#fclose anchorsFile2
 
 #fopen dataPointsFile strDatapointsFile read
 #declare pp = 0;
@@ -293,15 +310,27 @@ camera {{
 #declare pp = pp + 1;
      #read (dataPointsFile,Vector1,Vector2)         
      
-     sphere {{ Vector1, nDataPointRadius
-      texture {{ pigment{{ rgb Vector2}} }} }}
-  #end
-
+     sphere {{ 
+        Vector1, nDataPointRadius
+        texture {{ 
+           pigment {{ 
+             rgb Vector2
+             }} 
+           }} 
+           finish {{ 
+              phong nDataPointPhong
+              phong_size nDataPointPhongSize               
+              ambient nDataPointAmbient
+              diffuse nDataPointDiffuse
+              reflection nDataPointReflection
+              specular nDataPointSpecular
+              roughness nDataPointRoughness              
+           }} 
+      }}
+#end
                             
 
 #fclose dataPointsFile    
-#fclose anchorsFile1
-#fclose anchorsFile2
 ";
 
             

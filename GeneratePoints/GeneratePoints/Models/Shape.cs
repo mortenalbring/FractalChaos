@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using GeneratePoints.GameStyles;
 
@@ -130,22 +131,31 @@ namespace GeneratePoints.Models
         public string MakeAnchorEdgePoints()
         {
             var outputAnchorStr = "";
-            
+
             foreach (var a in AnchorPoints)
             {
+                var anchorDistances = new List<KeyValuePair<AnchorPoint, double>>();
+                
+                
                 foreach (var o in AnchorPoints)
                 {
-                    if (a.X == o.X && a.Y == o.Y && a.Z == o.Z)
+                    if (o.Id == a.Id)
                     {
                         continue;
                     }
-
-
-                    var startX = a.X;
-                    var endX = o.X;
-
-                    var ancCount = 200;
                     
+                    var dist = Math.Sqrt(Math.Pow((o.X - a.X), 2) + Math.Pow((o.Y - a.Y), 2) + Math.Pow((o.Z - a.Z), 2));
+                    var anchorDist = new KeyValuePair<AnchorPoint, double>(o,dist);    
+                    anchorDistances.Add(anchorDist);
+                }
+
+                var minDist = anchorDistances.Select(e => e.Value).Min();
+                var closestAnchors = anchorDistances.Where(e => e.Value == minDist).Select(e => e.Key).ToList();
+
+                foreach (var o in closestAnchors)
+                {
+                    var ancCount = 200;
+
                     var diffX = (o.X - a.X) / ancCount;
                     var diffY = (o.Y - a.Y) / ancCount;
                     var diffZ = (o.Z - a.Z) / ancCount;
@@ -154,7 +164,7 @@ namespace GeneratePoints.Models
                     var diffG = (o.G - a.G) / ancCount;
                     var diffB = (o.B - a.B) / ancCount;
 
-                    for (int i = 0; i < ancCount; i++)
+                    for (int i = 1; i < ancCount; i++)
                     {
                         var xVal = a.X + diffX * i;
                         var yVal = a.Y + diffY * i;
@@ -168,9 +178,50 @@ namespace GeneratePoints.Models
                         outputAnchorStr += $"<{xVal},{yVal},{zVal}>,<{rVal},{gVal},{bVal}>,";
 
                     }
-                    
                 }
-            }
+
+            } 
+            
+            // foreach (var a in AnchorPoints)
+            // {
+            //     foreach (var o in AnchorPoints)
+            //     {
+            //         if (a.X == o.X && a.Y == o.Y && a.Z == o.Z)
+            //         {
+            //             continue;
+            //         }
+            //
+            //
+            //         var startX = a.X;
+            //         var endX = o.X;
+            //
+            //         var ancCount = 200;
+            //         
+            //         var diffX = (o.X - a.X) / ancCount;
+            //         var diffY = (o.Y - a.Y) / ancCount;
+            //         var diffZ = (o.Z - a.Z) / ancCount;
+            //         
+            //         var diffR = (o.R - a.R) / ancCount;
+            //         var diffG = (o.G - a.G) / ancCount;
+            //         var diffB = (o.B - a.B) / ancCount;
+            //
+            //         for (int i = 1; i < ancCount; i++)
+            //         {
+            //             var xVal = a.X + diffX * i;
+            //             var yVal = a.Y + diffY * i;
+            //             var zVal = a.Z + diffZ * i;
+            //
+            //             var rVal = a.R + diffR * i;
+            //             var gVal = a.G + diffG * i;
+            //             var bVal = a.B + diffB * i;
+            //
+            //             
+            //             outputAnchorStr += $"<{xVal},{yVal},{zVal}>,<{rVal},{gVal},{bVal}>,";
+            //
+            //         }
+            //         
+            //     }
+            // }
        
             return outputAnchorStr;
         }
@@ -322,7 +373,7 @@ namespace GeneratePoints.Models
             WriteAnchorsFile(dirname);
             NoRepeat.WriteDataPointsNoRepeatAnchor(Settings, AnchorPoints, dirname, dataPointsFilename);
             var dataFiles = new List<string> {dataPointsFilename};
-            var povFile = PovRay.PreparePovRayFilesWithIni(Settings, dataFiles, this.AnchorVertexPointsFile, dirname);
+            var povFile = PovRay.PreparePovRayFilesWithIniNew(this,Settings, dataFiles, this.AnchorVertexPointsFile, dirname);
             Console.WriteLine("Written " + povFile);
             return dataPointsFilename;
         }
@@ -335,7 +386,7 @@ namespace GeneratePoints.Models
             WriteAnchorsFile(dirname);
             NoRepeatNearest.WriteDataPointsNoRepeatAnchor(Settings, AnchorPoints, dirname, dataPointsFilename);
             var dataFiles = new List<string> {dataPointsFilename};
-            var povFile = PovRay.PreparePovRayFilesWithIni(Settings, dataFiles, this.AnchorVertexPointsFile, dirname);
+            var povFile = PovRay.PreparePovRayFilesWithIniNew(this,Settings, dataFiles, this.AnchorVertexPointsFile, dirname);
             Console.WriteLine("Written " + povFile);
             return dataPointsFilename;
         }

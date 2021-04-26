@@ -83,7 +83,7 @@ namespace GeneratePoints.GameStyles
                     var elemsRemaining = settings.Calculation.MaxDataPoints - i;
                     var minsRemaining = (elemsRemaining * timePerElem / 60).ToString("N");
 
-                    Console.WriteLine("Writing points\t" + i + "\t" + settings.Calculation.MaxDataPoints + "\t" +
+                    Console.WriteLine("Writing points (norepeatnearest) \t" + i + "\t" + settings.Calculation.MaxDataPoints + "\t" +
                                       minsRemaining + " mins remaining");
                 }
             }
