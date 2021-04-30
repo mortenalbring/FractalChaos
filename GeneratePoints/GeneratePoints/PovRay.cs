@@ -305,7 +305,7 @@ light_source {{
 
 #fopen dataPointsFile strDatapointsFile read
 #declare pp = 0;
-
+#declare dtSeconds1 = val(datetime(now,""%M"")) * 60 + val(datetime(now,""%S""));
 #while (defined(dataPointsFile) & pp < nPointStop)  
 #declare pp = pp + 1;
      #read (dataPointsFile,Vector1,Vector2)         
@@ -331,6 +331,85 @@ light_source {{
                             
 
 #fclose dataPointsFile    
+
+
+#declare dtSeconds2 = val(datetime(now,""%M"")) * 60 + val(datetime(now,""%S""));
+#declare dtDiff = dtSeconds2 - dtSeconds1;
+
+#declare parseTimeText = concat(""Parse time = "", str(dtDiff,0,0), "" s"");
+#declare pointText = concat(""n = "",str(pp,0,0));
+#declare radiusText = concat(""r = "",str(nDataPointRadius,0,5));
+
+#declare titleText = ""Pentagon Chaos Game"";
+
+
+
+text {{ ttf ""arial.ttf"", titleText , 0.02, 0.0 // thickness, offset
+       texture{{ pigment{{ color rgb<0.5,0.5,0.5>*1.3 }} 
+              
+                finish {{ phong 0.1 ambient 0.9 }}
+              }} 
+       scale<0.2,0.2,0.2>*0.1       
+       translate<-1.2,0.97,0>
+       rotate<0,-180,0>
+      }} 
+
+
+
+text {{ ttf ""arial.ttf"", radiusText, 0.02, 0.0 // thickness, offset
+       texture{{ pigment{{ color rgb<0.5,0.5,0.5>*1.3 }} 
+              
+                finish {{ phong 0.1 ambient 0.9 }}
+              }} 
+       scale<0.2,0.2,0.2>*0.1       
+       translate<-1.2,0.92,0>
+       rotate<0,-180,0>
+      }} 
+
+
+text {{ ttf ""arial.ttf"", pointText, 0.02, 0.0 // thickness, offset
+       texture{{ pigment{{ color rgb<0.5,0.5,0.5>*1.3 }} 
+              
+                finish {{ phong 0.1 ambient 0.9 }}
+              }} 
+       scale<0.2,0.2,0.2>*0.1       
+       translate<-1.2,0.90,0>
+       rotate<0,-180,0>
+      }} 
+
+
+text {{ ttf ""arial.ttf"", parseTimeText, 0.02, 0.0 // thickness, offset
+       texture{{ pigment{{ color rgb<0.5,0.5,0.5>*1.3 }} 
+              
+                finish {{ phong 0.1 ambient 0.9 }}
+              }} 
+       scale<0.2,0.2,0.2>*0.1       
+       translate<-1.2,0.95,0>
+       rotate<0,-180,0>
+      }} 
+      
+text {{ ttf ""arial.ttf"", str(clock,0,3), 0.02, 0.0 // thickness, offset
+       texture{{ pigment{{ color rgb<0.5,0.5,0.5>*1.3 }} 
+              
+                finish {{ phong 0.1 ambient 0.9 }}
+              }} 
+       scale<0.2,0.2,0.2>*0.1       
+       translate<-1.2,0.88,0>
+       rotate<0,-180,0>
+      }}             
+
+text {{ ttf ""arial.ttf"", str(nPointStop,0,0), 0.02, 0.0 // thickness, offset
+       texture{{ pigment{{ color rgb<0.5,0.5,0.5>*1.3 }} 
+              
+                finish {{ phong 0.1 ambient 0.9 }}
+              }} 
+       scale<0.2,0.2,0.2>*0.1       
+       translate<-1.2,0.84,0>
+       rotate<0,-180,0>
+      }}       
+                            
+
+
 ";
 
             

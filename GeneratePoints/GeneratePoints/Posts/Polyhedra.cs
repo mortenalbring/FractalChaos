@@ -21,7 +21,7 @@ namespace GeneratePoints.Posts
             t.Settings.Calculation.Overwrite = true;
             t.Settings.Render.AnchorRadius = 0.0010;
             t.Settings.Render.AnchorStyle = AnchorStyle.EdgePoints;
-            t.StartRender(RootDirectory, "penta2", GameStyle.Normal);
+            t.StartRender(RootDirectory, "penta3", GameStyle.NoRepeat);
         }
         public static void DoDecaTest()
         {
