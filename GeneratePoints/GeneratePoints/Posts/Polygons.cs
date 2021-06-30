@@ -30,12 +30,12 @@ namespace GeneratePoints.Posts
 
         public static void GeneralNoRepeatNearest()
         {
-            for (int vertices = 5; vertices < 12; vertices++)
+            for (int vertices = 3; vertices < 6; vertices++)
             {
 
-                var subDirName = "nrn";
+                var subDirName = "nrn6";
                 
-                var shapeName = "vertex" + vertices + "norepeatnearest";
+                var shapeName = "vertex" + vertices + "norepeatrandom";
 
                 var p = new Polygon(vertices);
                 p.Settings.Calculation.MaxDataPoints = 1000000;
@@ -45,14 +45,17 @@ namespace GeneratePoints.Posts
                 p.Settings.Calculation.FrameCount = 10;
 
                 p.Settings.Render.RenderProgressively = false;
+                p.Settings.Render.DataPointPhong = 0.1;
                 p.Settings.Render.DataPointRadius = 0.0005;
-                p.Settings.Render.EdgePointRadius = 0.002;
-                //p.StartRender("octagonpost1");
+                p.Settings.Render.DataPointAmbient = 0.95;
+                p.Settings.Render.EdgePointRadius = 0.001;
+                p.Settings.Render.IncludeAreaLights = true;
 
 
-                //p.StartRender(RootDirectory, subDirname + "normal", GameStyle.Normal);
-                //p.StartRender(RootDirectory, subDirname + "norepeat", GameStyle.NoRepeat);
-                p.StartRender(RootDirectory, subDirName + "norepeatnearest", GameStyle.NoRepeatNearest);
+                //p.StartRender(RootDirectory, subDirName + "normal", GameStyle.Normal);
+                p.StartRender(RootDirectory, subDirName + "norepeatrandom", GameStyle.NoRepeatRandom);
+               // p.StartRender(RootDirectory, subDirName + "norepeat", GameStyle.NoRepeat);
+                //p.StartRender(RootDirectory, subDirName + "norepeatnearest", GameStyle.NoRepeatNearest);
             }
 
         }

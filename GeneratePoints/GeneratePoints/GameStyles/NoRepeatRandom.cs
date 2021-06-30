@@ -2,18 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.CompilerServices;
 using GeneratePoints.Models;
 
 namespace GeneratePoints.GameStyles
 {
-    /// <summary>
-    ///     This variant of the chaos game has the added constraint that the randomly chosen anchor point cannot be either of
-    ///     the two anchor points closest to the previous. But it can be the same one.
-    /// </summary>
-    public class NoRepeatNearest
+    public class NoRepeatRandom
     {
-        public static string WriteDataPointsNoRepeatAnchor(Settings settings, List<AnchorPoint> anchorPoints,
+               public static string WriteDataPointsNoRepeatRandomAnchor(Settings settings, List<AnchorPoint> anchorPoints,
             string dirname, string dataPointsFileName)
         {
             var rnd = new Random();
@@ -42,32 +37,23 @@ namespace GeneratePoints.GameStyles
             var sw = new Stopwatch();
             sw.Start();
             var cWriteCount = 0;
-            var previousVal = 0;
 
-            
-            var closestAnchorDict = Shape.GetClosestAnchors(anchorPoints);
-            
-            
+            var previousVal = 0;
+            var disallowVal = 0;
+            var disallowedList = new List<int>();
             for (var i = 0; i < settings.Calculation.MaxDataPoints; i++)
             {
                 var val = rnd.Next(0, anchorPoints.Count);
 
-                var anchorPoint = anchorPoints[val];
-                var prevAnchor = anchorPoints[previousVal];
-                var disallowedAnchors = closestAnchorDict[prevAnchor];
+                var droll = rnd.Next(0, 100);
 
-                if (disallowedAnchors.Contains(anchorPoint))
+                if (droll > 50)
                 {
-                    while (disallowedAnchors.Contains(anchorPoint))
-                    {
-                        val = rnd.Next(0, anchorPoints.Count);
-                        anchorPoint = anchorPoints[val];
-                    }
+                    val = previousVal;
                 }
                 
-                
                 previousVal = val;
-
+                
                 xPoint = (xPoint + anchorPoints[val].X) * settings.Calculation.Ratio;
                 yPoint = (yPoint + anchorPoints[val].Y) * settings.Calculation.Ratio;
                 zPoint = (zPoint + anchorPoints[val].Z) * settings.Calculation.Ratio;
@@ -94,7 +80,7 @@ namespace GeneratePoints.GameStyles
                     var elemsRemaining = settings.Calculation.MaxDataPoints - i;
                     var minsRemaining = (elemsRemaining * timePerElem / 60).ToString("N");
 
-                    Console.WriteLine("Writing points (norepeatnearest) \t" + i + "\t" + settings.Calculation.MaxDataPoints + "\t" +
+                    Console.WriteLine("Writing points (norepeatfurthest) \t" + i + "\t" + settings.Calculation.MaxDataPoints + "\t" +
                                       minsRemaining + " mins remaining");
                 }
             }

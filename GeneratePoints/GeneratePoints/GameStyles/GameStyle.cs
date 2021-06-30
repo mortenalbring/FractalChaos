@@ -19,6 +19,10 @@
         ///     Plays the chaos game but will not choose either of the anchor points nearest to the previous one
         /// </summary>
         NoRepeatNearest,
+        
+        NoRepeatFurthest,
+        
+        NoRepeatRandom,
 
         /// <summary>
         ///     Plays the chaos game but varies the distance towards the anchor point to go

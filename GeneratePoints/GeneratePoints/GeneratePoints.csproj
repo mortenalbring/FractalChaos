@@ -45,8 +45,10 @@
     <Compile Include="AnchorPoint.cs" />
     <Compile Include="BarnsleyFern.cs" />
     <Compile Include="GameStyles\GameStyle.cs" />
+    <Compile Include="GameStyles\NoRepeatFurthest.cs" />
     <Compile Include="GameStyles\NoRepeatNearest.cs" />
     <Compile Include="GameStyles\NoRepeat.cs" />
+    <Compile Include="GameStyles\NoRepeatRandom.cs" />
     <Compile Include="GameStyles\VaryAngle.cs" />
     <Compile Include="Models\CalculationSettings.cs" />
     <Compile Include="Models\Polygon.cs" />

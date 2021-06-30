@@ -118,6 +118,10 @@ namespace GeneratePoints.Models
                     return StartRenderNoRepeat(fullDir);
                 case GameStyle.NoRepeatNearest:
                     return StartRenderNoRepeatNearest(fullDir);
+                case GameStyle.NoRepeatFurthest:
+                    return StartRenderNoRepeatFurthest(fullDir);
+                case GameStyle.NoRepeatRandom:
+                    return StartRenderNoRepeatRandom(fullDir);
                 case GameStyle.VaryRatio:
                     return StartRenderVaryRatio(fullDir);
                 case GameStyle.WithAngle:
@@ -127,11 +131,36 @@ namespace GeneratePoints.Models
             return StartRenderNormal(fullDir);
         }
 
+        public static Dictionary<AnchorPoint, List<AnchorPoint>> GetFurthestAnchors(List<AnchorPoint> anchorPoints)
+        {
+            var furthestAnchorDist = new Dictionary<AnchorPoint, List<AnchorPoint>>();
+            
+            foreach (var a in anchorPoints)
+            {
+                var anchorDistances = new List<KeyValuePair<AnchorPoint, double>>();
+                
+                foreach (var o in anchorPoints)
+                {
+                    if (o.Id == a.Id)
+                    {
+                        continue;
+                    }
+                    
+                    var dist = Math.Sqrt(Math.Pow((o.X - a.X), 2) + Math.Pow((o.Y - a.Y), 2) + Math.Pow((o.Z - a.Z), 2));
+                    var anchorDist = new KeyValuePair<AnchorPoint, double>(o,dist);    
+                    anchorDistances.Add(anchorDist);
+                }
+                var maxDist = anchorDistances.Select(e => e.Value).Max();
+                var closestAnchors = anchorDistances.Where(e => Math.Abs(e.Value - maxDist) < 0.001).Select(e => e.Key).ToList();
+                
+                furthestAnchorDist.Add(a,closestAnchors);
 
+            }
+
+            return furthestAnchorDist;
+        }
         public static Dictionary<AnchorPoint, List<AnchorPoint>> GetClosestAnchors(List<AnchorPoint> anchorPoints)
         {
-            
-            
             var closestAnchorsDict = new Dictionary<AnchorPoint, List<AnchorPoint>>();
             
             foreach (var a in anchorPoints)
@@ -421,6 +450,33 @@ namespace GeneratePoints.Models
             Console.WriteLine("Written " + povFile);
             return dataPointsFilename;
         }
+        
+        private string StartRenderNoRepeatFurthest(string dirname)
+        {
+            var dataPointsFilename = Utility.GetDatapointsFilename(ShapeName, Settings,"norepeatfurthest");
+
+            Utility.CreateDirectory(dirname, Settings.Calculation.Overwrite);
+            WriteAnchorsFile(dirname);
+            NoRepeatFurthest.WriteDataPointsNoRepeatFurthestAnchor(Settings, AnchorPoints, dirname, dataPointsFilename);
+            var dataFiles = new List<string> {dataPointsFilename};
+            var povFile = PovRay.PreparePovRayFilesWithIniNew(this,Settings, dataFiles, this.AnchorVertexPointsFile, dirname);
+            Console.WriteLine("Written " + povFile);
+            return dataPointsFilename;
+        }
+
+        private string StartRenderNoRepeatRandom(string dirname)
+        {
+            var dataPointsFilename = Utility.GetDatapointsFilename(ShapeName, Settings,"norepeatrandom");
+
+            Utility.CreateDirectory(dirname, Settings.Calculation.Overwrite);
+            WriteAnchorsFile(dirname);
+            NoRepeatRandom.WriteDataPointsNoRepeatRandomAnchor(Settings, AnchorPoints, dirname, dataPointsFilename);
+            var dataFiles = new List<string> {dataPointsFilename};
+            var povFile = PovRay.PreparePovRayFilesWithIniNew(this,Settings, dataFiles, this.AnchorVertexPointsFile, dirname);
+            Console.WriteLine("Written " + povFile);
+            return dataPointsFilename;
+        }
+
         
         /// <summary>
         ///     Starts the normal render

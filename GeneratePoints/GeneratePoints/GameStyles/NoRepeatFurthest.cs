@@ -2,18 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.CompilerServices;
 using GeneratePoints.Models;
 
 namespace GeneratePoints.GameStyles
 {
-    /// <summary>
-    ///     This variant of the chaos game has the added constraint that the randomly chosen anchor point cannot be either of
-    ///     the two anchor points closest to the previous. But it can be the same one.
-    /// </summary>
-    public class NoRepeatNearest
+    public class NoRepeatFurthest
     {
-        public static string WriteDataPointsNoRepeatAnchor(Settings settings, List<AnchorPoint> anchorPoints,
+               public static string WriteDataPointsNoRepeatFurthestAnchor(Settings settings, List<AnchorPoint> anchorPoints,
             string dirname, string dataPointsFileName)
         {
             var rnd = new Random();
@@ -45,7 +40,7 @@ namespace GeneratePoints.GameStyles
             var previousVal = 0;
 
             
-            var closestAnchorDict = Shape.GetClosestAnchors(anchorPoints);
+            var furthestAnchorDict = Shape.GetFurthestAnchors(anchorPoints);
             
             
             for (var i = 0; i < settings.Calculation.MaxDataPoints; i++)
@@ -54,7 +49,7 @@ namespace GeneratePoints.GameStyles
 
                 var anchorPoint = anchorPoints[val];
                 var prevAnchor = anchorPoints[previousVal];
-                var disallowedAnchors = closestAnchorDict[prevAnchor];
+                var disallowedAnchors = furthestAnchorDict[prevAnchor];
 
                 if (disallowedAnchors.Contains(anchorPoint))
                 {
@@ -94,7 +89,7 @@ namespace GeneratePoints.GameStyles
                     var elemsRemaining = settings.Calculation.MaxDataPoints - i;
                     var minsRemaining = (elemsRemaining * timePerElem / 60).ToString("N");
 
-                    Console.WriteLine("Writing points (norepeatnearest) \t" + i + "\t" + settings.Calculation.MaxDataPoints + "\t" +
+                    Console.WriteLine("Writing points (norepeatfurthest) \t" + i + "\t" + settings.Calculation.MaxDataPoints + "\t" +
                                       minsRemaining + " mins remaining");
                 }
             }
