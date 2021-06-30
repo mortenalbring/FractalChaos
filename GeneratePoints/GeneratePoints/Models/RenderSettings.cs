@@ -9,6 +9,10 @@ namespace GeneratePoints.Models
     /// </summary>
     public class RenderSettings
     {
+        public double DataPointAmbient = 0.25;
+        
+        public bool IncludeAreaLights = false;
+        
         /// <summary>
         ///     The radius of the anchor points
         /// </summary>
@@ -29,6 +33,8 @@ namespace GeneratePoints.Models
         /// </summary>
         public double CameraZoom = 2.5;
 
+        public double DataPointPhong = 1.0;
+        
         /// <summary>
         ///     The radius of the data points. You may want to scale this with the number of data points.
         /// </summary>

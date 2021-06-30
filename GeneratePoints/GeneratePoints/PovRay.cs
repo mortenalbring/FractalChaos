@@ -223,9 +223,15 @@ open
 
             var nAnchorVertFilter = 0.0;
             var renderBool = 0;
-            if (settings.Render.RenderText == true)
+            if (settings.Render.RenderText)
             {
                 renderBool = 1;
+            }
+
+            var areaLightBool = 0;
+            if (settings.Render.IncludeAreaLights)
+            {
+                areaLightBool = 1;
             }
             
             var povContent = $@"
@@ -246,9 +252,9 @@ open
 
 #declare nDataPointRadius = {settings.Render.DataPointRadius}; 
  
-#declare nDataPointPhong = 1.0;
+#declare nDataPointPhong = {settings.Render.DataPointPhong};
 #declare nDataPointPhongSize = 0.25;
-#declare nDataPointAmbient = 0.25;
+#declare nDataPointAmbient = {settings.Render.DataPointAmbient};
 #declare nDataPointDiffuse = 0.25;
 #declare nDataPointReflection = 0.25;
 #declare nDataPointSpecular = 0.25;
@@ -262,6 +268,7 @@ open
  
 #declare nPointStop = {povVarNPointStop}; 
 #declare nRenderText = {renderBool};
+#declare nRenderAreaLights = {areaLightBool};
 #declare nAnchorTransmit = {settings.Render.AnchorTransmit}; 
 
 camera {{	
@@ -292,6 +299,24 @@ light_source {{
   falloff 1               
 }}
 #end
+
+#if (nRenderAreaLights=1) 
+
+light_source {{
+  <0,0,0>             // light's position (translated below)
+  color rgb 1.0       // light's color
+  area_light
+  <8, 0, 0> <0, 0, 8> // lights spread out across this distance (x * z)
+  4, 4                // total number of lights in grid (4x*4z = 16 lights)
+  adaptive 0          // 0,1,2,3...
+  jitter              // adds random softening of light
+  circular            // make the shape of the light circular
+  orient              // orient light
+  translate <0, 0, 100>   // <x y z> position of light
+}}
+
+#end
+
 
 #fopen anchorsFile2 strAnchorsEdgesFile read
 #while (defined(anchorsFile2))
