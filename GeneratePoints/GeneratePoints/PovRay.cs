@@ -220,11 +220,13 @@ open
             var povCameraLocation = $"<{povVarCameraLocationX},{povVarCameraLocationY},{povVarCameraLocationZ}>";
             var lookAt = $"<{settings.Render.LookAt[0]},{settings.Render.LookAt[1]},{settings.Render.LookAt[2]}>";
             
-            var cylinderRadius = 0.005;
-            var cylinderTransmit = 0.9;
-            var cylinderAmbient = 0.9;
-            var cylinderDiffuse = 0.9;
-            var cylinderFilter = 0.0;
+
+            var nAnchorVertFilter = 0.0;
+            var renderBool = 0;
+            if (settings.Render.RenderText == true)
+            {
+                renderBool = 1;
+            }
             
             var povContent = $@"
 #include ""math.inc""
@@ -253,13 +255,13 @@ open
 #declare nDataPointRoughness = 0.25;
 
 #declare nAnchorVertRadius = {settings.Render.AnchorRadius};
-#declare nAnchorVertFilter = {cylinderFilter};
+#declare nAnchorVertFilter = {nAnchorVertFilter};
 
-#declare nAnchorEdgeRadius = {settings.Render.AnchorRadius}; 
-#declare nAnchorEdgeFilter = {cylinderFilter};
-
+#declare nAnchorEdgeRadius = {settings.Render.EdgePointRadius}; 
+#declare nAnchorEdgeFilter = {nAnchorVertFilter};
+ 
 #declare nPointStop = {povVarNPointStop}; 
-
+#declare nRenderText = {renderBool};
 #declare nAnchorTransmit = {settings.Render.AnchorTransmit}; 
 
 camera {{	
@@ -343,7 +345,7 @@ light_source {{
 #declare titleText = ""Pentagon Chaos Game"";
 
 
-
+#if (nRenderText=1) 
 text {{ ttf ""arial.ttf"", titleText , 0.02, 0.0 // thickness, offset
        texture{{ pigment{{ color rgb<0.5,0.5,0.5>*1.3 }} 
               
@@ -407,7 +409,7 @@ text {{ ttf ""arial.ttf"", str(nPointStop,0,0), 0.02, 0.0 // thickness, offset
        translate<-1.2,0.84,0>
        rotate<0,-180,0>
       }}       
-                            
+#end                            
 
 
 ";

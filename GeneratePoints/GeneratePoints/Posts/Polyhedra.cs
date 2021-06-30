@@ -33,12 +33,12 @@ namespace GeneratePoints.Posts
          t.Settings.Calculation.Overwrite = true;
          t.Settings.Render.AnchorRadius = 0.0010;
          t.Settings.Render.AnchorStyle = AnchorStyle.EdgePoints;
-         t.StartRender(RootDirectory, "dodeca1", GameStyle.WithAngle);
+         t.StartRender(RootDirectory, "dodeca2021norepeatnearest", GameStyle.NoRepeatNearest);
         }
         public static void TetraPostTest()
         {
             var t = new Tetrahedron();
-            //t.Settings.Calculation.MaxDataPoints = 1000000;
+            //t.Settings.Calculation.MaxDataPoints = 10000;
             t.Settings.Calculation.MaxDataPoints = 10000000;
             t.Settings.Calculation.FrameCount = 100;
             t.Settings.Render.RenderProgressively = false;
@@ -49,7 +49,7 @@ namespace GeneratePoints.Posts
             
             // t.Settings.Calculation.AngleMin = 0;
             // t.Settings.Calculation.AngleMax = Math.PI;
-            t.StartRender(RootDirectory, "tetraPost16", GameStyle.Normal);
+            t.StartRender(RootDirectory, "tetraPost18NoRepeat", GameStyle.NoRepeat);
         }
         
         public static void TetraPost()
@@ -132,22 +132,23 @@ namespace GeneratePoints.Posts
             t.Settings.Render.AnchorRadius = 0.005;
             t.Settings.Render.DataPointRadius = 0.0005;
             t.Settings.Render.RotateCamera = true;
-            t.Settings.Render.RenderProgressively = true;
+            t.Settings.Render.RenderProgressively = false;
             t.Settings.Calculation.Overwrite = true;
             t.Settings.Render.AnchorStyle = AnchorStyle.EdgePoints;
-            t.StartRender(RootDirectory,"octoAnimPost2021v3", GameStyle.Normal);
+            t.StartRender(RootDirectory,"octoAnimPost2021NoRepeatNearest", GameStyle.NoRepeatNearest);
         }
 
         public static void TetraPostNoRepeat()
         {
             var t = new Tetrahedron();
             //t.Settings.Calculation.MaxDataPoints = 1000000;
-            t.Settings.Calculation.MaxDataPoints = 10000000;
+            t.Settings.Calculation.MaxDataPoints = 10000;
             t.Settings.Calculation.FrameCount = 10;
             t.Settings.Render.TransparentBackground = false;
             t.Settings.Render.RenderProgressively = false;
             t.Settings.Render.RotateCamera = true;
-            t.StartRender(RootDirectory, "tetraAnimPostNoRepeat3", GameStyle.NoRepeat);
+            t.Settings.Calculation.Overwrite = true;
+            t.StartRender(RootDirectory, "tetraAnimPostNoRepeatNearestv2", GameStyle.NoRepeatNearest);
         }
         
         public static void OctoPostNoRepeat()
@@ -173,6 +174,21 @@ namespace GeneratePoints.Posts
             c.StartRender("cubePost1");
         }
 
+        public static void IcoPost()
+        {
+
+            var i = new Ico();
+            i.Settings.Calculation.MaxDataPoints = 10000000;
+            i.Settings.Calculation.FrameCount = 10;
+            i.Settings.Calculation.Overwrite = true;
+            i.Settings.Render.TransparentBackground = true;
+            i.Settings.Render.RotateCamera = false;
+            i.Settings.Render.RenderText = false;
+            
+            //i.StartRender(RootDirectory,"icoPost2021Normal", GameStyle.Normal);
+            i.StartRender(RootDirectory,"icoPost2021NoRepeat", GameStyle.NoRepeat);
+            i.StartRender(RootDirectory,"icoPost2021NoRepeatNearest", GameStyle.NoRepeatNearest);
+        }
         public static void CubePost2()
         {
             var c = new Cube();
@@ -180,8 +196,11 @@ namespace GeneratePoints.Posts
             c.Settings.Calculation.FrameCount = 10;
             c.Settings.Render.TransparentBackground = true;
             c.Settings.Render.RotateCamera = true;
+            c.Settings.Render.RenderText = false;
 
-            c.StartRender(RootDirectory,"cubePost2NoRepeat", GameStyle.NoRepeat);
+            c.StartRender(RootDirectory,"cubePost2021Normal", GameStyle.Normal);
+            c.StartRender(RootDirectory,"cubePost2021NoRepeat", GameStyle.NoRepeat);
+            c.StartRender(RootDirectory,"cubePost2021NoRepeatNearest", GameStyle.NoRepeatNearest);
         }
 
 

@@ -21,17 +21,19 @@ namespace GeneratePoints
         {
             try
             {
-                var p = new Polygon(3);
+              //  var p = new Polygon(3);
                 //p.StartRender();
 
-                // Posts.Polyhedra.CubePost2();
-
+                 //Posts.Polyhedra.CubePost2();
+                 Posts.Polygons.GeneralNoRepeatNearest();
+                 
                 //Posts.Polyhedra.TetraPostNoRepeat();
                 //Posts.Polyhedra.TetraPostTest();
+                
+                //Posts.Polyhedra.PentagonTest();
+               // Posts.Polyhedra.OctoPost();
                 //Posts.Polyhedra.DoDecaTest();
-                Posts.Polyhedra.PentagonTest();
-                //Posts.Polyhedra.OctoPost();
-
+//Posts.Polyhedra.IcoPost();
                 
              
                 //var dirName = "D:\\Files\\Dropbox\\Coding projects\\FractalChaos\\GeneratePoints\\GeneratePoints\\bin\\Debug\\dualTetraPost5\\zoominto";

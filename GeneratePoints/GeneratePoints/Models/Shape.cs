@@ -128,6 +128,37 @@ namespace GeneratePoints.Models
         }
 
 
+        public static Dictionary<AnchorPoint, List<AnchorPoint>> GetClosestAnchors(List<AnchorPoint> anchorPoints)
+        {
+            
+            
+            var closestAnchorsDict = new Dictionary<AnchorPoint, List<AnchorPoint>>();
+            
+            foreach (var a in anchorPoints)
+            {
+                var anchorDistances = new List<KeyValuePair<AnchorPoint, double>>();
+                
+                foreach (var o in anchorPoints)
+                {
+                    if (o.Id == a.Id)
+                    {
+                        continue;
+                    }
+                    
+                    var dist = Math.Sqrt(Math.Pow((o.X - a.X), 2) + Math.Pow((o.Y - a.Y), 2) + Math.Pow((o.Z - a.Z), 2));
+                    var anchorDist = new KeyValuePair<AnchorPoint, double>(o,dist);    
+                    anchorDistances.Add(anchorDist);
+                }
+                var minDist = anchorDistances.Select(e => e.Value).Min();
+                var closestAnchors = anchorDistances.Where(e => Math.Abs(e.Value - minDist) < 0.001).Select(e => e.Key).ToList();
+                
+                closestAnchorsDict.Add(a,closestAnchors);
+
+            }
+
+            return closestAnchorsDict;
+        }
+        
         public string MakeAnchorEdgePoints()
         {
             var outputAnchorStr = "";
@@ -150,7 +181,7 @@ namespace GeneratePoints.Models
                 }
 
                 var minDist = anchorDistances.Select(e => e.Value).Min();
-                var closestAnchors = anchorDistances.Where(e => e.Value == minDist).Select(e => e.Key).ToList();
+                var closestAnchors = anchorDistances.Where(e => Math.Abs(e.Value - minDist) < 0.001).Select(e => e.Key).ToList();
 
                 foreach (var o in closestAnchors)
                 {
@@ -367,7 +398,7 @@ namespace GeneratePoints.Models
         /// <param name="dirname"></param>
         private string StartRenderNoRepeat(string dirname)
         {
-            var dataPointsFilename = Utility.GetDatapointsFilename(ShapeName, Settings);
+            var dataPointsFilename = Utility.GetDatapointsFilename(ShapeName, Settings,"norepeat");
 
             Utility.CreateDirectory(dirname, Settings.Calculation.Overwrite);
             WriteAnchorsFile(dirname);
@@ -380,7 +411,7 @@ namespace GeneratePoints.Models
 
         private string StartRenderNoRepeatNearest(string dirname)
         {
-            var dataPointsFilename = Utility.GetDatapointsFilename(ShapeName, Settings);
+            var dataPointsFilename = Utility.GetDatapointsFilename(ShapeName, Settings,"norepeatnearest");
 
             Utility.CreateDirectory(dirname, Settings.Calculation.Overwrite);
             WriteAnchorsFile(dirname);

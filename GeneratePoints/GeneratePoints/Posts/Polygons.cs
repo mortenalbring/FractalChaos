@@ -26,8 +26,61 @@ namespace GeneratePoints.Posts
             h.StartRender("hexagonNoRepeat", GameStyle.NoRepeat);
             //  h.RenderProgressively("Hexagon2");
         }
+        private const string RootDirectory = "D:\\Files\\Projects\\ChaosFractals";
+
+        public static void GeneralNoRepeatNearest()
+        {
+            for (int vertices = 5; vertices < 12; vertices++)
+            {
+
+                var subDirName = "nrn";
+                
+                var shapeName = "vertex" + vertices + "norepeatnearest";
+
+                var p = new Polygon(vertices);
+                p.Settings.Calculation.MaxDataPoints = 1000000;
+                p.Settings.Calculation.Overwrite = false;
+                p.Settings.Render.DataPointRadius = 0.0005;
+                p.ShapeName = shapeName;
+                p.Settings.Calculation.FrameCount = 10;
+
+                p.Settings.Render.RenderProgressively = false;
+                p.Settings.Render.DataPointRadius = 0.0005;
+                p.Settings.Render.EdgePointRadius = 0.002;
+                //p.StartRender("octagonpost1");
 
 
+                //p.StartRender(RootDirectory, subDirname + "normal", GameStyle.Normal);
+                //p.StartRender(RootDirectory, subDirname + "norepeat", GameStyle.NoRepeat);
+                p.StartRender(RootDirectory, subDirName + "norepeatnearest", GameStyle.NoRepeatNearest);
+            }
+
+        }
+        public static void General()
+        {
+
+            for (int vertices = 3; vertices < 12; vertices++)
+            {
+                var subDirname = "vertex" + vertices;
+                
+                var p = new Polygon(vertices);
+                p.Settings.Calculation.MaxDataPoints = 1000000;
+                p.Settings.Calculation.Overwrite = true;
+                p.Settings.Render.DataPointRadius = 0.0005;
+                p.ShapeName = subDirname;
+                p.Settings.Calculation.FrameCount = 10;
+
+                p.Settings.Render.RenderProgressively = false;
+                p.Settings.Render.DataPointRadius = 0.0005;
+                p.Settings.Render.EdgePointRadius = 0.002;
+                //p.StartRender("octagonpost1");
+            
+
+                p.StartRender(RootDirectory, subDirname + "normal", GameStyle.Normal);
+                p.StartRender(RootDirectory, subDirname + "norepeat", GameStyle.NoRepeat);
+                p.StartRender(RootDirectory, subDirname + "norepeatnearest", GameStyle.NoRepeatNearest);
+            }
+        }
         public static void HexagonRotate()
         {
             var t = new Hexagon();

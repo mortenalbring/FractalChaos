@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 using GeneratePoints.Models;
 
 namespace GeneratePoints.GameStyles
@@ -43,17 +44,41 @@ namespace GeneratePoints.GameStyles
             var cWriteCount = 0;
             var previousVal = 0;
 
+
+            var disallowedDict = new Dictionary<int, List<int>>();
+            var closestAnchorDict = Shape.GetClosestAnchors(anchorPoints);
+            
+            
+            
+           
+            
             for (var i = 0; i < settings.Calculation.MaxDataPoints; i++)
             {
                 var val = rnd.Next(0, anchorPoints.Count);
-                var disallowed = GetDisallowed(previousVal, anchorPoints.Count);
 
+                var anchorPoint = anchorPoints[val];
+                var prevAnchor = anchorPoints[previousVal];
+                var disallowedAnchors = closestAnchorDict[prevAnchor];
 
-                if (disallowed.Contains(val))
+                if (disallowedAnchors.Contains(anchorPoint))
                 {
-                    while (disallowed.Contains(val))
+                    while (disallowedAnchors.Contains(anchorPoint))
+                    {
                         val = rnd.Next(0, anchorPoints.Count);
+                        anchorPoint = anchorPoints[val];
+                    }
                 }
+                
+                
+                
+                // var disallowed = GetDisallowed(previousVal, anchorPoints.Count);
+                //
+                //
+                // if (disallowed.Contains(val))
+                // {
+                //     while (disallowed.Contains(val))
+                //         val = rnd.Next(0, anchorPoints.Count);
+                // }
 
                 previousVal = val;
 
