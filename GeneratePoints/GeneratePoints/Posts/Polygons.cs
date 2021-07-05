@@ -28,6 +28,7 @@ namespace GeneratePoints.Posts
         }
         private const string RootDirectory = "D:\\Files\\Projects\\ChaosFractals";
 
+         
         public static void GeneralNoRepeatNearest()
         {
             for (int vertices = 3; vertices < 6; vertices++)
@@ -59,10 +60,16 @@ namespace GeneratePoints.Posts
             }
 
         }
+
+        public static void GeneralPolyhedra()
+        {
+            
+            
+        }
         public static void General()
         {
 
-            for (int vertices = 3; vertices < 12; vertices++)
+            for (int vertices = 3; vertices < 4; vertices++)
             {
                 var subDirname = "vertex" + vertices;
                 
@@ -79,9 +86,10 @@ namespace GeneratePoints.Posts
                 //p.StartRender("octagonpost1");
             
 
-                p.StartRender(RootDirectory, subDirname + "normal", GameStyle.Normal);
-                p.StartRender(RootDirectory, subDirname + "norepeat", GameStyle.NoRepeat);
-                p.StartRender(RootDirectory, subDirname + "norepeatnearest", GameStyle.NoRepeatNearest);
+                //p.StartRender(RootDirectory, subDirname + "normal", GameStyle.Normal);
+                p.StartRender(RootDirectory, subDirname + "norepeattr", GameStyle.NoRepeat);
+                p.StartRender(RootDirectory, subDirname + "norepeatnearesttr", GameStyle.NoRepeatNearest);
+                p.StartRender(RootDirectory, subDirname + "norepeatnearesttr", GameStyle.NoRepeatFurthest);
             }
         }
         public static void HexagonRotate()

@@ -25,9 +25,10 @@ namespace GeneratePoints
                 //p.StartRender();
 
                  //Posts.Polyhedra.CubePost2();
-                 Posts.Polygons.GeneralNoRepeatNearest();
+                // Posts.Polygons.General();
                  
-                //Posts.Polyhedra.TetraPostNoRepeat();
+                //Posts.Polyhedra.TetraPostNoRepeatNearest();
+                Posts.Polyhedra.PolyHedraNoRepeatNearest();
                 //Posts.Polyhedra.TetraPostTest();
                 
                 //Posts.Polyhedra.PentagonTest();

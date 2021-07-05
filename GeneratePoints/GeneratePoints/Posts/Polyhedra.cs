@@ -138,17 +138,17 @@ namespace GeneratePoints.Posts
             t.StartRender(RootDirectory,"octoAnimPost2021NoRepeatNearest", GameStyle.NoRepeatNearest);
         }
 
-        public static void TetraPostNoRepeat()
+        public static void TetraPostNoRepeatNearest()
         {
             var t = new Tetrahedron();
             //t.Settings.Calculation.MaxDataPoints = 1000000;
-            t.Settings.Calculation.MaxDataPoints = 10000;
+            t.Settings.Calculation.MaxDataPoints = 10000000;
             t.Settings.Calculation.FrameCount = 10;
             t.Settings.Render.TransparentBackground = false;
             t.Settings.Render.RenderProgressively = false;
             t.Settings.Render.RotateCamera = true;
             t.Settings.Calculation.Overwrite = true;
-            t.StartRender(RootDirectory, "tetraAnimPostNoRepeatNearestv2", GameStyle.NoRepeatNearest);
+            t.StartRender(RootDirectory, "tetraAnimPostNoRepeatNearestv3", GameStyle.NoRepeatNearest);
         }
         
         public static void OctoPostNoRepeat()
@@ -165,13 +165,69 @@ namespace GeneratePoints.Posts
             //t.StartRender("octoAnimPost3");
         }
 
-        public static void CubePost()
+        public static void PolyHedraNoRepeatNearest()
         {
-            var c = new Cube();
-            c.Settings.Calculation.MaxDataPoints = 10000000;
-            c.Settings.Calculation.FrameCount = 10;
-            c.Settings.Render.TransparentBackground = true;
-            c.StartRender("cubePost1");
+            void SetProps(Shape shape)
+            {
+                shape.Settings.Calculation.MaxDataPoints = 10000000;
+                shape.Settings.Render.TransparentBackground = true;
+                shape.Settings.Render.RenderProgressively = false;
+                shape.Settings.Render.RotateCamera = false;
+                shape.Settings.Calculation.Overwrite = false;
+                shape.Settings.Render.CameraZoom = 2.5;
+                shape.Settings.Render.CameraYOffset = 2.5;
+
+            }
+
+            var subDir = "polyNoRepeatNearest";
+            Shape t;
+            
+            t = new Cube();
+            SetProps(t);
+            t.StartRender(RootDirectory, subDir, GameStyle.NoRepeatNearest);
+            
+            t = new Octahedron();
+            SetProps(t);
+            t.StartRender(RootDirectory, subDir, GameStyle.NoRepeatNearest);
+
+            t = new Dodecahedron();
+            SetProps(t);
+            t.StartRender(RootDirectory, subDir, GameStyle.NoRepeatNearest);
+
+            t = new Ico();
+            SetProps(t);
+            t.StartRender(RootDirectory, subDir, GameStyle.NoRepeatNearest);
+            
+            subDir = "polyNoRepeatFurthest";
+            t = new Cube();
+            SetProps(t);
+            t.StartRender(RootDirectory, subDir, GameStyle.NoRepeatFurthest);
+            
+            t = new Octahedron();
+            SetProps(t);
+            t.StartRender(RootDirectory, subDir, GameStyle.NoRepeatFurthest);
+
+            t = new Dodecahedron();
+            SetProps(t);
+            t.StartRender(RootDirectory, subDir, GameStyle.NoRepeatFurthest);
+
+            t = new Ico();
+            SetProps(t);
+            t.StartRender(RootDirectory, subDir, GameStyle.NoRepeatFurthest);
+
+        }
+        public static void CubePostNoRepeatNearest()
+        {
+            var t = new Cube();
+            //t.Settings.Calculation.MaxDataPoints = 1000000;
+            t.Settings.Calculation.MaxDataPoints = 10000000;
+            t.Settings.Calculation.FrameCount = 10;
+            t.Settings.Render.TransparentBackground = false;
+            t.Settings.Render.RenderProgressively = false;
+            t.Settings.Render.RotateCamera = true;
+            t.Settings.Calculation.Overwrite = true;
+            t.StartRender(RootDirectory, "cubeNoRepeatNearest", GameStyle.NoRepeatNearest);
+
         }
 
         public static void IcoPost()
