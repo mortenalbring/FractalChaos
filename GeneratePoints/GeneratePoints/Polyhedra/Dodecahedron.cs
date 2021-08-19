@@ -13,6 +13,7 @@ namespace GeneratePoints.Polyhedra
             var nphi = -1 * (1 + Math.Sqrt(5)) / 2;
 
             var anchors = new List<List<double>>();
+            
             anchors.Add(new List<double> {1,1,1});
             anchors.Add(new List<double> {1,1,-1});
             anchors.Add(new List<double> {1,-1,1});

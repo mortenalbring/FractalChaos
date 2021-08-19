@@ -103,11 +103,20 @@ namespace GeneratePoints
 
             }
 
+            var sum = 0.0;
             foreach (var o in output)
             {
+                sum = sum + o.Value;
                 Console.WriteLine(o.Key + "\t" + o.Value);
             }
-            
+
+            var average = sum / output.Count;
+            Console.WriteLine(average + " ms per frame");
+
+            var desiredFrameCount = 1000;
+            var expectedTime = average * desiredFrameCount;
+            var expectedHours = expectedTime / 1000 / 60 / 60;
+            Console.WriteLine(expectedHours + " hours");
             var xx = 42;
 
 

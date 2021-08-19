@@ -216,6 +216,22 @@ namespace GeneratePoints.Posts
             t.StartRender(RootDirectory, subDir, GameStyle.NoRepeatFurthest);
 
         }
+
+        public static void RhombiCubePost()
+        {
+            var t = new Rhombicuboctahedron();
+            t.ShapeName = "rhombicube";
+            //t.Settings.Calculation.MaxDataPoints = 1000000;
+            t.Settings.Calculation.MaxDataPoints = 10000000;
+            t.Settings.Calculation.FrameCount = 10;
+            t.Settings.Render.CameraZoom = 10.5;
+            t.Settings.Render.TransparentBackground = true;
+            t.Settings.Render.RenderProgressively = false;
+            t.Settings.Render.RotateCamera = true;
+            t.Settings.Calculation.Overwrite = true;
+            t.Settings.Render.EdgePointRadius = 0.005;
+            t.StartRender(RootDirectory, "rhombicube", GameStyle.NoRepeatNearest);
+        }
         public static void CubePostNoRepeatNearest()
         {
             var t = new Cube();

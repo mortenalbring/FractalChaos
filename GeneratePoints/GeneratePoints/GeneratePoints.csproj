@@ -65,6 +65,7 @@
     <Compile Include="Polyhedra\DualTetrahedron.cs" />
     <Compile Include="Polyhedra\Ico.cs" />
     <Compile Include="Polyhedra\Octahedron.cs" />
+    <Compile Include="Polyhedra\Rhombicuboctahedron.cs" />
     <Compile Include="Posts\Barns.cs" />
     <Compile Include="Posts\Polygons.cs" />
     <Compile Include="Posts\Polyhedra.cs" />

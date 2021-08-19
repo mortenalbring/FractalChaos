@@ -28,16 +28,17 @@ namespace GeneratePoints
                 // Posts.Polygons.General();
                  
                 //Posts.Polyhedra.TetraPostNoRepeatNearest();
-                Posts.Polyhedra.PolyHedraNoRepeatNearest();
+                //Posts.Polyhedra.PolyHedraNoRepeatNearest();
                 //Posts.Polyhedra.TetraPostTest();
                 
                 //Posts.Polyhedra.PentagonTest();
                // Posts.Polyhedra.OctoPost();
                 //Posts.Polyhedra.DoDecaTest();
-//Posts.Polyhedra.IcoPost();
+Posts.Polyhedra.RhombiCubePost();
                 
              
-                //var dirName = "D:\\Files\\Dropbox\\Coding projects\\FractalChaos\\GeneratePoints\\GeneratePoints\\bin\\Debug\\dualTetraPost5\\zoominto";
+
+                //var dirName = "D:\\Files\\Projects\\ChaosFractals\\polyNoRepeatFurthest\\t1e6";
                 //var searchPattern = "*.png";
                 //Utility.EstimateCalcTime(dirName, searchPattern);
                 // Posts.Polyhedra.OctoPostNoRepeat();
